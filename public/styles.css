@@ -1,0 +1,1289 @@
+:root {
+    --bg-color: #001219;
+    --border-color: #06FBFE;
+    --accent-color: #ff00ff;
+    --text-color: #ffffff;
+    --hover-color: rgba(0, 255, 204, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* 顶部导航样式 */
+.header {
+    display: none;
+}
+
+.logo {
+    height: 64px;
+    width: auto;
+    display: block;
+}
+
+nav {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-link {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--border-color);
+}
+
+/* 主要内容区域 */
+.content-wrapper {
+    padding-top: 180px;
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+/* AI中心模块样式 */
+.ai-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+}
+
+
+
+.ai-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* 外圈刻度环 */
+.outer-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid #06FBFE;
+    animation: rotate 10s linear infinite;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        width: 110%;
+        height: 110%;
+        border-radius: 50%;
+        border: 2px dashed #06FBFE;
+        opacity: 0.5;
+        animation: rotate-reverse 20s linear infinite;
+    }
+}
+
+/* 频谱环 */
+.spectrum-ring {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+    background: radial-gradient(circle at center,
+        rgba(0, 255, 204, 0.2) 0%,
+        rgba(0, 255, 204, 0.1) 50%,
+        transparent 70%
+    );
+    &::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: conic-gradient(
+            from 0deg,
+            transparent 0%,
+            #06FBFE 20%,
+            transparent 40%,
+            #ff00ff 60%,
+            transparent 80%
+        );
+        border-radius: 50%;
+        animation: rotate 5s linear infinite;
+    }
+}
+
+/* AI文字样式 */
+.ai-text {
+    font-size: 48px;
+    font-weight: bold;
+    color: #06FBFE;
+    text-shadow: 0 0 10px #06FBFE;
+    animation: glow 2s ease-in-out infinite;
+    z-index: 2;
+}
+
+/* 连接线样式 */
+.connections {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+/* SVG 线条样式 */
+.connections line {
+    stroke: rgba(6, 251, 254, 0.6);  /* 青色线条 */
+    stroke-width: 2;
+}
+
+/* SVG 圆点样式 */
+.connections circle {
+    fill: rgb(6, 251, 254 ,0.3);  /* 实心青色圆点 */
+}
+
+/* 移动圆点的动画 */
+.connections .moving-dot {
+    fill: rgb(6, 251, 254 0.3);  /* 实心青色 */
+    animation: moveAlongLine 3s linear infinite;
+}
+
+@keyframes moveAlongLine {
+    from {
+        offset-distance: 0%;
+    }
+    to {
+        offset-distance: 100%;
+    }
+}
+
+/* 箭头样式 */
+.connection-arrow {
+    fill: #06FBFE;
+    filter: drop-shadow(0 0 3px #06FBFE);
+}
+
+/* 动画关键帧 */
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes rotate-reverse {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+}
+
+@keyframes glow {
+    0% {
+        filter: drop-shadow(0 0 5px rgba(6, 251, 254, 0.6));
+    }
+    50% {
+        filter: drop-shadow(0 0 15px rgba(6, 251, 254, 0.8))
+               drop-shadow(0 0 25px rgba(6, 251, 254, 0.4));
+    }
+    100% {
+        filter: drop-shadow(0 0 5px rgba(6, 251, 254, 0.6));
+    }
+}
+
+/* 大脑图标样式 */
+.brain-icon {
+    color: #06FBFE;
+    filter: drop-shadow(0 0 10px rgba(0, 255, 204, 0.5));
+    width: 80px;
+    height: 80px;
+    opacity: 0.9;
+}
+
+/* 呼吸光环效果增强 */
+@keyframes breathe {
+    0% {
+        box-shadow: 
+            0 0 30px rgba(0, 255, 204, 0.3),
+            inset 0 0 50px rgba(0, 255, 204, 0.1),
+            0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+    50% {
+        box-shadow: 
+            0 0 50px rgba(0, 255, 204, 0.5),
+            inset 0 0 80px rgba(0, 255, 204, 0.2),
+            0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+    100% {
+        box-shadow: 
+            0 0 30px rgba(0, 255, 204, 0.3),
+            inset 0 0 50px rgba(0, 255, 204, 0.1),
+            0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+}
+
+/* 四大模块布局 */
+.module {
+    width: 300px;
+    height: 120px;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    color: #06FBFE;
+    transition: transform 0.3s ease-in-out;
+}
+
+.module:hover {
+    transform: scale(1.05);
+}
+
+/* 左侧模块样式 */
+.module.top-left,
+.module.bottom-left {
+    background-image: url('./assets/module_left.png');
+}
+
+/* 右侧模块样式 */
+.module.top-right,
+.module.bottom-right {
+    background-image: url('./assets/module_right.png');
+}
+
+/* 模块文字样式优化 */
+.module h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: #06FBFE;
+    text-shadow: 0 0 10px rgba(6, 251, 254, 0.5);
+}
+
+.module p {
+    margin: 4px 0 0 0;
+    font-size: 14px;
+    color: #06FBFE;
+    opacity: 0.8;
+}
+
+/* 保持模块位置 */
+.module.top-left {
+    top: 15%;
+    left: 15%;
+}
+
+.module.top-right {
+    top: 15%;
+    right: 15%;
+}
+
+.module.bottom-left {
+    bottom: 15%;
+    left: 15%;
+}
+
+.module.bottom-right {
+    bottom: 15%;
+    right: 15%;
+}
+
+/* 模块内容容器 */
+.module-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;  /* 图标和文字之间的间距 */
+    width: 100%;
+    padding: 0 30px;  /* 左右内边距 */
+}
+
+/* 图标样式优化 */
+.module-icon {
+    width: 32px;  /* 调整图标大小 */
+    height: 32px;
+    object-fit: contain;
+    flex-shrink: 0;  /* 防止图标被压缩 */
+}
+
+/* 文字容器 */
+.module-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;  /* 文字左对齐 */
+}
+
+/* 连接线 */
+.connector {
+    position: absolute;
+    background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+    height: 1px;
+}
+
+.top-left .connector,
+.top-right .connector {
+    bottom: -20px;
+    left: 0;
+    width: 100%;
+}
+
+.bottom-left .connector,
+.bottom-right .connector {
+    top: -20px;
+    left: 0;
+    width: 100%;
+}
+
+
+
+/* 动画 */
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Alpha机器人样式 */
+.alpha {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    color: var(--border-color);
+}
+
+/* 发光点样式 */
+.glow-dot {
+    fill: var(--accent-color);
+    filter: drop-shadow(0 0 8px var(--accent-color));
+}
+
+/* 动画效果 */
+@keyframes flowDash {
+    to {
+        stroke-dashoffset: -20;
+    }
+}
+
+.connection-path {
+    animation: flowDash 1s linear infinite;
+}
+
+/* 确保模块和AI中心的定位正确 */
+.content-wrapper {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ai-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+}
+
+/* 调整模块位置以对齐连接线 */
+.module.top-left {
+    left: calc(25% - 150px);
+    top: calc(25% - 50px);
+}
+
+.module.top-right {
+    right: calc(25% - 150px);
+    top: calc(25% - 50px);
+}
+
+.module.bottom-left {
+    left: calc(25% - 150px);
+    bottom: calc(25% - 50px);
+}
+
+.module.bottom-right {
+    right: calc(25% - 150px);
+    bottom: calc(25% - 50px);
+}
+
+/* 发光效果增强 */
+.connection-path {
+    stroke: var(--border-color);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* 动画时间错开 */
+.glow-dot:nth-child(2) {
+    animation-delay: -0.375s;
+}
+
+.glow-dot:nth-child(3) {
+    animation-delay: -0.75s;
+}
+
+.glow-dot:nth-child(4) {
+    animation-delay: -1.125s;
+}
+
+/* 添加 canvas 样式 */
+#matrixRain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.1; /* 调整透明度确保不影响主要内容 */
+}
+
+/* 顶部装饰样式 */
+.top-decoration {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 180px;
+    background-image: url('./assets/bg_top.png');
+    background-size: 100% auto;
+    background-position: top center;
+    background-repeat: no-repeat;
+    z-index: 10;
+    pointer-events: none;
+}
+
+/* Logo 容器样式 */
+.logo-container {
+    position: absolute;
+    top: calc(50% - 36px);
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 11;
+    pointer-events: auto;
+}
+
+/* 添加图标样式 */
+.module {
+    /* 现有样式保持不变 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* 添加间距 */
+}
+
+.module-icon {
+    width: 40px;  /* 设置图标大小 */
+    height: 40px;
+    object-fit: contain;
+    margin-bottom: 5px;
+}
+
+/* 调整文字位置以适应图标 */
+.module h3 {
+    margin: 0;
+}
+
+.module p {
+    margin: 0;
+}
+
+/* 边框图标样式 */
+.border-icon {
+    position: absolute;
+    width: 128px;  /* 再放大199%，约等于原来的64px * 2 */
+    height: 128px;
+    object-fit: contain;
+}
+
+/* 左侧模块的图标位置 */
+.module.top-left .border-icon {
+    right: -64px;  /* 调整偏移以适应新尺寸 */
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.module.bottom-left .border-icon {
+    right: -64px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* 右侧模块的图标位置 */
+.module.top-right .border-icon {
+    left: -64px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.module.bottom-right .border-icon {
+    left: -64px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* 移除原来的模块内部图标相关样式 */
+.module-icon {
+    display: none;
+}
+
+/* 右侧模块的文字对齐方式 */
+.module.top-right .module-content,
+.module.bottom-right .module-content {
+    justify-content: flex-end;  /* 内容靠右对齐 */
+    padding-left: 60px;  /* 左侧留出空间避免被图标遮挡 */
+}
+
+.module.top-right .module-text,
+.module.bottom-right .module-text {
+    align-items: flex-end;  /* 文字右对齐 */
+    text-align: right;  /* 文字内容右对齐 */
+}
+
+/* 左侧模块保持原样 */
+.module.top-left .module-content,
+.module.bottom-left .module-content {
+    justify-content: flex-start;
+    padding-right: 60px;  /* 确保右侧有足够空间 */
+}
+
+.module.top-left .module-text,
+.module.bottom-left .module-text {
+    align-items: flex-start;
+    text-align: left;
+}
+
+/* 添加左右背景装饰 */
+.background-decoration {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.bg-left {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 600px;  /* 根据实际图片调整 */
+    width: auto;
+}
+
+.bg-right {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 600px;  /* 根据实际图片调整 */
+    width: auto;
+}
+
+/* 底部装饰样式 */
+.bottom-decoration {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 120px;  /* 与顶部装饰保持一致 */
+    background-image: url('./assets/bg_bottom.png');
+    background-size: cover;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    z-index: 10;
+    pointer-events: none;
+}
+
+/* 更新连接线样式 */
+.connection-path {
+    fill: none;
+    stroke: #06FBFE;
+    stroke-width: 2px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* 添加不同的动画速度 */
+.connection-path.module-to-module {
+    animation: dash 25s linear infinite;  /* 稍微慢一点的速度 */
+}
+
+.connection-path.module-to-ai {
+    animation: dash 20s linear infinite;  /* 保持原来的速度 */
+}
+
+/* 添加对角线连接的特殊样式 */
+.connection-path.diagonal {
+    animation: dash 30s linear infinite;  /* 稍慢的动画速度 */
+    stroke-dasharray: 8 4;  /* 稍大的虚线间隔 */
+}
+
+/* 添加垂直连接的特殊样式 */
+.connection-path.vertical {
+    animation: dash 25s linear infinite;  /* 适中的动画速度 */
+    stroke-dasharray: 6 3;  /* 保持一致的虚线样式 */
+}
+
+/* 确保连接线样式正确 */
+.connection-path {
+    fill: none;
+    stroke: #06FBFE;
+    stroke-width: 2px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.connection-path.module-to-module {
+    animation: dash 25s linear infinite;
+}
+
+@keyframes dash {
+    to {
+        stroke-dashoffset: -1000;
+    }
+}
+
+/* 添加垂直连接线的特殊样式 */
+.connection-path.vertical-connection {
+    opacity: 0.2;  /* 降低不透明度 */
+    stroke-width: 1.5px;  /* 稍微细一点的线条 */
+    stroke-dasharray: 4 4;  /* 更密集的虚线 */
+    animation: dash 30s linear infinite;  /* 稍慢的动画 */
+}
+
+/* 图标连接线的特殊样式 */
+.connection-path.icon-connection {
+    opacity: 0.4;
+    stroke-width: 1.5px;
+    stroke-dasharray: 13 5;
+    animation: dash 35s linear infinite;
+}
+
+/* 添加箭头标记定义 */
+@keyframes dash {
+    to {
+        stroke-dashoffset: -1000;
+    }
+}
+
+/* 定义箭头标记 */
+.connections {
+    /* 添加箭头定义 */
+    marker-end: url(#arrowhead);
+}
+
+.connection-path {
+    fill: none;
+    stroke: #06FBFE;
+    stroke-width: 2px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    marker-end: none;
+    marker-mid: none;
+    marker-start: none;
+}
+
+.connection-path.icon-connection {
+    opacity: 0.4;
+    stroke-width: 1.5px;
+    stroke-dasharray: 3 5;
+    animation: dash 35s linear infinite;
+}
+
+
+
+/* 保持原有的连接线样式 */
+.connection-path.icon-connection {
+    opacity: 0.4;
+    stroke-width: 1.5px;
+    stroke-dasharray: 3 5;
+    animation: dash 35s linear infinite;
+}
+
+/* 添加箭头动画 */
+@keyframes moveArrow {
+    0% {
+        offset-distance: 0%;
+    }
+    100% {
+        offset-distance: 100%;
+    }
+}
+
+.arrow-symbol {
+    fill: #06FBFE;
+    opacity: 0.8;
+    width: 10px;
+    height: 7px;
+    offset-rotate: auto;
+    animation: moveArrow 3s linear infinite;
+}
+
+/* 移动箭头的样式 */
+.moving-arrow {
+    fill: #06FBFE;
+    opacity: 0.8;
+}
+
+/* 保持原有连接线样式 */
+.connection-path {
+    fill: none;
+    stroke: #06FBFE;
+    stroke-width: 2px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+
+@keyframes flow {
+    to {
+        stroke-dashoffset: -20;
+    }
+}
+
+/* 箭头样式 */
+.arrow {
+    fill: #06FBFE;
+    stroke: none;
+    opacity: 0.8;
+}
+
+/* 箭头动画效果 */
+.connection-path {
+    fill: none;
+    stroke: #06FBFE;
+    stroke-width: 2px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+
+@keyframes flow {
+    to {
+        stroke-dashoffset: -20;
+    }
+}
+
+/* 箭头样式 */
+.arrow {
+    fill: #06FBFE;
+    stroke: none;
+    opacity: 0.8;
+}
+
+/* 箭头动画效果 */
+.connection-path {
+    fill: none;
+    stroke: #06FBFE;
+    stroke-width: 2px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+
+@keyframes flowArrow {
+    0% {
+        stroke-dashoffset: 24;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* 移除之前的箭头相关样式 */
+
+.connection-path.vertical {
+    opacity: 0.4;
+    stroke-width: 1.5px;
+    stroke-dasharray: 12 12;
+    animation: flow 2s linear infinite;
+}
+
+@keyframes flow {
+    from {
+        stroke-dashoffset: 24;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+
+.connection-path {
+    fill: none;
+    stroke: #06FBFE;
+    stroke-width: 2px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.connection-path.vertical {
+    opacity: 0.4;
+    stroke-width: 1.5px;
+    stroke-dasharray: 4 4;
+}
+
+
+.connection-path.vertical {
+    opacity: 0.4;
+    stroke-width: 1.5px;
+    stroke-dasharray: 4 4;
+}
+
+
+
+
+.ai-core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.5); /* 初始缩放 50% */
+    width: 384px;
+    height: 384px;
+    cursor: pointer;
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ai-core.activated {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* 背景装饰初始状态 */
+.background-decoration {
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.background-decoration.show {
+    opacity: 1;
+}
+
+/* 模块动画效果 */
+.floating-modules .module {
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.floating-modules.show .module {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* 为每个模块设置不同的动画延迟和起始位置 */
+.floating-modules .module.top-left {
+    transform: translate(-50px, -50px) scale(0.8);
+}
+
+.floating-modules .module.top-right {
+    transform: translate(50px, -50px) scale(0.8);
+}
+
+.floating-modules .module.bottom-left {
+    transform: translate(-50px, 50px) scale(0.8);
+}
+
+.floating-modules .module.bottom-right {
+    transform: translate(50px, 50px) scale(0.8);
+}
+
+/* 模块显示时的最终位置 */
+.floating-modules.show .module {
+    transform: translate(0, 0) scale(1);
+}
+
+/* 连接线动画 */
+.connections {
+    opacity: 0;
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    transition: opacity 0.6s ease-in-out;
+}
+
+.connections.show {
+    opacity: 1;
+    animation: drawLines 1.5s ease-out forwards;
+}
+
+@keyframes drawLines {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* Logo圆环组合的样式 */
+.logo-circles {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform: scale(0.5); /* 初始缩放50% */
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.logo-circle {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.logo-circle.outer {
+    width: 260%;
+    height: 260%;
+    animation: rotate 10s linear infinite, outer-glow 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 10px rgba(255, 0, 255, 0.4));
+}
+
+.logo-circle.inner {
+    width: 160%;
+    height: 160%;
+    animation: rotate-reverse 8s linear infinite, inner-glow 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 12px rgba(255, 0, 255, 0.6))
+           drop-shadow(0 0 20px rgba(255, 0, 255, 0.4));
+}
+
+/* 文字logo位置调整 */
+.logo-text {
+    position: absolute;
+    top: 640px;  /* 将文字放在圆环底部 */
+    left: 50%;
+    transform: translate(-70%, calc(50%)); /* 在圆心位置的基础上向下偏移50px */
+}
+
+/* 旋转动画 */
+@keyframes rotate {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes rotate-reverse {
+    from { transform: translate(-50%, -50%) rotate(360deg); }
+    to { transform: translate(-50%, -50%) rotate(0deg); }
+}
+
+
+/* 圆环发光动画 */
+@keyframes outer-glow {
+    0% {
+        filter: drop-shadow(0 0 10px rgba(255, 0, 255, 0.4));
+    }
+    50% {
+        filter: drop-shadow(0 0 20px rgba(255, 0, 255, 0.6))
+               drop-shadow(0 0 30px rgba(255, 0, 255, 0.3));
+    }
+    100% {
+        filter: drop-shadow(0 0 10px rgba(255, 0, 255, 0.4));
+    }
+}
+
+@keyframes inner-glow {
+    0% {
+        filter: drop-shadow(0 0 8px rgba(255, 0, 255, 0.5));
+    }
+    50% {
+        filter: drop-shadow(0 0 15px rgba(255, 0, 255, 0.7))
+               drop-shadow(0 0 25px rgba(255, 0, 255, 0.4));
+    }
+    100% {
+        filter: drop-shadow(0 0 8px rgba(255, 0, 255, 0.5));
+    }
+}
+
+/* 激活状态 */
+.ai-core.activated .logo-circles {
+    transform: scale(1);
+}
+
+/* 确保背景装饰初始隐藏 */
+.background-decoration,
+.top-decoration,
+.bottom-decoration {
+    position: fixed;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+    pointer-events: none;
+}
+
+/* 顶部装饰 */
+.top-decoration {
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+/* 底部装饰 */
+.bottom-decoration {
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    background-image: url('./assets/bg_bottom.png');
+    background-position: bottom center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 150px; /* 根据实际图片调整 */
+}
+
+/* 显示状态 */
+.background-decoration.show,
+.top-decoration.show,
+.bottom-decoration.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 确保隐藏状态正确 */
+.hidden {
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* 添加新的过渡样式 */
+.logo-circles {
+    /* 保持原有样式 */
+    opacity: 1;
+    transition: opacity 0.8s ease-out;
+}
+
+.ai-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200%;
+    height: 200%;
+    opacity: 0;
+    transition: opacity 0.8s ease-in;
+}
+
+.ai-icon.hidden {
+    opacity: 0;
+}
+
+/* 确保过渡效果平滑 */
+.background-decoration,
+.floating-modules,
+.connections {
+    transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
+}
+
+/* 背景装饰样式 */
+.background-decoration {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.bg-left {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 600px;  /* 根据实际图片调整 */
+    width: auto;
+}
+
+.bg-right {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 600px;  /* 根据实际图片调整 */
+    width: auto;
+}
+
+/* 隐藏状态 */
+.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* 显示状态 */
+.show {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* AI 模块悬停效果 */
+.ai-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200%;
+    height: 200%;
+    opacity: 0;
+    transition: opacity 0.8s ease-in, filter 0.3s ease-in-out;
+}
+
+.ai-icon:hover {
+    filter: drop-shadow(0 0 15px rgba(255, 0, 255, 0.6))
+           drop-shadow(0 0 25px rgba(255, 0, 255, 0.4));
+    animation: ai-breath 3s ease-in-out infinite;
+}
+
+@keyframes ai-breath {
+    0% {
+        filter: drop-shadow(0 0 15px rgba(255, 0, 255, 0.4))
+               drop-shadow(0 0 25px rgba(255, 0, 255, 0.2));
+    }
+    50% {
+        filter: drop-shadow(0 0 20px rgba(255, 0, 255, 0.7))
+               drop-shadow(0 0 35px rgba(255, 0, 255, 0.5));
+    }
+    100% {
+        filter: drop-shadow(0 0 15px rgba(255, 0, 255, 0.4))
+               drop-shadow(0 0 25px rgba(255, 0, 255, 0.2));
+    }
+}
+
+/* 移除模块的光韵效果，仅保留基本的悬停缩放 */
+.module {
+    transition: transform 0.3s ease-in-out;
+}
+
+.module:hover {
+    transform: scale(1.05);
+}
+
+/* 移除边框图标的光韵效果 */
+.module:hover .border-icon {
+    filter: none;
+}
+
+/* 移除文字的光韵效果 */
+.module:hover h3,
+.module:hover p {
+    text-shadow: none;
+}
+
+
+/* 随机文字样式 */
+.floating-text {
+    position: fixed;
+    color: rgba(6, 251, 254, 0.8);
+    pointer-events: none;
+    font-size: 16px;
+    white-space: nowrap;
+    opacity: 0;
+    animation: floatAndFade 4s ease-out forwards;
+}
+
+@keyframes floatAndFade {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    20% {
+        opacity: 0.3;
+    }
+    80% {
+        opacity: 0.3;
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+/* AI 图标悬停动画 */
+.ai-icon:hover {
+    animation: gentle-rotate 1s ease-in-out;
+}
+
+@keyframes gentle-rotate {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    25% {
+        transform: translate(-50%, -50%) rotate(-10deg);
+    }
+    75% {
+        transform: translate(-50%, -50%) rotate(10deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+}
+
+/* 模块图标容器 */
+.module .border-icon {
+    position: absolute;
+    width: 128px;
+    height: 128px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: all 0.3s ease-in-out;
+    transform-origin: center center; /* 确保从中心旋转 */
+}
+
+/* 左侧模块的图标位置 */
+.module.top-left .border-icon,
+.module.bottom-left .border-icon {
+    right: -64px;
+}
+
+/* 右侧模块的图标位置 */
+.module.top-right .border-icon,
+.module.bottom-right .border-icon {
+    left: -64px;
+}
+
+/* 悬停时的旋转和光韵效果 */
+.module:hover .border-icon {
+    animation: gentle-module-rotate 1s ease-in-out, module-breath 3s ease-in-out infinite;
+}
+
+/* 温和的旋转动画 */
+@keyframes gentle-module-rotate {
+    0% {
+        transform: translateY(-50%) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-50%) rotate(-8deg);
+    }
+    75% {
+        transform: translateY(-50%) rotate(8deg);
+    }
+    100% {
+        transform: translateY(-50%) rotate(0deg);
+    }
+}
+
+/* 呼吸光韵效果 */
+@keyframes module-breath {
+    0% {
+        filter: drop-shadow(0 0 10px rgba(255, 0, 255, 0.3))
+               drop-shadow(0 0 15px rgba(255, 0, 255, 0.2));
+    }
+    50% {
+        filter: drop-shadow(0 0 20px rgba(255, 0, 255, 0.5))
+               drop-shadow(0 0 30px rgba(255, 0, 255, 0.3));
+    }
+    100% {
+        filter: drop-shadow(0 0 10px rgba(255, 0, 255, 0.3))
+               drop-shadow(0 0 15px rgba(255, 0, 255, 0.2));
+    }
+}
