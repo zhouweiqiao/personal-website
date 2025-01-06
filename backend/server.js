@@ -1,9 +1,13 @@
+require('dotenv').config();
+
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
+const chatRoutes = require('./routes/chatRoutes');
+const zhipuRoutes = require('./routes/zhipu');
 
 const app = express();
 
@@ -19,6 +23,9 @@ const upload = multer({
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// 添加智谱路由
+app.use('/api/zhipu', zhipuRoutes);
 
 // MySQL 连接配置
 const connection = mysql.createConnection({
@@ -247,6 +254,9 @@ app.post('/api/register', async (req, res) => {
         res.status(500).json({ success: false, message: '服务器错误' });
     }
 });
+
+// 添加聊天路由
+app.use('/api', chatRoutes);
 
 // 启动服务器
 const PORT = 3001;

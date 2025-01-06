@@ -38,6 +38,8 @@ function activateTransition() {
 
     console.log('Activating transition...');
 
+   
+
     // 获取需要的元素
     logoCircles = document.querySelector('.logo-circles');
     aiIcon = document.querySelector('.ai-icon');
@@ -52,8 +54,22 @@ function activateTransition() {
         logoCircles.style.opacity = '0';
         logoCircles.style.transition = 'opacity 0.8s ease-out';
     }
+    
 
     setTimeout(() => {
+         // 显示合作伙伴 logo
+        const partnerLogos = document.querySelector('.partner-logos');
+        if (partnerLogos) {
+            console.log('partnerLogos', partnerLogos);
+            partnerLogos.classList.remove('hidden');
+            // 显示每个 logo 图片
+            const logoImages = partnerLogos.querySelectorAll('img');
+            logoImages.forEach(img => {
+                img.style.visibility = 'visible';
+                img.style.opacity = '1';
+            });
+        }
+        
         if (logoCircles) {
             logoCircles.style.display = 'none';
         }
@@ -555,6 +571,14 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         initialize();
     }
+
+    // 添加 Alpha logo 点击事件
+    const alphaLogo = document.querySelector('.partner-logos img[alt="Alpha"]');
+    if (alphaLogo) {
+        alphaLogo.addEventListener('click', function() {
+            window.location.href = './pages/alpha.html';
+        });
+    }
 });
 
   // 处理登录成功
@@ -562,6 +586,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // 设置登录态
     localStorage.setItem('isLoggedIn', 'true');
     localStorage.setItem('username', username);
+    
+
     // 隐藏登录框
     hideLoginModal();
     // 创建用户控制区域
@@ -569,6 +595,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 触发动画
     activateTransition();
 }
+
 
 // 隐藏登录框
 function hideLoginModal() {
@@ -672,6 +699,11 @@ function handleSuccessfulLogin(username) {
     loginModal.classList.add('hidden');
     document.getElementById('logoutButton').style.display = 'block';
     
+    alert(1111);
+    
+
+    
+    /*
     // 添加声纹注册按钮
     const voiceprintButton = document.createElement('button');
     voiceprintButton.id = 'voiceprintButton';
@@ -685,6 +717,7 @@ function handleSuccessfulLogin(username) {
     `;
     voiceprintButton.onclick = registerVoiceprint;
     document.body.appendChild(voiceprintButton);
+    */
     
     activateTransition();
 }
@@ -911,3 +944,4 @@ function createLoginModal() {
 
     return loginModal;
 } 
+
