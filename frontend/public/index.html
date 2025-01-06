@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDM Explorer</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <!-- 背景装饰 -->
+    <div class="background-decoration hidden">
+        <img src="./assets/home-left.png" alt="Left Decoration" class="bg-left">
+        <img src="./assets/home-right.png" alt="Right Decoration" class="bg-right">
+    </div>
+    
+    <!-- 顶部装饰和 logo -->
+    <div class="top-decoration hidden">
+        <div class="logo-container">
+            <img src="./assets/logo.png" alt="Logo" class="logo">
+        </div>
+    </div>
+
+    <!-- 底部装饰 -->
+    <div class="bottom-decoration hidden"></div>
+
+    <!-- 矩阵背景 -->
+    <canvas id="matrixRain"></canvas>
+
+    <main class="content-wrapper">
+        <!-- AI中心 -->
+        <div class="ai-center">
+            <div class="ai-core" id="aiCore">
+                <div class="logo-circles">
+                    <img src="./assets/logo-circle-outer.png" alt="Outer Circle" class="logo-circle outer">
+                    <img src="./assets/logo-circle-inner.png" alt="Inner Circle" class="logo-circle inner">
+                    <img src="./assets/logo-text.png" class="logo-text" alt="Logo Text">
+                </div>
+            </div>
+        </div>
+
+        <!-- 模块容器 -->
+        <div class="container">
+            <!-- 连接线 SVG -->
+            <svg class="connections hidden">
+                <!-- SVG content will be added here -->
+            </svg>
+            
+            <!-- 四个模块 -->
+            <div class="floating-modules hidden">
+                <div class="module top-left">
+                    <img src="./assets/icon_database.png" alt="Database" class="border-icon">
+                    <div class="module-content">
+                        <div class="module-text">
+                            <h3>材料数据库</h3>
+                            <p>Material Database</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="module top-right">
+                    <img src="./assets/icon_simulation.png" alt="Simulation" class="border-icon">
+                    <div class="module-content">
+                        <div class="module-text">
+                            <h3>跨尺度模拟</h3>
+                            <p>Cross Scale Simulation</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="module bottom-left">
+                    <img src="./assets/icon_workflow.png" alt="Workflow" class="border-icon">
+                    <div class="module-content">
+                        <div class="module-text">
+                            <h3>高通量计算工作流</h3>
+                            <p>HPT Computing Workflow</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="module bottom-right">
+                    <img src="./assets/icon_preparation.png" alt="Preparation" class="border-icon">
+                    <div class="module-content">
+                        <div class="module-text">
+                            <h3>高通量表征与制备</h3>
+                            <p>HTP Characterization and Preparation</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/random-numbers.js"></script>
+    <script src="js/matrix.js"></script>
+    <script src="js/connections.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
