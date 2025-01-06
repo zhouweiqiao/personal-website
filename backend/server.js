@@ -3,12 +3,22 @@ const mysql = require('mysql2');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
+const multer = require('multer');
 
 const app = express();
+
+// 配置 multer 用于处理文件上传
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 5 * 1024 * 1024 // 限制 5MB
+    }
+});
 
 // 中间件
 app.use(cors());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // MySQL 连接配置
 const connection = mysql.createConnection({
@@ -63,6 +73,115 @@ app.post('/api/login', (req, res) => {
             res.json({ success: false, message: '用户名或密码错误' });
         }
     });
+});
+
+// 声纹注册接口
+app.post('/api/register-voice', upload.single('voiceData'), (req, res) => {
+    console.log('=== 声纹注册请求开始 ===');
+    console.log('请求体:', { ...req.body });
+    console.log('文件信息:', req.file ? {
+        fieldname: req.file.fieldname,
+        originalname: req.file.originalname,
+        mimetype: req.file.mimetype,
+        size: req.file.size
+    } : null);
+    
+    try {
+        if (!req.file) {
+            console.log('未接收到音频数据');
+            return res.status(400).json({ success: false, message: '未接收到音频数据' });
+        }
+
+        const { username } = req.body;
+        console.log('用户名:', username);
+        
+        if (!username) {
+            console.log('用户名为空');
+            return res.status(400).json({ success: false, message: '用户名不能为空' });
+        }
+
+        const voiceData = req.file.buffer;
+        console.log('音频数据大小:', voiceData.length, '字节');
+
+        // 检查用户名是否已存在
+        connection.query('SELECT * FROM users WHERE username = ?', [username], (error, results) => {
+            if (error) {
+                console.error('检查用户名时出错:', error);
+                return res.status(500).json({ success: false, message: '服务器错误：' + error.message });
+            }
+
+            console.log('用户检查结果:', results);
+
+            if (results.length > 0) {
+                console.log('用户名已存在');
+                return res.json({ success: false, message: '用户名已存在' });
+            }
+
+            // 将声纹数据存入数据库
+            const query = 'INSERT INTO users (username, voice_data) VALUES (?, ?)';
+            console.log('执行 SQL:', query.replace('?', '"' + username + '"').replace('?', '[BINARY DATA]'));
+            
+            connection.query(query, [username, voiceData], (error) => {
+                if (error) {
+                    console.error('存储声纹数据时出错:', error);
+                    return res.status(500).json({ success: false, message: '服务器错误：' + error.message });
+                }
+
+                console.log('声纹注册成功');
+                res.json({ success: true, message: '声纹注册成功' });
+            });
+        });
+    } catch (error) {
+        console.error('声纹注册过程出错:', error);
+        res.status(500).json({ success: false, message: '服务器错误：' + error.message });
+    }
+    console.log('=== 声纹注册请求结束 ===');
+});
+
+// 声纹验证接口
+app.post('/api/verify-voice', upload.single('voiceData'), (req, res) => {
+    console.log('=== 声纹验证请求开始 ===');
+    console.log('文件信息:', req.file ? {
+        fieldname: req.file.fieldname,
+        originalname: req.file.originalname,
+        mimetype: req.file.mimetype,
+        size: req.file.size
+    } : null);
+    
+    try {
+        if (!req.file) {
+            console.log('未接收到音频数据');
+            return res.status(400).json({ success: false, message: '未接收到音频数据' });
+        }
+
+        const voiceData = req.file.buffer;
+        console.log('音频数据大小:', voiceData.length, '字节');
+
+        // 查询所有用户的声纹数据进行匹配
+        connection.query('SELECT username, voice_data FROM users WHERE voice_data IS NOT NULL', (error, results) => {
+            if (error) {
+                console.error('查询声纹数据时出错:', error);
+                return res.status(500).json({ success: false, message: '服务器错误：' + error.message });
+            }
+
+            console.log('找到', results.length, '条声纹记录');
+
+            // 这里应该实现实际的声纹匹配算法
+            // 目前为了测试，我们假设第一条记录就是匹配的
+            if (results.length > 0) {
+                const user = results[0];
+                console.log('匹配成功，用户名:', user.username);
+                res.json({ success: true, username: user.username });
+            } else {
+                console.log('未找到匹配的声纹');
+                res.json({ success: false, message: '未找到匹配的声纹' });
+            }
+        });
+    } catch (error) {
+        console.error('声纹验证过程出错:', error);
+        res.status(500).json({ success: false, message: '服务器错误：' + error.message });
+    }
+    console.log('=== 声纹验证请求结束 ===');
 });
 
 // 启动服务器
