@@ -1392,7 +1392,7 @@ nav {
 .login-links a {
     color: rgba(6, 251, 254, 0.4);
     text-decoration: none;
-    font-size: 14px;
+    font-size: 12px;
     transition: all 0.3s ease;
 }
 
@@ -1505,24 +1505,22 @@ nav {
 .toast {
     position: fixed;
     top: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-100%);
-    background: rgba(255, 77, 79, 0.9);
-    color: white;
+    right: 20px;
     padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 14px;
-    z-index: 1000;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 4px;
     opacity: 0;
+    transform: translateY(-20px);
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    text-align: center;
-    min-width: 200px;
-    max-width: 80%;
-    pointer-events: none;
+    z-index: 9999;
+}
+
+.toast.error {
+    background-color: #f44336;
 }
 
 .toast.show {
-    transform: translateX(-50%) translateY(0);
     opacity: 1;
+    transform: translateY(0);
 }

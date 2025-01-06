@@ -184,6 +184,70 @@ app.post('/api/verify-voice', upload.single('voiceData'), (req, res) => {
     console.log('=== 声纹验证请求结束 ===');
 });
 
+// 注册接口
+app.post('/api/register', async (req, res) => {
+    const { username, name, email, password } = req.body;
+    
+    console.log('Register attempt:', { username, name, email });
+
+    // 检查必填字段
+    if (!username || !name || !email || !password) {
+        return res.status(400).json({ success: false, message: '所有字段都是必填的' });
+    }
+
+    // 验证邮箱格式
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ success: false, message: '邮箱格式不正确' });
+    }
+
+    try {
+        // 检查用户名是否已存在
+        const checkQuery = 'SELECT * FROM users WHERE username = ?';
+        connection.query(checkQuery, [username], async (error, results) => {
+            if (error) {
+                console.error('Error checking username:', error.stack);
+                return res.status(500).json({ success: false, message: '服务器错误' });
+            }
+
+            if (results.length > 0) {
+                return res.json({ success: false, message: '用户名已存在' });
+            }
+
+            // 检查邮箱是否已存在
+            const emailCheckQuery = 'SELECT * FROM users WHERE email = ?';
+            connection.query(emailCheckQuery, [email], async (error, results) => {
+                if (error) {
+                    console.error('Error checking email:', error.stack);
+                    return res.status(500).json({ success: false, message: '服务器错误' });
+                }
+
+                if (results.length > 0) {
+                    return res.json({ success: false, message: '邮箱已被注册' });
+                }
+
+                // 加密密码
+                const hashedPassword = await bcrypt.hash(password, 10);
+
+                // 插入新用户
+                const insertQuery = 'INSERT INTO users (username, name, email, password) VALUES (?, ?, ?, ?)';
+                connection.query(insertQuery, [username, name, email, hashedPassword], (error) => {
+                    if (error) {
+                        console.error('Error creating user:', error.stack);
+                        return res.status(500).json({ success: false, message: '服务器错误' });
+                    }
+
+                    console.log('Registration successful');
+                    res.json({ success: true, message: '注册成功' });
+                });
+            });
+        });
+    } catch (error) {
+        console.error('Registration error:', error);
+        res.status(500).json({ success: false, message: '服务器错误' });
+    }
+});
+
 // 启动服务器
 const PORT = 3001;
 app.listen(PORT, () => {

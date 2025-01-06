@@ -1,0 +1,18 @@
+-- 创建数据库
+CREATE DATABASE IF NOT EXISTS idm_explorer;
+USE idm_explorer;
+
+-- 创建用户表
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255),
+    voice_data LONGBLOB,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- 创建一个测试用户（密码为 test123）
+INSERT INTO users (username, password) VALUES 
+('test', '$2a$10$rPIKXCPHFGWKTK6UQJQZXONj0f7M0c8nFbFQk1TGGz3VyDQlGgOyC')
+ON DUPLICATE KEY UPDATE password = VALUES(password); 
