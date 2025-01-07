@@ -112,3 +112,235 @@ Successfully connected to database.
 [32m[nodemon] starting `node server.js`[39m
 Server is running on port 3001
 Successfully connected to database.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.
+Login attempt: { username: 'zhou' }
+Query results: [
+  {
+    id: 4,
+    username: 'zhou',
+    name: null,
+    email: null,
+    password: '$2a$10$aeLtgnjXDlK4SFpCR0GF9eJboCql/Tm2oFfvRqedUbAN.VuNuoUxa',
+    created_at: 2025-01-04T04:07:07.000Z,
+    voice_data: null
+  }
+]
+Login successful
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+node:events:491
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3001
+    at Server.setupListenHandle [as _listen2] (node:net:1463:16)
+    at listenInCluster (node:net:1511:12)
+    at Server.listen (node:net:1599:7)
+    at Function.listen (/Users/weiqiao/Desktop/test/personal-website/backend/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/weiqiao/Desktop/test/personal-website/backend/server.js:694:5)
+    at Module._compile (node:internal/modules/cjs/loader:1198:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1252:10)
+    at Module.load (node:internal/modules/cjs/loader:1076:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:911:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:81:12)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1490:8)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3001
+}
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+node:internal/modules/cjs/loader:1031
+  throw err;
+  ^
+
+Error: Cannot find module './routes/chat'
+Require stack:
+- /Users/weiqiao/Desktop/test/personal-website/backend/server.js
+    at Function.Module._resolveFilename (node:internal/modules/cjs/loader:1028:15)
+    at Function.Module._load (node:internal/modules/cjs/loader:873:27)
+    at Module.require (node:internal/modules/cjs/loader:1100:19)
+    at require (node:internal/modules/cjs/helpers:119:18)
+    at Object.<anonymous> (/Users/weiqiao/Desktop/test/personal-website/backend/server.js:9:20)
+    at Module._compile (node:internal/modules/cjs/loader:1198:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1252:10)
+    at Module.load (node:internal/modules/cjs/loader:1076:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:911:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:81:12) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [ '/Users/weiqiao/Desktop/test/personal-website/backend/server.js' ]
+}
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+/Users/weiqiao/Desktop/test/personal-website/backend/node_modules/express/lib/router/index.js:469
+      throw new TypeError('Router.use() requires a middleware function but got a ' + gettype(fn))
+      ^
+
+TypeError: Router.use() requires a middleware function but got a Object
+    at Function.use (/Users/weiqiao/Desktop/test/personal-website/backend/node_modules/express/lib/router/index.js:469:13)
+    at Function.<anonymous> (/Users/weiqiao/Desktop/test/personal-website/backend/node_modules/express/lib/application.js:227:21)
+    at Array.forEach (<anonymous>)
+    at Function.use (/Users/weiqiao/Desktop/test/personal-website/backend/node_modules/express/lib/application.js:224:7)
+    at Object.<anonymous> (/Users/weiqiao/Desktop/test/personal-website/backend/server.js:33:5)
+    at Module._compile (node:internal/modules/cjs/loader:1198:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1252:10)
+    at Module.load (node:internal/modules/cjs/loader:1076:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:911:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:81:12)
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+node:internal/modules/cjs/loader:1031
+  throw err;
+  ^
+
+Error: Cannot find module './ernie'
+Require stack:
+- /Users/weiqiao/Desktop/test/personal-website/backend/services/modelManager.js
+- /Users/weiqiao/Desktop/test/personal-website/backend/routes/chat.js
+- /Users/weiqiao/Desktop/test/personal-website/backend/server.js
+    at Function.Module._resolveFilename (node:internal/modules/cjs/loader:1028:15)
+    at Function.Module._load (node:internal/modules/cjs/loader:873:27)
+    at Module.require (node:internal/modules/cjs/loader:1100:19)
+    at require (node:internal/modules/cjs/helpers:119:18)
+    at Object.<anonymous> (/Users/weiqiao/Desktop/test/personal-website/backend/services/modelManager.js:2:22)
+    at Module._compile (node:internal/modules/cjs/loader:1198:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1252:10)
+    at Module.load (node:internal/modules/cjs/loader:1076:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:911:12)
+    at Module.require (node:internal/modules/cjs/loader:1100:19) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/Users/weiqiao/Desktop/test/personal-website/backend/services/modelManager.js',
+    '/Users/weiqiao/Desktop/test/personal-website/backend/routes/chat.js',
+    '/Users/weiqiao/Desktop/test/personal-website/backend/server.js'
+  ]
+}
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+node:internal/modules/cjs/loader:1031
+  throw err;
+  ^
+
+Error: Cannot find module './ernie'
+Require stack:
+- /Users/weiqiao/Desktop/test/personal-website/backend/services/modelManager.js
+- /Users/weiqiao/Desktop/test/personal-website/backend/routes/chat.js
+- /Users/weiqiao/Desktop/test/personal-website/backend/server.js
+    at Function.Module._resolveFilename (node:internal/modules/cjs/loader:1028:15)
+    at Function.Module._load (node:internal/modules/cjs/loader:873:27)
+    at Module.require (node:internal/modules/cjs/loader:1100:19)
+    at require (node:internal/modules/cjs/helpers:119:18)
+    at Object.<anonymous> (/Users/weiqiao/Desktop/test/personal-website/backend/services/modelManager.js:2:22)
+    at Module._compile (node:internal/modules/cjs/loader:1198:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1252:10)
+    at Module.load (node:internal/modules/cjs/loader:1076:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:911:12)
+    at Module.require (node:internal/modules/cjs/loader:1100:19) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/Users/weiqiao/Desktop/test/personal-website/backend/services/modelManager.js',
+    '/Users/weiqiao/Desktop/test/personal-website/backend/routes/chat.js',
+    '/Users/weiqiao/Desktop/test/personal-website/backend/server.js'
+  ]
+}
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+node:internal/modules/cjs/loader:1031
+  throw err;
+  ^
+
+Error: Cannot find module './ernie'
+Require stack:
+- /Users/weiqiao/Desktop/test/personal-website/backend/services/modelManager.js
+- /Users/weiqiao/Desktop/test/personal-website/backend/routes/chat.js
+- /Users/weiqiao/Desktop/test/personal-website/backend/server.js
+    at Function.Module._resolveFilename (node:internal/modules/cjs/loader:1028:15)
+    at Function.Module._load (node:internal/modules/cjs/loader:873:27)
+    at Module.require (node:internal/modules/cjs/loader:1100:19)
+    at require (node:internal/modules/cjs/helpers:119:18)
+    at Object.<anonymous> (/Users/weiqiao/Desktop/test/personal-website/backend/services/modelManager.js:2:22)
+    at Module._compile (node:internal/modules/cjs/loader:1198:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1252:10)
+    at Module.load (node:internal/modules/cjs/loader:1076:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:911:12)
+    at Module.require (node:internal/modules/cjs/loader:1100:19) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/Users/weiqiao/Desktop/test/personal-website/backend/services/modelManager.js',
+    '/Users/weiqiao/Desktop/test/personal-website/backend/routes/chat.js',
+    '/Users/weiqiao/Desktop/test/personal-website/backend/server.js'
+  ]
+}
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+Failed to register model: service.getModelInfo is not a function
+node:events:491
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3001
+    at Server.setupListenHandle [as _listen2] (node:net:1463:16)
+    at listenInCluster (node:net:1511:12)
+    at Server.listen (node:net:1599:7)
+    at Function.listen (/Users/weiqiao/Desktop/test/personal-website/backend/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/weiqiao/Desktop/test/personal-website/backend/server.js:694:5)
+    at Module._compile (node:internal/modules/cjs/loader:1198:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1252:10)
+    at Module.load (node:internal/modules/cjs/loader:1076:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:911:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:81:12)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1490:8)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3001
+}
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m

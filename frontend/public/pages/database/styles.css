@@ -68,7 +68,7 @@ body {
     display: flex;
     gap: 30px;
     align-items: center;
-    margin-left: 80px;
+    margin-left: 100px;
     margin-right: auto;
 }
 
@@ -77,73 +77,12 @@ body {
     gap: 20px;
 }
 
-/* 下拉菜单样式 */
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdown-arrow {
-    font-size: 12px;
-    margin-left: 4px;
-    opacity: 0.8;
-    display: inline-block;
-    transition: transform 0.3s ease;
-}
-
-.dropdown:hover .dropdown-arrow {
-    transform: rotate(180deg);
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background: rgba(0, 24, 50, 0.95);
-    min-width: 160px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    border: 1px solid rgba(6, 251, 254, 0.1);
-    border-top: none;
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.dropdown:hover .dropdown-content {
-    display: block;
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.dropdown-item {
-    color: rgba(255, 255, 255, 0.8);
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    font-size: 14px;
-    transition: all 0.3s;
-    border-bottom: 1px solid rgba(6, 251, 254, 0.05);
-}
-
-.dropdown-item:last-child {
-    border-bottom: none;
-}
-
-.dropdown-item:hover {
-    background: rgba(6, 251, 254, 0.1);
-    color: #06FBFE;
-    padding-left: 20px;
-}
-
 .nav-item {
     color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
     font-size: 14px;
     transition: all 0.3s;
-    padding: 20px 0;
-    display: inline-block;
+    padding: 5px 0;
 }
 
 .nav-item:hover,
@@ -159,7 +98,7 @@ body {
 
 /* 左侧导航 */
 .side-nav {
-    width: 200px;
+    width: 260px;
     background: rgba(0, 24, 50, 0.4);
     padding: 20px 0;
     border-right: 1px solid rgba(6, 251, 254, 0.1);
@@ -207,7 +146,8 @@ body {
     flex: 1;
     padding: 30px;
     overflow-y: auto;
-    background: #fff;
+    background: linear-gradient(rgba(255, 255, 255, 0.97), rgba(255, 255, 255, 0.97)),
+                url('../../assets/bg_db.jpeg') center/cover no-repeat fixed;
 }
 
 /* 数据库卡片样式 */
@@ -251,15 +191,6 @@ body {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-    width: auto;
-    height: auto;
-}
-
-/* SVG 图片特殊处理 */
-.card-icon img[src$=".svg"] {
-    width: 100%;
-    height: 100%;
-    padding: 2px;
 }
 
 .card-content {
@@ -268,7 +199,7 @@ body {
 
 .card-content h2 {
     color: #2c3e50;
-    font-size: 16px;
+    font-size: 18px;
     margin-bottom: 8px;
     font-weight: normal;
 }
@@ -340,4 +271,143 @@ body {
     .card-icon {
         margin-bottom: 15px;
     }
+}
+
+/* 下拉菜单样式 */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-arrow {
+    display: inline-block;
+    margin-left: 4px;
+    transition: transform 0.3s ease;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.dropdown:hover .dropdown-arrow {
+    transform: rotate(180deg);
+    opacity: 1;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 24, 50, 0.98);
+    min-width: 180px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    border: 1px solid rgba(6, 251, 254, 0.15);
+    border-radius: 6px;
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: top center;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.dropdown-content::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 12px;
+    height: 12px;
+    background: rgba(0, 24, 50, 0.98);
+    border-left: 1px solid rgba(6, 251, 254, 0.15);
+    border-top: 1px solid rgba(6, 251, 254, 0.15);
+}
+
+.dropdown-item {
+    color: rgba(255, 255, 255, 0.85);
+    padding: 12px 20px;
+    text-decoration: none;
+    display: block;
+    font-size: 14px;
+    transition: all 0.25s ease;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.dropdown-item:hover {
+    background: rgba(6, 251, 254, 0.08);
+    color: #06FBFE;
+}
+
+.dropdown-item:not(:last-child) {
+    border-bottom: 1px solid rgba(6, 251, 254, 0.08);
+}
+
+/* 搜索和筛选区域样式 */
+.search-section {
+    margin: 20px 0;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.search-btn {
+    padding: 10px 20px;
+    background: #06FBFE;
+    color: #001832;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.search-btn:hover {
+    background: #00e6e9;
+}
+
+.filter-options {
+    display: flex;
+    gap: 15px;
+}
+
+.filter-options select {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 14px;
+    background: white;
+}
+
+/* 数据展示区域样式 */
+.data-grid {
+    margin-top: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    padding: 20px;
+    min-height: 400px;
 }
