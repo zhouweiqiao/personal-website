@@ -20,6 +20,324 @@ const avatars = {
     ]
 };
 
+// 加载用户的会话列表
+async function loadUserConversations() {
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('No token found');
+            return;
+        }
+
+        const response = await fetch('http://localhost:3001/api/conversations', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to load conversations');
+        }
+
+        const conversations = await response.json();
+        
+        // 清空现有会话列表
+        conversationList.innerHTML = '';
+        
+        // 添加"新建会话"按钮
+        const newChatButton = document.createElement('div');
+        newChatButton.className = 'conversation-item new-chat';
+        newChatButton.innerHTML = `
+            <div class="conversation-content">
+                <div class="conversation-title">新建会话</div>
+            </div>
+        `;
+        newChatButton.onclick = () => {
+            currentConversationId = null;
+            clearChat();
+            document.querySelectorAll('.conversation-item').forEach(i => {
+                i.classList.remove('active');
+            });
+            newChatButton.classList.add('active');
+        };
+        conversationList.appendChild(newChatButton);
+
+        // 按日期对会话进行分组
+        const groupedConversations = {
+            '今天': [],
+            '昨天': [],
+            '更早': {}
+        };
+
+        // 获取今天和昨天的日期（去掉时间部分）
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        conversations.forEach(conversation => {
+            if (!conversation.formatted_date) return;
+
+            try {
+                // 使用 formatted_date 字段，它已经是本地时间格式
+                const datePart = conversation.formatted_date.split(' ')[0]; // 获取日期部分
+                const date = new Date(datePart);
+
+                if (isNaN(date.getTime())) return;
+
+                // 去掉时间部分进行比较
+                const compareDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+                
+                if (compareDate.getTime() === today.getTime()) {
+                    groupedConversations['今天'].push(conversation);
+                } else if (compareDate.getTime() === yesterday.getTime()) {
+                    groupedConversations['昨天'].push(conversation);
+                } else {
+                    // 对于更早的日期，按具体日期分组
+                    const dateKey = `${date.getMonth() + 1}月${date.getDate()}日`;
+                    if (!groupedConversations['更早'][dateKey]) {
+                        groupedConversations['更早'][dateKey] = [];
+                    }
+                    groupedConversations['更早'][dateKey].push(conversation);
+                }
+            } catch (error) {
+                console.error('Error processing date for conversation:', conversation.id, error);
+            }
+        });
+
+        // 添加今天的会话
+        if (groupedConversations['今天'].length > 0) {
+            const todayGroup = document.createElement('div');
+            todayGroup.className = 'time-group';
+            todayGroup.textContent = '今天';
+            conversationList.appendChild(todayGroup);
+
+            groupedConversations['今天'].forEach(conversation => {
+                const item = createConversationItem(conversation);
+                conversationList.appendChild(item);
+            });
+        }
+
+        // 添加昨天的会话
+        if (groupedConversations['昨天'].length > 0) {
+            const yesterdayGroup = document.createElement('div');
+            yesterdayGroup.className = 'time-group';
+            yesterdayGroup.textContent = '昨天';
+            conversationList.appendChild(yesterdayGroup);
+
+            groupedConversations['昨天'].forEach(conversation => {
+                const item = createConversationItem(conversation);
+                conversationList.appendChild(item);
+            });
+        }
+
+        // 添加更早的会话，按日期排序
+        const earlierDates = Object.keys(groupedConversations['更早']).sort((a, b) => {
+            const dateA = new Date(a.replace(/[月日]/g, '/'));
+            const dateB = new Date(b.replace(/[月日]/g, '/'));
+            return dateB - dateA; // 降序排列
+        });
+
+        earlierDates.forEach(dateKey => {
+            const dateGroup = document.createElement('div');
+            dateGroup.className = 'time-group';
+            dateGroup.textContent = dateKey;
+            conversationList.appendChild(dateGroup);
+
+            groupedConversations['更早'][dateKey].forEach(conversation => {
+                const item = createConversationItem(conversation);
+                conversationList.appendChild(item);
+            });
+        });
+
+    } catch (error) {
+        console.error('Error loading conversations:', error);
+    }
+}
+
+// 创建会话列表项
+function createConversationItem(conversation) {
+    const item = document.createElement('div');
+    item.className = 'conversation-item';
+    if (conversation.id === currentConversationId) {
+        item.classList.add('active');
+    }
+
+    item.innerHTML = `
+        <div class="conversation-icon">
+            <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14 2H2C1.45 2 1 2.45 1 3V11C1 11.55 1.45 12 2 12H5V15L8 12H14C14.55 12 15 11.55 15 11V3C15 2.45 14.55 2 14 2ZM14 11H7.667L6 12.667V11H2V3H14V11Z" fill="currentColor"/>
+            </svg>
+        </div>
+        <div class="conversation-content">
+            <div class="conversation-title">${conversation.title || '未命名会话'}</div>
+        </div>
+        <button class="delete-button">×</button>
+    `;
+
+    // 点击会话项加载对话内容
+    item.onclick = async () => {
+        if (currentConversationId !== conversation.id) {
+            currentConversationId = conversation.id;
+            await loadConversation(conversation.id);
+            
+            // 更新活动状态
+            document.querySelectorAll('.conversation-item').forEach(i => {
+                i.classList.remove('active');
+            });
+            item.classList.add('active');
+        }
+    };
+
+    // 删除会话
+    const deleteButton = item.querySelector('.delete-button');
+    deleteButton.onclick = async (e) => {
+        e.stopPropagation();
+        if (confirm('确定要删除这个会话吗？')) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`http://localhost:3001/api/conversations/${conversation.id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    // 如果删除的是当前会话，清空聊天区域
+                    if (currentConversationId === conversation.id) {
+                        currentConversationId = null;
+                        clearChat();
+                    }
+                    // 重新加载会话列表
+                    await loadUserConversations();
+                }
+            } catch (error) {
+                console.error('Error deleting conversation:', error);
+            }
+        }
+    };
+
+    return item;
+}
+
+// 格式化日期（用于分组显示）
+function formatDate(dateString) {
+    if (!dateString) {
+        console.log('Empty date string received');
+        return '未知日期';
+    }
+    
+    try {
+        console.log('Formatting date string:', dateString);
+        const date = new Date(dateString);
+        console.log('Parsed date object:', date);
+        
+        if (isNaN(date.getTime())) {
+            console.log('Invalid date detected');
+            return '未知日期';
+        }
+        
+        const formattedDate = `${date.getMonth() + 1}月${date.getDate()}日`;
+        console.log('Formatted result:', formattedDate);
+        return formattedDate;
+    } catch (error) {
+        console.error('Error formatting date:', error);
+        return '未知日期';
+    }
+}
+
+// 格式化时间（用于会话项显示）
+function formatTime(dateString) {
+    if (!dateString) return '';
+    
+    try {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return '';
+        
+        // 转换为本地时间
+        const localDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+        const hours = localDate.getHours().toString().padStart(2, '0');
+        const minutes = localDate.getMinutes().toString().padStart(2, '0');
+        return `${hours}:${minutes}`;
+    } catch (error) {
+        console.error('Error formatting time:', error);
+        return '';
+    }
+}
+
+// 加载特定会话的内容
+async function loadConversation(conversationId) {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:3001/api/conversations/${conversationId}/messages`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to load conversation');
+        }
+
+        const messages = await response.json();
+        
+        // 清空当前消息显示
+        chatMessages.innerHTML = '';
+        messageHistory = [];
+
+        // 显示消息历史
+        messages.forEach(message => {
+            appendMessage(message.content, message.role === 'user');
+            messageHistory.push({
+                role: message.role,
+                content: message.content
+            });
+        });
+
+        // 滚动到底部
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    } catch (error) {
+        console.error('Error loading conversation:', error);
+        appendMessage('加载会话失败，请重试', false);
+    }
+}
+
+// 初始化函数
+async function init() {
+    console.log('Initializing chat...');
+    
+    // 获取 DOM 元素
+    chatMessages = document.getElementById('chatMessages');
+    chatInput = document.getElementById('chatInput');
+    sendButton = document.getElementById('sendButton');
+    clearButton = document.getElementById('clearButton');
+    conversationList = document.getElementById('conversationList');
+    
+    // 检查元素是否存在
+    if (!chatInput || !sendButton || !clearButton || !chatMessages || !conversationList) {
+        console.error('Required elements not found');
+        return;
+    }
+    
+    // 检查登录状态
+    await checkLoginStatus();
+    
+    // 加载用户会话列表
+    await loadUserConversations();
+    
+    // 绑定事件
+    sendButton.onclick = handleSendButtonClick;
+    clearButton.onclick = clearChat;
+    chatInput.onkeypress = handleEnterKey;
+    
+    // 显示欢迎消息
+    appendMessage('您好！我是 Alpha AI 助手，有什么我可以帮您的吗？', false);
+}
+
 // 随机选择一个 AI 助手头像
 function getRandomAssistantAvatar() {
     const index = Math.floor(Math.random() * avatars.assistantPool.length);
@@ -197,292 +515,11 @@ async function login() {
     }
 }
 
-// 初始化函数
-async function init() {
-    console.log('Initializing chat...');
-    
-    // 获取 DOM 元素
-    chatMessages = document.getElementById('chatMessages');
-    chatInput = document.getElementById('chatInput');
-    sendButton = document.getElementById('sendButton');
-    clearButton = document.getElementById('clearButton');
-    conversationList = document.getElementById('conversationList');
-    
-    // 检查元素是否存在
-    if (!chatInput || !sendButton || !clearButton || !chatMessages || !conversationList) {
-        console.error('Required elements not found:', {
-            chatInput: !!chatInput,
-            sendButton: !!sendButton,
-            clearButton: !!clearButton,
-            chatMessages: !!chatMessages,
-            conversationList: !!conversationList
-        });
-        return;
-    }
-    
-    console.log('DOM elements found successfully');
-    
-    // 绑定事件
-    sendButton.onclick = handleSendButtonClick;
-    clearButton.onclick = clearChat;
-    chatInput.onkeypress = handleEnterKey;
-    
-    console.log('Event listeners bound successfully');
-
-    try {
-        // 检查登录状态
-        await checkLoginStatus();
-        
-        // 加载会话列表
-        await loadConversations();
-        
-        // 如果没有正在显示的会话，显示欢迎消息
-        if (!currentConversationId) {
-            appendMessage('您好！我是 Alpha AI 助手，有什么我可以帮您的吗？', false);
-        }
-        
-        console.log('Initialization completed successfully');
-    } catch (error) {
-        console.error('Error during initialization:', error);
-        appendMessage('初始化失败，请刷新页面重试', false);
-    }
-}
-
-// 加载会话列表
-async function loadConversations() {
-    try {
-        const response = await fetch('http://localhost:3001/api/conversations', {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        });
-        
-        if (!response.ok) {
-            throw new Error('Failed to fetch conversations');
-        }
-        
-        const conversations = await response.json();
-        console.log('Loaded conversations:', conversations);
-        
-        // 清空会话列表
-        conversationList.innerHTML = '';
-        
-        // 添加新会话按钮
-        const newChatButton = document.createElement('div');
-        newChatButton.className = 'conversation-item new-chat';
-        
-        // 添加新会话图标
-        const newChatIcon = document.createElement('div');
-        newChatIcon.className = 'conversation-icon';
-        newChatIcon.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8 1V15M1 8H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>`;
-        
-        const newChatTitle = document.createElement('div');
-        newChatTitle.className = 'conversation-title';
-        newChatTitle.textContent = '新会话';
-        
-        newChatButton.appendChild(newChatIcon);
-        newChatButton.appendChild(newChatTitle);
-        
-        newChatButton.addEventListener('click', () => {
-            currentConversationId = null;
-            chatMessages.innerHTML = '';
-            messageHistory = [];
-            
-            appendMessage('您好！我是 Alpha助手，有什么我可以帮您的吗？', false);
-            
-            document.querySelectorAll('.conversation-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            newChatButton.classList.add('active');
-        });
-        conversationList.appendChild(newChatButton);
-        
-        if (!currentConversationId) {
-            newChatButton.classList.add('active');
-        }
-
-        // 按时间分组会话
-        const groupedConversations = {};
-        const now = new Date();
-        const yesterday = new Date(now);
-        yesterday.setDate(yesterday.getDate() - 1);
-
-        conversations.forEach(conversation => {
-            const date = new Date(conversation.formatted_date);
-            let groupKey;
-
-            if (date.toDateString() === now.toDateString()) {
-                groupKey = '今天';
-            } else if (date.toDateString() === yesterday.toDateString()) {
-                groupKey = '昨天';
-            } else {
-                groupKey = `${date.getMonth() + 1}月${date.getDate()}日`;
-            }
-
-            if (!groupedConversations[groupKey]) {
-                groupedConversations[groupKey] = [];
-            }
-            groupedConversations[groupKey].push(conversation);
-        });
-
-        // 按时间分组显示会话
-        Object.keys(groupedConversations).forEach(groupKey => {
-            const timeGroup = document.createElement('div');
-            timeGroup.className = 'time-group';
-            timeGroup.textContent = groupKey;
-            conversationList.appendChild(timeGroup);
-
-            groupedConversations[groupKey].forEach(conversation => {
-                const item = createConversationItem(conversation);
-                conversationList.appendChild(item);
-            });
-        });
-        
-    } catch (error) {
-        console.error('Error loading conversations:', error);
-    }
-}
-
-// 创建会话列表项
-function createConversationItem(conversation) {
-    const item = document.createElement('div');
-    item.className = 'conversation-item';
-    item.dataset.id = conversation.id;
-    
-    if (conversation.id === currentConversationId) {
-        item.classList.add('active');
-    }
-    
-    // 创建图标
-    const iconDiv = document.createElement('div');
-    iconDiv.className = 'conversation-icon';
-    iconDiv.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M14 2H2C1.45 2 1 2.45 1 3V11C1 11.55 1.45 12 2 12H5V15L8 12H14C14.55 12 15 11.55 15 11V3C15 2.45 14.55 2 14 2ZM14 11H7.667L6 12.667V11H2V3H14V11Z" fill="currentColor"/>
-    </svg>`;
-    
-    // 使用会话标题（用户的第一句话）
-    let title = conversation.title;
-    if (!title || title === '新会话') {
-        title = conversation.last_message || '新会话';
-    }
-    
-    // 限制标题长度为16个字符
-    const displayTitle = title.length > 16 ? title.substring(0, 16) + '...' : title;
-    
-    // 创建标题元素
-    const titleDiv = document.createElement('div');
-    titleDiv.className = 'conversation-title';
-    titleDiv.textContent = displayTitle;
-    
-    // 创建删除按钮
-    const deleteButton = document.createElement('button');
-    deleteButton.className = 'delete-button';
-    deleteButton.textContent = '×';
-    deleteButton.addEventListener('click', async (e) => {
-        e.stopPropagation();
-        
-        try {
-            const response = await fetch(`http://localhost:3001/api/conversations/${conversation.id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-            
-            if (!response.ok) {
-                throw new Error('Failed to delete conversation');
-            }
-            
-            if (conversation.id === currentConversationId) {
-                currentConversationId = null;
-                chatMessages.innerHTML = '';
-                messageHistory = [];
-                appendMessage('您好！我是 Alpha助手，有什么我可以帮您的吗？', false);
-            }
-            
-            await loadConversations();
-            
-        } catch (error) {
-            console.error('Error deleting conversation:', error);
-            alert('删除会话失败，请重试');
-        }
-    });
-    
-    item.appendChild(iconDiv);
-    item.appendChild(titleDiv);
-    item.appendChild(deleteButton);
-    item.addEventListener('click', () => loadConversation(conversation.id));
-    return item;
-}
-
-// 加载特定会话
-async function loadConversation(conversationId) {
-    try {
-        console.log('Loading conversation:', conversationId);
-        const response = await fetch(`http://localhost:3001/api/conversations/${conversationId}/messages`, {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        });
-        
-        if (!response.ok) {
-            throw new Error('Failed to fetch conversation messages');
-        }
-        
-        const messages = await response.json();
-        console.log('Loaded messages:', messages);
-        
-        currentConversationId = conversationId;
-        
-        // 清空当前消息
-        chatMessages.innerHTML = '';
-        messageHistory = [];
-        
-        // 移除所有活动状态
-        document.querySelectorAll('.conversation-item').forEach(item => {
-            item.classList.remove('active');
-        });
-        
-        // 添加活动状态到当前会话
-        const currentItem = document.querySelector(`.conversation-item[data-id="${conversationId}"]`);
-        if (currentItem) {
-            currentItem.classList.add('active');
-        }
-        
-        // 显示消息历史
-        messages.forEach(message => {
-            messageHistory.push({
-                role: message.role,
-                content: message.content
-            });
-            appendMessage(message.content, message.role === 'user');
-        });
-        
-        // 如果没有消息，显示欢迎消息
-        if (messages.length === 0) {
-            appendMessage('您好！我是 Alpha AI 助手，有什么我可以帮您的吗？', false);
-        }
-        
-    } catch (error) {
-        console.error('Error loading conversation:', error);
-        appendMessage('加载会话失败，请重试', false);
-    }
-}
-
 // 处理发送按钮点击
-function handleSendButtonClick() {
-    const input = document.getElementById('chatInput');
-    if (!input) {
-        console.error('Chat input not found');
-        return;
-    }
-    
-    const content = input.value.trim();
+async function handleSendButtonClick() {
+    const content = chatInput.value.trim();
     if (content) {
-        handleSendMessage(content);
+        await handleSendMessage(content);
     }
 }
 
@@ -496,36 +533,11 @@ function handleEnterKey(e) {
 
 // 处理发送消息
 async function handleSendMessage(content) {
-    const input = document.getElementById('chatInput');
-    if (!input) {
-        console.error('Chat input not found');
-        return;
-    }
-    
-    try {
-        await sendMessage(content);
-        input.value = '';
-    } catch (error) {
-        console.error('Error handling message:', error);
-        appendMessage('发送消息时发生错误：' + error.message, false);
-    }
-}
-
-// 发送消息到服务器
-async function sendMessage(content) {
-    const input = document.getElementById('chatInput');
-    const sendBtn = document.getElementById('sendButton');
-    
-    if (!content) {
-        return;
-    }
-    
     try {
         // 禁用输入和发送按钮
-        input.disabled = true;
-        sendBtn.disabled = true;
+        chatInput.disabled = true;
+        sendButton.disabled = true;
 
-        
         // 如果没有当前会话ID，创建新会话
         if (!currentConversationId) {
             const response = await fetch('http://localhost:3001/api/conversations', {
@@ -538,31 +550,20 @@ async function sendMessage(content) {
                     title: content  // 使用第一条消息作为标题
                 })
             });
+            
             if (!response.ok) {
                 throw new Error('Failed to create conversation');
             }
+            
             const data = await response.json();
             currentConversationId = data.id;
-            
-            // 更新会话列表
-            await loadConversations();
-            
-            // 移除所有活动状态
-            document.querySelectorAll('.conversation-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            // 添加活动状态到当前会话
-            const currentItem = document.querySelector(`.conversation-item[data-id="${currentConversationId}"]`);
-            if (currentItem) {
-                currentItem.classList.add('active');
-            }
         }
-        
-        // 准备消息历史
-        messageHistory.push({ role: "user", content: content });
-        
-        // 保存用户消息到数据库
+
+        // 显示用户消息
+        appendMessage(content, true);
+        messageHistory.push({ role: 'user', content: content });
+
+        // 保存用户消息
         const saveMessageResponse = await fetch(`http://localhost:3001/api/conversations/${currentConversationId}/messages`, {
             method: 'POST',
             headers: {
@@ -574,26 +575,21 @@ async function sendMessage(content) {
                 content: content
             })
         });
-        
+
         if (!saveMessageResponse.ok) {
-            throw new Error('Failed to save user message');
+            throw new Error('Failed to save message');
         }
-        
-        // 显示用户消息
-        appendMessage(content, true);
-        
+
         // 显示思考状态
         showThinking();
-        
-        // 发送消息到服务器并获取回复
-        const assistantMessage = await sendMessageWithRetry(content);
-        
-        // 移除思考状态
+
+        // 获取AI响应
+        const aiResponse = await sendMessageWithRetry(content);
         removeThinking();
-        
-        if (assistantMessage) {
-            // 保存助手消息到数据库
-            const saveAssistantResponse = await fetch(`http://localhost:3001/api/conversations/${currentConversationId}/messages`, {
+
+        if (aiResponse) {
+            // 保存AI响应
+            const saveAiResponse = await fetch(`http://localhost:3001/api/conversations/${currentConversationId}/messages`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -601,36 +597,34 @@ async function sendMessage(content) {
                 },
                 body: JSON.stringify({
                     role: 'assistant',
-                    content: assistantMessage
+                    content: aiResponse
                 })
             });
-            
-            if (!saveAssistantResponse.ok) {
-                throw new Error('Failed to save assistant message');
+
+            if (!saveAiResponse.ok) {
+                throw new Error('Failed to save AI response');
             }
-            
-            // 添加到消息历史
-            messageHistory.push({ role: "assistant", content: assistantMessage });
-            
-            // 显示助手消息
-            appendMessage(assistantMessage, false);
-            
-            // 更新会话列表
-            await loadConversations();
+
+            // 显示AI响应
+            appendMessage(aiResponse, false);
+            messageHistory.push({ role: 'assistant', content: aiResponse });
         }
-        
+
+        // 重新加载会话列表
+        await loadUserConversations();
+
         // 清空输入框
-        input.value = '';
-        
+        chatInput.value = '';
+
     } catch (error) {
         console.error('Error sending message:', error);
         removeThinking();
         appendMessage('发送消息失败，请重试', false);
     } finally {
         // 恢复输入和发送按钮
-        input.disabled = false;
-        sendBtn.disabled = false;
-        input.focus();
+        chatInput.disabled = false;
+        sendButton.disabled = false;
+        chatInput.focus();
     }
 }
 
