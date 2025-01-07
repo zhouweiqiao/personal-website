@@ -6,7 +6,7 @@
 }
 
 body {
-    background-color: #000;
+    background: linear-gradient(135deg, #001832 0%, #000c1a 100%);
     color: #fff;
     font-family: Arial, sans-serif;
     min-height: 100vh;
@@ -34,143 +34,310 @@ body {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)),
-                repeating-linear-gradient(0deg, transparent 0%, transparent 50%, 
-                rgba(0, 255, 204, 0.1) 50%, rgba(0, 255, 204, 0.1) 100%);
-    background-size: 100% 100%, 4px 4px;
+    background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)),
+                url('../../assets/bg-pattern.png');
     opacity: 0.1;
 }
 
 /* 顶部导航样式 */
 .top-nav {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 20px 40px;
-    background: rgba(0,0,0,0.8);
-    border-bottom: 2px solid #00ffcc;
+    padding: 0 20px;
+    background: rgba(0, 24, 50, 0.8);
+    border-bottom: 1px solid rgba(6, 251, 254, 0.2);
+    height: 60px;
 }
 
 .nav-left {
     display: flex;
     align-items: center;
+}
+
+.logo-link {
+    display: block;
+    height: 40px;
+}
+
+.logo {
+    height: 100%;
+    width: auto;
+}
+
+.nav-center {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    margin-left: 80px;
+    margin-right: auto;
+}
+
+.nav-right {
+    display: flex;
     gap: 20px;
 }
 
-.nav-left h1 {
-    color: #00ffcc;
-    font-size: 24px;
+/* 下拉菜单样式 */
+.dropdown {
+    position: relative;
+    display: inline-block;
 }
 
-.nav-left p {
-    color: #666;
+.dropdown-arrow {
+    font-size: 12px;
+    margin-left: 4px;
+    opacity: 0.8;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.dropdown:hover .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: rgba(0, 24, 50, 0.95);
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    border: 1px solid rgba(6, 251, 254, 0.1);
+    border-top: none;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    color: rgba(255, 255, 255, 0.8);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
     font-size: 14px;
+    transition: all 0.3s;
+    border-bottom: 1px solid rgba(6, 251, 254, 0.05);
 }
 
-/* 数据库入口卡片样式 */
-.database-entries {
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item:hover {
+    background: rgba(6, 251, 254, 0.1);
+    color: #06FBFE;
+    padding-left: 20px;
+}
+
+.nav-item {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s;
+    padding: 20px 0;
+    display: inline-block;
+}
+
+.nav-item:hover,
+.nav-item.active {
+    color: #06FBFE;
+}
+
+/* 主要内容区域 */
+.main-content {
+    display: flex;
+    height: calc(100vh - 60px);
+}
+
+/* 左侧导航 */
+.side-nav {
+    width: 200px;
+    background: rgba(0, 24, 50, 0.4);
+    padding: 20px 0;
+    border-right: 1px solid rgba(6, 251, 254, 0.1);
+}
+
+.side-title {
+    padding: 0 20px;
+    margin-bottom: 20px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 16px;
+    font-weight: normal;
+}
+
+.nav-list {
     display: flex;
     flex-direction: column;
-    gap: 30px;
-    padding: 40px;
-    max-width: 800px;
-    margin: 0 auto;
 }
 
-.entry-card {
-    background: rgba(0, 20, 20, 0.8);
-    border: 1px solid #00ffcc;
-    border-radius: 8px;
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.entry-card:hover {
-    transform: translateX(10px);
-    box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
-}
-
-.entry-header {
+.nav-list .nav-item {
+    padding: 12px 20px;
     display: flex;
     align-items: center;
-    gap: 15px;
-    margin-bottom: 10px;
-}
-
-.entry-header h2 {
-    color: #00ffcc;
-    font-size: 20px;
-}
-
-.tech-line {
-    flex: 1;
-    height: 2px;
-    background: linear-gradient(90deg, #00ffcc, transparent);
-}
-
-.entry-desc {
-    color: #999;
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: all 0.3s;
     font-size: 14px;
-    margin-bottom: 15px;
+    background: transparent;
 }
 
-.entry-icon {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
+.nav-list .nav-item:hover,
+.nav-list .nav-item.active {
+    background: rgba(6, 251, 254, 0.1);
+    color: #06FBFE;
 }
 
-.entry-icon i {
-    font-size: 40px;
-    color: #00ffcc;
+.nav-list .nav-item i {
+    width: 16px;
+    text-align: center;
+    opacity: 0.8;
 }
 
-/* 科技边框效果 */
-.tech-border {
-    position: absolute;
-    top: 0;
-    left: 0;
+/* 右侧内容区域 */
+.content-area {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+    background: #fff;
+}
+
+/* 数据库卡片样式 */
+.database-card {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.database-card:hover {
+    transform: translateX(5px);
+    border-color: #06FBFE;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-link {
+    display: flex;
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+    gap: 20px;
+}
+
+.card-icon {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+    background: #fff;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    border: 1px solid #e9ecef;
+}
+
+.card-icon img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    width: auto;
+    height: auto;
+}
+
+/* SVG 图片特殊处理 */
+.card-icon img[src$=".svg"] {
     width: 100%;
     height: 100%;
-    pointer-events: none;
+    padding: 2px;
 }
 
-.tech-border::before,
-.tech-border::after {
-    content: '';
-    position: absolute;
-    background: #00ffcc;
+.card-content {
+    flex: 1;
 }
 
-.tech-border::before {
-    width: 20px;
-    height: 2px;
-    top: 0;
-    left: 0;
+.card-content h2 {
+    color: #2c3e50;
+    font-size: 16px;
+    margin-bottom: 8px;
+    font-weight: normal;
 }
 
-.tech-border::after {
-    width: 2px;
-    height: 20px;
-    top: 0;
-    left: 0;
+.card-content p {
+    color: #6c757d;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* 滚动条样式 */
+.content-area::-webkit-scrollbar {
+    width: 6px;
+}
+
+.content-area::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.content-area::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+.content-area::-webkit-scrollbar-thumb:hover {
+    background: #999;
 }
 
 /* 响应式设计 */
+@media (max-width: 1200px) {
+    .nav-center {
+        gap: 20px;
+    }
+}
+
 @media (max-width: 768px) {
-    .database-entries {
-        padding: 20px;
+    .top-nav {
+        flex-direction: column;
+        height: auto;
+        padding: 10px;
     }
-    
-    .entry-card {
-        padding: 15px;
+
+    .nav-center {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin: 10px 0;
     }
-    
-    .entry-icon {
-        display: none;
+
+    .nav-right {
+        margin-top: 10px;
+    }
+
+    .main-content {
+        flex-direction: column;
+    }
+
+    .side-nav {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .card-link {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .card-icon {
+        margin-bottom: 15px;
     }
 }
