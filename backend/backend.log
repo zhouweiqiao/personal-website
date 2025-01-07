@@ -1,0 +1,114 @@
+
+> backend@1.0.0 dev
+> nodemon server.js
+
+[33m[nodemon] 3.1.9[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.
+Creating new conversation with title: 福大福啊水电费大师傅是否
+Generated token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsInNpZ25fdHlwZSI6IlNJR04ifQ.eyJhcGlfa2V5IjoiNDM2NmEzNTJjZTUwNGQ3OGJkMWQ0NjVmYjE2OGU2NWEiLCJleHAiOjE3MzYyMTkzNjQsInRpbWVzdGFtcCI6MTczNjIxNTc2NCwiaWF0IjoxNzM2MjE1NzY0fQ.7EN5bWMbwhYgPTEPa9S2iPAH0NfklLR9hhZcY5VRIJI
+Creating new conversation with title: fdas 发烧 fdas
+Generated token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsInNpZ25fdHlwZSI6IlNJR04ifQ.eyJhcGlfa2V5IjoiNDM2NmEzNTJjZTUwNGQ3OGJkMWQ0NjVmYjE2OGU2NWEiLCJleHAiOjE3MzYyMTkzOTUsInRpbWVzdGFtcCI6MTczNjIxNTc5NSwiaWF0IjoxNzM2MjE1Nzk1fQ.kdFUp7FTX43HUxNxnwXlI1hjdLwRiOgBN0-zKhgjb2o
+Creating new conversation with title: fdaf dasf adsf das
+Generated token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsInNpZ25fdHlwZSI6IlNJR04ifQ.eyJhcGlfa2V5IjoiNDM2NmEzNTJjZTUwNGQ3OGJkMWQ0NjVmYjE2OGU2NWEiLCJleHAiOjE3MzYyMTk0MzIsInRpbWVzdGFtcCI6MTczNjIxNTgzMiwiaWF0IjoxNzM2MjE1ODMyfQ.WFozM2iiclftDdmLqZnem2W5y6Dzo3ayC5Re9U9Gqlo
+Creating new conversation with title: 我们继续聊天
+Generated token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsInNpZ25fdHlwZSI6IlNJR04ifQ.eyJhcGlfa2V5IjoiNDM2NmEzNTJjZTUwNGQ3OGJkMWQ0NjVmYjE2OGU2NWEiLCJleHAiOjE3MzYyMTk1NzAsInRpbWVzdGFtcCI6MTczNjIxNTk3MCwiaWF0IjoxNzM2MjE1OTcwfQ.4jGsDrZBHPgJg-6hIYRe0QzhNrf1OlniT3PJk4GEOvk
+Generated token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsInNpZ25fdHlwZSI6IlNJR04ifQ.eyJhcGlfa2V5IjoiNDM2NmEzNTJjZTUwNGQ3OGJkMWQ0NjVmYjE2OGU2NWEiLCJleHAiOjE3MzYyMTk2MDIsInRpbWVzdGFtcCI6MTczNjIxNjAwMiwiaWF0IjoxNzM2MjE2MDAyfQ.ZUguE8q0JryzkUJCKjvmR8K6bmJl933Kf0-Bhd7SUY0
+[32m[nodemon] restarting child process[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.
+Generated token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsInNpZ25fdHlwZSI6IlNJR04ifQ.eyJhcGlfa2V5IjoiNDM2NmEzNTJjZTUwNGQ3OGJkMWQ0NjVmYjE2OGU2NWEiLCJleHAiOjE3MzYyMTk4NTksInRpbWVzdGFtcCI6MTczNjIxNjI1OSwiaWF0IjoxNzM2MjE2MjU5fQ.S0WcbfRZEVrn-KAFO1NLy72D1gjBey7JZzOMJfyq40I
+Generated token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsInNpZ25fdHlwZSI6IlNJR04ifQ.eyJhcGlfa2V5IjoiNDM2NmEzNTJjZTUwNGQ3OGJkMWQ0NjVmYjE2OGU2NWEiLCJleHAiOjE3MzYyMTk5NzYsInRpbWVzdGFtcCI6MTczNjIxNjM3NiwiaWF0IjoxNzM2MjE2Mzc2fQ.Hi1_0-7BZ1U5jLx8cxFd4JsG2CsFjh-An1zdRqV2coQ
+Generated token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsInNpZ25fdHlwZSI6IlNJR04ifQ.eyJhcGlfa2V5IjoiNDM2NmEzNTJjZTUwNGQ3OGJkMWQ0NjVmYjE2OGU2NWEiLCJleHAiOjE3MzYyMTk5OTMsInRpbWVzdGFtcCI6MTczNjIxNjM5MywiaWF0IjoxNzM2MjE2MzkzfQ.kvNpB84iJUFoEI2aV28UDmb_vBpOHmF92_Cu0H40_78
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.
+Creating new conversation with title: 》》
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+/Users/weiqiao/Desktop/test/personal-website/backend/services/openai.js:9
+            throw new Error('OPENAI_API_KEY environment variable is not set');
+            ^
+
+Error: OPENAI_API_KEY environment variable is not set
+    at new OpenAIService (/Users/weiqiao/Desktop/test/personal-website/backend/services/openai.js:9:19)
+    at Object.<anonymous> (/Users/weiqiao/Desktop/test/personal-website/backend/services/openai.js:52:23)
+    at Module._compile (node:internal/modules/cjs/loader:1198:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1252:10)
+    at Module.load (node:internal/modules/cjs/loader:1076:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:911:12)
+    at Module.require (node:internal/modules/cjs/loader:1100:19)
+    at require (node:internal/modules/cjs/helpers:119:18)
+    at Object.<anonymous> (/Users/weiqiao/Desktop/test/personal-website/backend/services/modelManager.js:2:23)
+    at Module._compile (node:internal/modules/cjs/loader:1198:14)
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.
+Generated token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsInNpZ25fdHlwZSI6IlNJR04ifQ.eyJhcGlfa2V5IjoiNDM2NmEzNTJjZTUwNGQ3OGJkMWQ0NjVmYjE2OGU2NWEiLCJleHAiOjE3MzYyMjAxODEsInRpbWVzdGFtcCI6MTczNjIxNjU4MSwiaWF0IjoxNzM2MjE2NTgxfQ.B_xzDXM7S6g-nGsW5ePbq8sp3APHFG_5MTcbBR-3WOU
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+Server is running on port 3001
+Successfully connected to database.

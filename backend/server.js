@@ -325,19 +325,20 @@ app.get('/proxy', async (req, res) => {
     }
 });
 
-// 获取用户最近的10次会话
+// 获取用户最近的会话
 app.get('/api/conversations', authenticateToken, (req, res) => {
     try {
         const userId = req.user.id;
         const query = `
             SELECT c.*, 
+                   DATE_FORMAT(c.created_at, '%Y-%m-%d %H:%i:%s') as formatted_date,
                    (SELECT content FROM conversation_messages 
                     WHERE conversation_id = c.id 
                     ORDER BY created_at DESC LIMIT 1) as last_message
             FROM conversations c
             WHERE c.user_id = ?
             ORDER BY c.updated_at DESC
-            LIMIT 10
+            LIMIT 16
         `;
         connection.query(query, [userId], (error, results) => {
             if (error) {
@@ -352,8 +353,101 @@ app.get('/api/conversations', authenticateToken, (req, res) => {
     }
 });
 
+// 删除会话
+app.delete('/api/conversations/:id', authenticateToken, (req, res) => {
+    try {
+        const userId = req.user.id;
+        const conversationId = req.params.id;
+        
+        // 验证会话归属
+        connection.query(
+            'SELECT id FROM conversations WHERE id = ? AND user_id = ?',
+            [conversationId, userId],
+            (error, results) => {
+                if (error) {
+                    console.error('Error checking conversation ownership:', error);
+                    return res.status(500).json({ error: 'Internal server error' });
+                }
+                
+                if (results.length === 0) {
+                    return res.status(403).json({ error: 'Unauthorized access to conversation' });
+                }
+                
+                // 先删除会话的所有消息
+                connection.query(
+                    'DELETE FROM conversation_messages WHERE conversation_id = ?',
+                    [conversationId],
+                    (error) => {
+                        if (error) {
+                            console.error('Error deleting conversation messages:', error);
+                            return res.status(500).json({ error: 'Internal server error' });
+                        }
+                        
+                        // 然后删除会话本身
+                        connection.query(
+                            'DELETE FROM conversations WHERE id = ?',
+                            [conversationId],
+                            (error) => {
+                                if (error) {
+                                    console.error('Error deleting conversation:', error);
+                                    return res.status(500).json({ error: 'Internal server error' });
+                                }
+                                res.json({ success: true });
+                            }
+                        );
+                    }
+                );
+            }
+        );
+    } catch (error) {
+        console.error('Error deleting conversation:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // 获取特定会话的所有消息
 app.get('/api/conversations/:id', authenticateToken, (req, res) => {
+    try {
+        const userId = req.user.id;
+        const conversationId = req.params.id;
+        
+        // 验证会话归属
+        connection.query(
+            'SELECT id FROM conversations WHERE id = ? AND user_id = ?',
+            [conversationId, userId],
+            (error, results) => {
+                if (error) {
+                    console.error('Error checking conversation ownership:', error);
+                    return res.status(500).json({ error: 'Internal server error' });
+                }
+                
+                if (results.length === 0) {
+                    return res.status(403).json({ error: 'Unauthorized access to conversation' });
+                }
+                
+                // 获取所有消息
+                const query = `
+                    SELECT * FROM conversation_messages
+                    WHERE conversation_id = ?
+                    ORDER BY created_at ASC
+                `;
+                connection.query(query, [conversationId], (error, results) => {
+                    if (error) {
+                        console.error('Error fetching conversation messages:', error);
+                        return res.status(500).json({ error: 'Internal server error' });
+                    }
+                    res.json(results);
+                });
+            }
+        );
+    } catch (error) {
+        console.error('Error fetching conversation messages:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// 获取特定会话的所有消息
+app.get('/api/conversations/:id/messages', authenticateToken, (req, res) => {
     try {
         const userId = req.user.id;
         const conversationId = req.params.id;
@@ -402,7 +496,7 @@ app.post('/api/conversations', authenticateToken, (req, res) => {
 
         connection.query(
             'INSERT INTO conversations (user_id, title) VALUES (?, ?)',
-            [userId, '12321321'],
+            [userId, title || '新会话'],
             (error, results) => {
                 if (error) {
                     console.error('Error creating conversation:', error);

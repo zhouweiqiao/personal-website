@@ -270,35 +270,75 @@ async function loadConversations() {
         // 添加新会话按钮
         const newChatButton = document.createElement('div');
         newChatButton.className = 'conversation-item new-chat';
-        newChatButton.textContent = '新会话';
+        
+        // 添加新会话图标
+        const newChatIcon = document.createElement('div');
+        newChatIcon.className = 'conversation-icon';
+        newChatIcon.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 1V15M1 8H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>`;
+        
+        const newChatTitle = document.createElement('div');
+        newChatTitle.className = 'conversation-title';
+        newChatTitle.textContent = '新会话';
+        
+        newChatButton.appendChild(newChatIcon);
+        newChatButton.appendChild(newChatTitle);
+        
         newChatButton.addEventListener('click', () => {
-            // 清空当前会话
             currentConversationId = null;
             chatMessages.innerHTML = '';
             messageHistory = [];
             
-            // 显示欢迎消息
             appendMessage('您好！我是 Alpha助手，有什么我可以帮您的吗？', false);
             
-            // 移除所有活动状态
             document.querySelectorAll('.conversation-item').forEach(item => {
                 item.classList.remove('active');
             });
             
-            // 添加活动状态到新会话按钮
             newChatButton.classList.add('active');
         });
         conversationList.appendChild(newChatButton);
         
-        // 如果当前没有选中的会话，激活新会话按钮
         if (!currentConversationId) {
             newChatButton.classList.add('active');
         }
-        
-        // 添加现有会话
+
+        // 按时间分组会话
+        const groupedConversations = {};
+        const now = new Date();
+        const yesterday = new Date(now);
+        yesterday.setDate(yesterday.getDate() - 1);
+
         conversations.forEach(conversation => {
-            const item = createConversationItem(conversation);
-            conversationList.appendChild(item);
+            const date = new Date(conversation.formatted_date);
+            let groupKey;
+
+            if (date.toDateString() === now.toDateString()) {
+                groupKey = '今天';
+            } else if (date.toDateString() === yesterday.toDateString()) {
+                groupKey = '昨天';
+            } else {
+                groupKey = `${date.getMonth() + 1}月${date.getDate()}日`;
+            }
+
+            if (!groupedConversations[groupKey]) {
+                groupedConversations[groupKey] = [];
+            }
+            groupedConversations[groupKey].push(conversation);
+        });
+
+        // 按时间分组显示会话
+        Object.keys(groupedConversations).forEach(groupKey => {
+            const timeGroup = document.createElement('div');
+            timeGroup.className = 'time-group';
+            timeGroup.textContent = groupKey;
+            conversationList.appendChild(timeGroup);
+
+            groupedConversations[groupKey].forEach(conversation => {
+                const item = createConversationItem(conversation);
+                conversationList.appendChild(item);
+            });
         });
         
     } catch (error) {
@@ -310,11 +350,18 @@ async function loadConversations() {
 function createConversationItem(conversation) {
     const item = document.createElement('div');
     item.className = 'conversation-item';
-    item.dataset.id = conversation.id;  // 添加 data-id 属性
+    item.dataset.id = conversation.id;
     
     if (conversation.id === currentConversationId) {
         item.classList.add('active');
     }
+    
+    // 创建图标
+    const iconDiv = document.createElement('div');
+    iconDiv.className = 'conversation-icon';
+    iconDiv.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14 2H2C1.45 2 1 2.45 1 3V11C1 11.55 1.45 12 2 12H5V15L8 12H14C14.55 12 15 11.55 15 11V3C15 2.45 14.55 2 14 2ZM14 11H7.667L6 12.667V11H2V3H14V11Z" fill="currentColor"/>
+    </svg>`;
     
     // 使用会话标题（用户的第一句话）
     let title = conversation.title;
@@ -322,7 +369,7 @@ function createConversationItem(conversation) {
         title = conversation.last_message || '新会话';
     }
     
-    // 限制标题长度为10个字符
+    // 限制标题长度为16个字符
     const displayTitle = title.length > 16 ? title.substring(0, 16) + '...' : title;
     
     // 创建标题元素
@@ -335,7 +382,7 @@ function createConversationItem(conversation) {
     deleteButton.className = 'delete-button';
     deleteButton.textContent = '×';
     deleteButton.addEventListener('click', async (e) => {
-        e.stopPropagation();  // 阻止事件冒泡
+        e.stopPropagation();
         
         try {
             const response = await fetch(`http://localhost:3001/api/conversations/${conversation.id}`, {
@@ -349,7 +396,6 @@ function createConversationItem(conversation) {
                 throw new Error('Failed to delete conversation');
             }
             
-            // 如果删除的是当前会话，清空聊天区域
             if (conversation.id === currentConversationId) {
                 currentConversationId = null;
                 chatMessages.innerHTML = '';
@@ -357,7 +403,6 @@ function createConversationItem(conversation) {
                 appendMessage('您好！我是 Alpha助手，有什么我可以帮您的吗？', false);
             }
             
-            // 重新加载会话列表
             await loadConversations();
             
         } catch (error) {
@@ -366,6 +411,7 @@ function createConversationItem(conversation) {
         }
     });
     
+    item.appendChild(iconDiv);
     item.appendChild(titleDiv);
     item.appendChild(deleteButton);
     item.addEventListener('click', () => loadConversation(conversation.id));

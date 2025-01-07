@@ -69,7 +69,7 @@ backend/
 
 1. 克隆项目
 ```bash
-git clone https://github.com/yourusername/personal-website.git
+git clone https://github.com/zhouweiqiao/personal-website.git
 cd personal-website
 ```
 
@@ -95,7 +95,7 @@ cp .env.example .env
 ```bash
 # 在 MySQL 中创建数据库
 mysql -u root -p
-CREATE DATABASE personal_website;
+CREATE DATABASE idm_explorer;
 
 # 运行数据库迁移
 cd backend
