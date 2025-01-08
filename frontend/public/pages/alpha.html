@@ -80,7 +80,7 @@
         }
 
         .sidebar-header {
-            padding: 16px;
+            padding: 20px;
             font-size: 15px;
             font-weight: 500;
             color: var(--border-color);
@@ -118,6 +118,7 @@
             justify-content: flex-start;
             align-items: center;
             gap: 12px;
+            background: rgba(0, 18, 25, 0.9);
         }
 
         .conversation-title {
@@ -125,75 +126,77 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            margin-right: 10px;
+            color: rgba(6, 251, 254, 0.9);
         }
 
-        .conversation-content {
-            flex-grow: 1;
-            margin-right: 10px;
-            min-width: 0;
-        }
-
-        .conversation-time {
+        .time-group {
+            padding: 16px;
+            color: rgba(6, 251, 254, 0.7);
             font-size: 12px;
-            color: rgba(255, 255, 255, 0.5);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid rgba(6, 251, 254, 0.1);
         }
 
-        .delete-button {
-            background: none;
-            border: none;
-            color: var(--text-color);
-            font-size: 16px;
-            cursor: pointer;
-            padding: 0;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+        .conversation-icon {
             width: 20px;
             height: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: rgba(6, 251, 254, 0.7);
+            flex-shrink: 0;
+        }
+
+        .conversation-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .conversation-time {
+            font-size: 11px;
+            color: rgba(6, 251, 254, 0.5);
+            margin-top: 4px;
+        }
+
+        .delete-button {
+            background: none;
+            border: none;
+            color: rgba(6, 251, 254, 0.5);
+            font-size: 16px;
+            cursor: pointer;
+            padding: 0 4px;
+            opacity: 0;
+            transition: all 0.3s ease;
         }
 
         .conversation-item:hover .delete-button {
-            opacity: 0.7;
+            opacity: 1;
         }
 
         .delete-button:hover {
-            opacity: 1 !important;
-            color: var(--border-color);
+            color: rgba(6, 251, 254, 1);
         }
 
         .conversation-item:hover {
             background: rgba(6, 251, 254, 0.05);
-            opacity: 0.9;
+            opacity: 1;
         }
 
         .conversation-item.active {
             background: rgba(6, 251, 254, 0.1);
-            border-right: 2px solid var(--border-color);
             opacity: 1;
         }
 
-        .conversation-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(6, 251, 254, 0.1),
-                transparent
-            );
-            transform: translateX(-100%);
-            transition: transform 0.5s ease;
+        .conversation-item.new-chat {
+            border-bottom: 1px solid rgba(6, 251, 254, 0.15);
+            background: rgba(0, 0, 0, 0.4);
         }
 
-        .conversation-item:hover::before {
-            transform: translateX(100%);
+        .conversation-item.new-chat:hover {
+            background: rgba(6, 251, 254, 0.05);
         }
 
         .main-content {

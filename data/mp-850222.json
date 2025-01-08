@@ -1,0 +1,217 @@
+{
+  "material_id": "mp-850222",
+  "formula_pretty": "FeO2",
+  "elements": [
+    {
+      "@module": "pymatgen.core.periodic_table",
+      "@class": "Element",
+      "element": "Fe"
+    },
+    {
+      "@module": "pymatgen.core.periodic_table",
+      "@class": "Element",
+      "element": "O"
+    }
+  ],
+  "nelements": 2,
+  "composition": {
+    "Fe": 2.0,
+    "O": 4.0
+  },
+  "composition_reduced": {
+    "Fe": 1.0,
+    "O": 2.0
+  },
+  "chemsys": "Fe-O",
+  "volume": 63.25368542732801,
+  "density": 4.612160087531484,
+  "density_atomic": 10.542280904554667,
+  "symmetry": {
+    "crystal_system": {},
+    "symbol": "P4_2/mnm",
+    "number": 136,
+    "point_group": "4/mmm",
+    "symprec": 0.1,
+    "version": "2.5.0"
+  },
+  "structure": {
+    "@module": "pymatgen.core.structure",
+    "@class": "Structure",
+    "charge": 0,
+    "lattice": {
+      "matrix": [
+        [
+          4.609413,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          4.609413,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          2.977108
+        ]
+      ],
+      "pbc": [
+        true,
+        true,
+        true
+      ],
+      "a": 4.609413,
+      "b": 4.609413,
+      "c": 2.977108,
+      "alpha": 90.0,
+      "beta": 90.0,
+      "gamma": 90.0,
+      "volume": 63.25368542732801
+    },
+    "properties": {},
+    "sites": [
+      {
+        "species": [
+          {
+            "element": "Fe",
+            "occu": 1
+          }
+        ],
+        "abc": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "properties": {
+          "magmom": 4.002
+        },
+        "label": "Fe"
+      },
+      {
+        "species": [
+          {
+            "element": "Fe",
+            "occu": 1
+          }
+        ],
+        "abc": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "xyz": [
+          2.3047065,
+          2.3047065,
+          1.488554
+        ],
+        "properties": {
+          "magmom": 4.002
+        },
+        "label": "Fe"
+      },
+      {
+        "species": [
+          {
+            "element": "O",
+            "occu": 1
+          }
+        ],
+        "abc": [
+          0.809456,
+          0.190544,
+          0.5
+        ],
+        "xyz": [
+          3.731117009328,
+          0.8782959906719999,
+          1.488554
+        ],
+        "properties": {
+          "magmom": -0.005
+        },
+        "label": "O"
+      },
+      {
+        "species": [
+          {
+            "element": "O",
+            "occu": 1
+          }
+        ],
+        "abc": [
+          0.309456,
+          0.309456,
+          0.0
+        ],
+        "xyz": [
+          1.426410509328,
+          1.426410509328,
+          0.0
+        ],
+        "properties": {
+          "magmom": -0.005
+        },
+        "label": "O"
+      },
+      {
+        "species": [
+          {
+            "element": "O",
+            "occu": 1
+          }
+        ],
+        "abc": [
+          0.690543999999999,
+          0.690543999999999,
+          0.0
+        ],
+        "xyz": [
+          3.1830024906719956,
+          3.1830024906719956,
+          0.0
+        ],
+        "properties": {
+          "magmom": -0.005
+        },
+        "label": "O"
+      },
+      {
+        "species": [
+          {
+            "element": "O",
+            "occu": 1
+          }
+        ],
+        "abc": [
+          0.190544,
+          0.809456,
+          0.5
+        ],
+        "xyz": [
+          0.8782959906719999,
+          3.731117009328,
+          1.488554
+        ],
+        "properties": {
+          "magmom": -0.005
+        },
+        "label": "O"
+      }
+    ]
+  },
+  "formation_energy_per_atom": -1.277397556666667,
+  "energy_above_hull": 0.14517857083333302,
+  "band_gap": 0.0,
+  "is_gap_direct": false,
+  "is_metal": true,
+  "ordering": "FM",
+  "total_magnetization": 8.0324536,
+  "bulk_modulus": null,
+  "shear_modulus": null
+}

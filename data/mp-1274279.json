@@ -1,0 +1,261 @@
+{
+  "material_id": "mp-1274279",
+  "formula_pretty": "FeO",
+  "elements": [
+    {
+      "@module": "pymatgen.core.periodic_table",
+      "@class": "Element",
+      "element": "Fe"
+    },
+    {
+      "@module": "pymatgen.core.periodic_table",
+      "@class": "Element",
+      "element": "O"
+    }
+  ],
+  "nelements": 2,
+  "composition": {
+    "Fe": 4.0,
+    "O": 4.0
+  },
+  "composition_reduced": {
+    "Fe": 1.0,
+    "O": 1.0
+  },
+  "chemsys": "Fe-O",
+  "volume": 84.98847683834407,
+  "density": 5.6148992124359385,
+  "density_atomic": 10.623559604793009,
+  "symmetry": {
+    "crystal_system": {},
+    "symbol": "C2/m",
+    "number": 12,
+    "point_group": "-1",
+    "symprec": 0.1,
+    "version": "2.5.0"
+  },
+  "structure": {
+    "@module": "pymatgen.core.structure",
+    "@class": "Structure",
+    "charge": 0,
+    "lattice": {
+      "matrix": [
+        [
+          2.176648,
+          -2.210439,
+          -0.019736
+        ],
+        [
+          2.157691,
+          2.157192,
+          -4.425946
+        ],
+        [
+          2.163513,
+          2.236831,
+          4.466648
+        ]
+      ],
+      "pbc": [
+        true,
+        true,
+        true
+      ],
+      "a": 3.1022937640270305,
+      "b": 5.375695840657374,
+      "c": 5.443817206669784,
+      "alpha": 110.55665728789754,
+      "beta": 91.09699169817493,
+      "gamma": 89.94660035938162,
+      "volume": 84.98847683834407
+    },
+    "properties": {},
+    "sites": [
+      {
+        "species": [
+          {
+            "element": "Fe",
+            "occu": 1
+          }
+        ],
+        "abc": [
+          0.5,
+          0.0,
+          0.5
+        ],
+        "xyz": [
+          2.1700805,
+          0.013195999999999986,
+          2.223456
+        ],
+        "properties": {
+          "magmom": -3.73
+        },
+        "label": "Fe"
+      },
+      {
+        "species": [
+          {
+            "element": "Fe",
+            "occu": 1
+          }
+        ],
+        "abc": [
+          0.0,
+          0.5,
+          0.5
+        ],
+        "xyz": [
+          2.160602,
+          2.1970115000000003,
+          0.02035100000000023
+        ],
+        "properties": {
+          "magmom": -3.727
+        },
+        "label": "Fe"
+      },
+      {
+        "species": [
+          {
+            "element": "Fe",
+            "occu": 1
+          }
+        ],
+        "abc": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "properties": {
+          "magmom": 3.73
+        },
+        "label": "Fe"
+      },
+      {
+        "species": [
+          {
+            "element": "Fe",
+            "occu": 1
+          }
+        ],
+        "abc": [
+          0.500001,
+          0.5,
+          0.0
+        ],
+        "xyz": [
+          2.167171676648,
+          -0.026625710438999972,
+          -2.222841019736
+        ],
+        "properties": {
+          "magmom": 3.727
+        },
+        "label": "Fe"
+      },
+      {
+        "species": [
+          {
+            "element": "O",
+            "occu": 1
+          }
+        ],
+        "abc": [
+          0.9682909999999991,
+          0.251676,
+          0.742066
+        ],
+        "xyz": [
+          4.256137146541999,
+          0.06244149688900199,
+          2.181533038096
+        ],
+        "properties": {
+          "magmom": -0.006
+        },
+        "label": "O"
+      },
+      {
+        "species": [
+          {
+            "element": "O",
+            "occu": 1
+          }
+        ],
+        "abc": [
+          0.468313,
+          0.251673,
+          0.242067999999999
+        ],
+        "xyz": [
+          2.086102386750998,
+          0.04919486931699784,
+          -0.041901184962004234
+        ],
+        "properties": {
+          "magmom": 0.006
+        },
+        "label": "O"
+      },
+      {
+        "species": [
+          {
+            "element": "O",
+            "occu": 1
+          }
+        ],
+        "abc": [
+          0.031709,
+          0.748324,
+          0.257934
+        ],
+        "xyz": [
+          2.241714853458,
+          2.1211425031110003,
+          -2.1605670380959996
+        ],
+        "properties": {
+          "magmom": -0.006
+        },
+        "label": "O"
+      },
+      {
+        "species": [
+          {
+            "element": "O",
+            "occu": 1
+          }
+        ],
+        "abc": [
+          0.531686,
+          0.748327,
+          0.757931999999999
+        ],
+        "xyz": [
+          4.411747436600998,
+          2.134391341121998,
+          0.06286720469799621
+        ],
+        "properties": {
+          "magmom": 0.006
+        },
+        "label": "O"
+      }
+    ]
+  },
+  "formation_energy_per_atom": -1.481519387499999,
+  "energy_above_hull": 0.0,
+  "band_gap": 1.8157,
+  "is_gap_direct": false,
+  "is_metal": false,
+  "ordering": "AFM",
+  "total_magnetization": 2e-07,
+  "bulk_modulus": null,
+  "shear_modulus": null
+}

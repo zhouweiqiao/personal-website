@@ -26,6 +26,9 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// 静态文件服务
+app.use(express.static('../frontend/public'));
+
 // 添加智谱路由
 app.use('/api/zhipu', zhipuRoutes);
 
@@ -49,23 +52,23 @@ connection.connect(error => {
 // JWT 密钥
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
-// 验证 JWT Token 的中间件
-function authenticateToken(req, res, next) {
+// 验证 JWT token 的中间件
+const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-    
+
     if (!token) {
-        return res.status(401).json({ error: 'Authentication token required' });
+        return res.sendStatus(401);
     }
-    
+
     jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) {
-            return res.status(403).json({ error: 'Invalid or expired token' });
+            return res.sendStatus(403);
         }
         req.user = user;
         next();
     });
-}
+};
 
 // 登录接口
 app.post('/api/login', (req, res) => {
@@ -106,6 +109,8 @@ app.post('/api/login', (req, res) => {
                             email: user.email
                         }
                     });
+                    console.log('token:', token);
+                    console.log('userid:', user.id);
                 } else {
                     console.log('Password mismatch');
                     res.json({ success: false, message: '用户名或密码错误' });
@@ -325,28 +330,16 @@ app.get('/proxy', async (req, res) => {
     }
 });
 
-// 获取用户最近的会话
-app.get('/api/conversations', authenticateToken, (req, res) => {
+// 获取用户会话列表
+app.get('/api/conversations', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
-        const query = `
-            SELECT c.*, 
-                   DATE_FORMAT(c.created_at, '%Y-%m-%d %H:%i:%s') as formatted_date,
-                   (SELECT content FROM conversation_messages 
-                    WHERE conversation_id = c.id 
-                    ORDER BY created_at DESC LIMIT 1) as last_message
-            FROM conversations c
-            WHERE c.user_id = ?
-            ORDER BY c.updated_at DESC
-            LIMIT 16
-        `;
-        connection.query(query, [userId], (error, results) => {
-            if (error) {
-                console.error('Error fetching conversations:', error);
-                return res.status(500).json({ error: 'Internal server error' });
-            }
-            res.json(results);
-        });
+        console.log('userid-conversations:', userId);
+        const [conversations] = await connection.promise().query(
+            'SELECT * FROM conversations WHERE user_id = ? ORDER BY updated_at DESC',
+            [userId]
+        );
+        res.json(conversations);
     } catch (error) {
         console.error('Error fetching conversations:', error);
         res.status(500).json({ error: 'Internal server error' });

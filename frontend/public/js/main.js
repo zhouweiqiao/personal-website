@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const data = await response.json();
             if (data.success) {
-                handleLoginSuccess(username);
+                handleLoginSuccess(username, data.token);
             } else {
                 showToast(data.message || '用户名或密码错误');
             }
@@ -363,6 +363,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleLogout() {
         // 清除登录态
         localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('token');
         localStorage.removeItem('username');
         
         // 移除用户控制区域
@@ -413,10 +414,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // 处理登录成功
-    function handleLoginSuccess(username) {
+    function handleLoginSuccess(username, token) {
         // 设置登录态
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('username', username);
+        localStorage.setItem('token', token);
+        
         // 隐藏登录框
         hideLoginModal();
         // 创建用户控制区域
@@ -582,10 +585,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
   // 处理登录成功
-  function handleLoginSuccess(username) {
+  function handleLoginSuccess(username, token) {
     // 设置登录态
     localStorage.setItem('isLoggedIn', 'true');
     localStorage.setItem('username', username);
+    localStorage.setItem('token', token);
     
 
     // 隐藏登录框

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="zh">
-<head>
-    <meta charset="UTF-8">
+<!-- saved from url=(0056)http://localhost:8080/pages/database/idmdb/jingtiku.html -->
+<html lang="zh"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>晶体数据库 - IDM Explorer Lab</title>
-    <link rel="stylesheet" href="../styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="./晶体数据库 - IDM Explorer Lab_files/styles.css">
+    <link rel="stylesheet" href="./晶体数据库 - IDM Explorer Lab_files/all.min.css">
     <style>
         .crystal-layout {
             display: grid;
@@ -18,8 +18,8 @@
         /* 左侧筛选区样式 */
         .crystal-filters {
             border-radius: 8px;
-            padding: 16px;
-            padding-right: 14px;
+            padding: 20px;
+            padding-right: 16px;
             overflow-y: auto;
             background: #fff;
             border: 1px solid #eee;
@@ -27,7 +27,7 @@
         }
 
         .filter-group {
-            margin-bottom: 14px;
+            margin-bottom: 16px;
         }
 
         .filter-header {
@@ -35,25 +35,23 @@
             justify-content: space-between;
             align-items: center;
             color: var(--text-color);
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             cursor: pointer;
-            font-size: 12px;
         }
 
         .filter-label {
             color: #333;
-            margin-bottom: 6px;
-            font-size: 12px;
+            margin-bottom: 8px;
+            font-size: 13px;
         }
 
         .filter-input, .filter-select {
             width: 100%;
-            padding: 6px;
+            padding: 8px;
             background: #fff;
             border: 1px solid #ddd;
             border-radius: 4px;
             color: #333;
-            font-size: 12px;
         }
 
         .filter-range {
@@ -78,14 +76,13 @@
         .filter-checkbox {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             color: #333;
-            font-size: 12px;
         }
 
         .filter-checkbox input[type="checkbox"] {
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             border: 1px solid #ddd;
             border-radius: 3px;
         }
@@ -104,22 +101,9 @@
 
         .element-input-area {
             display: flex;
-            gap: 20px;
+            gap: 10px;
             padding: 0 40px;
             margin-bottom: 20px;
-        }
-
-        .search-type-select {
-            width: 120px;
-            height: 42px;
-            border: 1px solid #eee;
-            border-radius: 4px;
-            padding: 0 12px;
-            background: #fff;
-            color: #333;
-            font-size: 12px;
-            cursor: pointer;
-            outline: none;
         }
 
         .element-input-container {
@@ -131,77 +115,7 @@
             padding: 8px 12px;
             display: flex;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 6px;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-            position: relative;
-        }
-
-        .element-dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: #fff;
-            border: 1px solid #eee;
-            border-radius: 4px;
-            margin-top: 4px;
-            max-height: 300px;
-            overflow-y: auto;
-            z-index: 1000;
-            display: none;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .element-dropdown.show {
-            display: block;
-        }
-
-        .element-dropdown-item {
-            padding: 8px 12px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-        }
-
-        .element-dropdown-item:hover {
-            background: #f5f5f5;
-        }
-
-        .number-pad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 4px;
-            padding: 8px;
-            background: #fff;
-            border: 1px solid #eee;
-            border-radius: 4px;
-            margin-top: 4px;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            display: none;
-        }
-
-        .number-pad.show {
-            display: grid;
-        }
-
-        .number-btn {
-            padding: 8px;
-            border: 1px solid #eee;
-            border-radius: 4px;
-            background: #fff;
-            cursor: pointer;
-            font-size: 12px;
-            text-align: center;
-        }
-
-        .number-btn:hover {
-            background: #f5f5f5;
         }
 
         .selected-elements {
@@ -211,15 +125,12 @@
         }
 
         .element-input {
-            min-width: 300px;
-            font-size: 12px;
-            flex: 0;
-            width: auto;
+            flex: 1;
             background: transparent;
             border: none;
             color: #333;
             outline: none;
-            padding: 0;
+            min-width: 60px;
         }
 
         .search-btn {
@@ -243,10 +154,10 @@
             display: flex;
             flex-direction: column;
             gap: 4px;
-            padding: 10px 0px;
+            padding: 20px 40px;
             border-radius: 8px;
             margin: 0 auto;
-            max-width: 1200px;
+            max-width: 1000px;
         }
 
         .element-row {
@@ -255,8 +166,8 @@
         }
 
         .element, .spacer {
-            width: 50px;
-            height: 50px;
+            width: 44px;
+            height: 44px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -272,18 +183,6 @@
         .element {
             background: #fff;
             border: 1px solid rgba(0, 0, 0, 0.1);
-            transition: all 0.2s ease;
-        }
-
-        .element.selected {
-            background: #1a73e8;
-            color: white;
-            transform: scale(1.05);
-            border: none;
-        }
-
-        .element.selected .atomic-number {
-            color: rgba(255, 255, 255, 0.7);
         }
 
         .element:hover {
@@ -320,43 +219,44 @@
 
         /* 右侧元素信息区域 */
         .element-info {
-            border-radius: 12px;
-            padding: 16px;
+            border-radius: 8px;
+            padding: 20px;
+            padding-left: 16px;
             overflow-y: auto;
-            background: #ffffff;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+            background: #fff;
+            border: 1px solid #eee;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .element-info-header {
             display: flex;
             align-items: center;
             gap: 16px;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eee;
         }
 
         .element-symbol {
-            width: 56px;
-            height: 56px;
+            width: 60px;
+            height: 60px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             background: #f8f9fa;
-            border-radius: 10px;
+            border: 1px solid #eee;
+            border-radius: 8px;
             color: #1a73e8;
         }
 
         .element-symbol .symbol {
             font-size: 24px;
-            font-weight: 600;
+            font-weight: bold;
         }
 
         .element-symbol .atomic-number {
-            font-size: 10px;
-            color: #666;
+            font-size: 12px;
         }
 
         .element-basic-info {
@@ -364,82 +264,60 @@
         }
 
         .element-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: #2c3e50;
+            font-size: 18px;
             margin-bottom: 4px;
+            color: #333;
         }
 
         .element-category {
             font-size: 12px;
             color: #666;
-            background: #f8f9fa;
-            padding: 2px 8px;
-            border-radius: 4px;
-            display: inline-block;
         }
 
         .info-section {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .info-section-title {
-            font-size: 12px;
-            color: #2c3e50;
-            margin-bottom: 10px;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 12px;
             font-weight: 500;
-            display: flex;
-            align-items: center;
         }
 
         .property-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            gap: 12px;
         }
 
         .property-item {
-            padding: 10px;
             background: #f8f9fa;
-            border-radius: 6px;
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #eee;
         }
 
         .property-label {
-            font-size: 11px;
+            font-size: 12px;
             color: #666;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
         }
 
         .property-value {
-            font-size: 12px;
-            color: #2c3e50;
+            font-size: 14px;
+            color: #333;
         }
 
         .electron-config {
-            font-family: 'Roboto Mono', monospace;
-            padding: 10px;
+            font-family: monospace;
             background: #f8f9fa;
-            border-radius: 6px;
-            font-size: 12px;
-            color: #2c3e50;
-        }
-
-        /* 滚动条样式 */
-        .element-info::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .element-info::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .element-info::-webkit-scrollbar-thumb {
-            background: #ddd;
-            border-radius: 3px;
-        }
-
-        .element-info::-webkit-scrollbar-thumb:hover {
-            background: #ccc;
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #eee;
+            margin-top: 8px;
+            font-size: 14px;
+            color: #333;
         }
 
         /* 选中元素的标签样式 */
@@ -452,7 +330,6 @@
             align-items: center;
             gap: 4px;
             font-size: 13px;
-            white-space: nowrap;
         }
 
         .remove-tag {
@@ -472,33 +349,33 @@
         <!-- 顶部导航 -->
         <nav class="top-nav">
             <div class="nav-left">
-                <a href="../../../index.html" class="logo-link">
-                    <img src="../../../assets/logo.png" alt="IDM Explorer Lab" class="logo">
+                <a href="http://localhost:8080/index.html" class="logo-link">
+                    <img src="./晶体数据库 - IDM Explorer Lab_files/logo.png" alt="IDM Explorer Lab" class="logo">
                 </a>
             </div>
             <div class="nav-center">
                 <div class="dropdown">
-                    <a href="#" class="nav-item active">材料数据库 <span class="dropdown-arrow">▾</span></a>
+                    <a href="http://localhost:8080/pages/database/idmdb/jingtiku.html#" class="nav-item active">材料数据库 <span class="dropdown-arrow">▾</span></a>
                     <div class="dropdown-content">
-                        <a href="../index.html" class="dropdown-item">公共数据库</a>
-                        <a href="../idmdb.html" class="dropdown-item active">IDM数据库</a>
-                        <a href="../privatedb.html" class="dropdown-item">私有数据集</a>
+                        <a href="http://localhost:8080/pages/database/index.html" class="dropdown-item">公共数据库</a>
+                        <a href="http://localhost:8080/pages/database/idmdb.html" class="dropdown-item active">IDM数据库</a>
+                        <a href="http://localhost:8080/pages/database/privatedb.html" class="dropdown-item">私有数据集</a>
                     </div>
                 </div>
-                <a href="../../simulation/index.html" class="nav-item">跨尺度仿真</a>
-                <a href="../../workflow/index.html" class="nav-item">高通量计算</a>
-                <a href="../../preparation/index.html" class="nav-item">表征与制备</a>
+                <a href="http://localhost:8080/pages/simulation/index.html" class="nav-item">跨尺度仿真</a>
+                <a href="http://localhost:8080/pages/workflow/index.html" class="nav-item">高通量计算</a>
+                <a href="http://localhost:8080/pages/preparation/index.html" class="nav-item">表征与制备</a>
                 <div class="dropdown">
-                    <a href="../../../pages/alpha.html" class="nav-item">AI平台 <span class="dropdown-arrow">▾</span></a>
+                    <a href="http://localhost:8080/pages/alpha.html" class="nav-item">AI平台 <span class="dropdown-arrow">▾</span></a>
                     <div class="dropdown-content">
-                        <a href="../../../../pages/alpha.html" class="dropdown-item">Alpha模型</a>
-                        <a href="#" class="dropdown-item">AI Studio</a>
+                        <a href="http://localhost:8080/pages/alpha.html" class="dropdown-item">Alpha模型</a>
+                        <a href="http://localhost:8080/pages/database/idmdb/jingtiku.html#" class="dropdown-item">AI Studio</a>
                     </div>
                 </div>
             </div>
             <div class="nav-right">
-                <a href="#" class="nav-item">我的项目</a>
-                <a href="#" class="nav-item">系统管理员 ▼</a>
+                <a href="http://localhost:8080/pages/database/idmdb/jingtiku.html#" class="nav-item">我的项目</a>
+                <a href="http://localhost:8080/pages/database/idmdb/jingtiku.html#" class="nav-item">系统管理员 ▼</a>
             </div>
         </nav>
 
@@ -508,15 +385,15 @@
             <div class="side-nav">
                 <h2 class="side-title">材料数据库</h2>
                 <div class="nav-list">
-                    <a href="../index.html" class="nav-item">
+                    <a href="http://localhost:8080/pages/database/index.html" class="nav-item">
                         <i class="fas fa-database"></i>
                         <span>公共数据库</span>
                     </a>
-                    <a href="../idmdb.html" class="nav-item active">
+                    <a href="http://localhost:8080/pages/database/idmdb.html" class="nav-item active">
                         <i class="fas fa-server"></i>
                         <span>IDM数据库</span>
                     </a>
-                    <a href="../privatedb.html" class="nav-item">
+                    <a href="http://localhost:8080/pages/database/privatedb.html" class="nav-item">
                         <i class="fas fa-user-lock"></i>
                         <span>私有数据集</span>
                     </a>
@@ -524,7 +401,7 @@
             </div>
 
             <!-- 右侧内容区 -->
-            <div class="content-area crystal-db" style="padding: 0px;">
+            <div class="content-area crystal-db">
                 <div class="crystal-layout">
                     <!-- 左侧筛选区 -->
                     <div class="crystal-filters">
@@ -587,31 +464,11 @@
                     <div class="crystal-center">
                         <!-- 元素输入区 -->
                         <div class="element-input-area">
-                            <select class="search-type-select" id="searchType">
-                                <option value="element">元素</option>
-                                <option value="formula">化学式</option>
-                                <option value="id">ID标识</option>
-                                <option value="fulltext">全文检索</option>
-                            </select>
                             <div class="element-input-container">
                                 <div class="selected-elements" id="selectedElements">
                                     <!-- 选中的元素会显示在这里 -->
                                 </div>
-                                <input type="text" class="element-input" id="elementInput" placeholder="请选择元素进行筛选（可多选）">
-                                <div class="element-dropdown" id="elementDropdown">
-                                    <!-- 元素列表会动态生成在这里 -->
-                                </div>
-                                <div class="number-pad" id="numberPad">
-                                    <div class="number-btn">1</div>
-                                    <div class="number-btn">2</div>
-                                    <div class="number-btn">3</div>
-                                    <div class="number-btn">4</div>
-                                    <div class="number-btn">5</div>
-                                    <div class="number-btn">6</div>
-                                    <div class="number-btn">7</div>
-                                    <div class="number-btn">8</div>
-                                    <div class="number-btn">9</div>
-                                </div>
+                                <input type="text" class="element-input" placeholder="输入元素符号" id="elementInput">
                             </div>
                             <button class="search-btn">搜索</button>
                         </div>
@@ -1241,106 +1098,6 @@
                     const elementInput = document.getElementById('elementInput');
                     const elementInfo = document.getElementById('elementInfo');
 
-                    // 加载元素数据
-                    let elementData = {};
-                    fetch('elements.json')
-                        .then(response => response.json())
-                        .then(data => {
-                            elementData = data;
-                        })
-                        .catch(error => {
-                            console.error('加载元素数据失败:', error);
-                        });
-
-                    // 更新元素信息的函数
-                    function updateElementInfo(symbol) {
-                        try {
-                            const data = elementData[symbol];
-                            if (!data) {
-                                console.error('元素数据不存在:', symbol);
-                                return;
-                            }
-                            
-                            // 更新右侧信息区域
-                            elementInfo.innerHTML = `
-                                <div class="element-info-header">
-                                    <div class="element-symbol">
-                                        <div class="atomic-number">${data.atomicNumber}</div>
-                                        <div class="symbol">${symbol}</div>
-                                    </div>
-                                    <div class="element-basic-info">
-                                        <div class="element-name">${data.name}</div>
-                                        <div class="element-category">${data.category}</div>
-                                    </div>
-                                </div>
-
-                                <div class="info-section">
-                                    <div class="info-section-title">基本性质</div>
-                                    <div class="property-grid">
-                                        <div class="property-item">
-                                            <div class="property-label">原子质量</div>
-                                            <div class="property-value">${data.atomicMass} u</div>
-                                        </div>
-                                        <div class="property-item">
-                                            <div class="property-label">电子构型</div>
-                                            <div class="property-value">${data.electronConfig}</div>
-                                        </div>
-                                        <div class="property-item">
-                                            <div class="property-label">密度</div>
-                                            <div class="property-value">${data.density} g/cm³</div>
-                                        </div>
-                                        <div class="property-item">
-                                            <div class="property-label">熔点</div>
-                                            <div class="property-value">${data.meltingPoint}°C</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="info-section">
-                                    <div class="info-section-title">电子构型</div>
-                                    <div class="electron-config">${data.electronConfig}</div>
-                                </div>
-
-                                <div class="info-section">
-                                    <div class="info-section-title">物理性质</div>
-                                    <div class="property-grid">
-                                        <div class="property-item">
-                                            <div class="property-label">原子半径</div>
-                                            <div class="property-value">${data.atomicRadius} pm</div>
-                                        </div>
-                                        <div class="property-item">
-                                            <div class="property-label">电负性</div>
-                                            <div class="property-value">${data.electronegativity}</div>
-                                        </div>
-                                        <div class="property-item">
-                                            <div class="property-label">晶体结构</div>
-                                            <div class="property-value">${data.crystalStructure}</div>
-                                        </div>
-                                        <div class="property-item">
-                                            <div class="property-label">沸点</div>
-                                            <div class="property-value">${data.boilingPoint}°C</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="info-section">
-                                    <div class="info-section-title">其他信息</div>
-                                    <div class="property-grid">
-                                        <div class="property-item">
-                                            <div class="property-label">氧化态</div>
-                                            <div class="property-value">${data.oxidationStates}</div>
-                                        </div>
-                                        <div class="property-item">
-                                            <div class="property-label">发现年份</div>
-                                            <div class="property-value">${data.discovered}</div>
-                                        </div>
-                                    </div>
-                                </div>`;
-                        } catch (error) {
-                            console.error('更新元素信息失败:', error);
-                        }
-                    }
-
                     // 点击元素时的处理
                     periodicTable.addEventListener('click', function(e) {
                         const element = e.target.closest('.element');
@@ -1349,30 +1106,13 @@
                         const symbol = element.dataset.symbol;
                         if (!symbol) return;
 
-                        // 更新选中状态
-                        const isSelected = element.classList.contains('selected');
-                        if (isSelected) {
-                            // 取消选中
-                            element.classList.remove('selected');
-                            // 移除对应的标签
-                            const tag = selectedElements.querySelector(`[data-symbol="${symbol}"]`);
-                            if (tag) {
-                                tag.remove();
-                            }
-                        } else {
-                            // 选中元素
-                            element.classList.add('selected');
-                            // 添加到选中元素区域
-                            const tag = document.createElement('span');
-                            tag.className = 'element-tag';
-                            tag.dataset.symbol = symbol;
-                            tag.textContent = symbol;
-                            tag.innerHTML += '<span class="remove-tag">×</span>';
-                            selectedElements.appendChild(tag);
-                        }
+                        // 添加到选中元素区域
+                        const tag = document.createElement('span');
+                        tag.className = 'element-tag';
+                        tag.textContent = symbol;
+                        tag.innerHTML += '<span class="remove-tag">×</span>';
+                        selectedElements.appendChild(tag);
 
-                        // 更新元素信息
-                        updateElementInfo(symbol);
                         // 更新输入框
                         updateElementInput();
                     });
@@ -1380,102 +1120,17 @@
                     // 移除选中的元素
                     selectedElements.addEventListener('click', function(e) {
                         if (e.target.classList.contains('remove-tag')) {
-                            const tag = e.target.parentElement;
-                            const symbol = tag.dataset.symbol;
-                            
-                            // 移除周期表中对应元素的选中状态
-                            const element = periodicTable.querySelector(`.element[data-symbol="${symbol}"]`);
-                            if (element) {
-                                element.classList.remove('selected');
-                            }
-                            
-                            tag.remove();
+                            e.target.parentElement.remove();
                             updateElementInput();
                         }
                     });
 
                     // 更新输入框的值
                     function updateElementInput() {
-                        // 不再更新输入框的值
-                        elementInput.value = '';
+                        const tags = selectedElements.getElementsByClassName('element-tag');
+                        const symbols = Array.from(tags).map(tag => tag.textContent.replace('×', ''));
+                        elementInput.value = symbols.join(' ');
                     }
-
-                    // 添加搜索类型切换处理
-                    const searchType = document.getElementById('searchType');
-                    const elementDropdown = document.getElementById('elementDropdown');
-                    const numberPad = document.getElementById('numberPad');
-
-                    searchType.addEventListener('change', function() {
-                        const type = this.value;
-                        elementInput.value = '';
-                        elementDropdown.classList.remove('show');
-                        numberPad.classList.remove('show');
-                        
-                        switch(type) {
-                            case 'element':
-                                elementInput.placeholder = '请选择元素进行筛选（可多选）';
-                                break;
-                            case 'formula':
-                                elementInput.placeholder = '例如CrCl';
-                                break;
-                            case 'id':
-                                elementInput.placeholder = '输入示例（以英文逗号间隔）：hp-1,hp-2,hp-3';
-                                break;
-                            case 'fulltext':
-                                elementInput.placeholder = '输入文本进行全文检索';
-                                break;
-                        }
-                    });
-
-                    // 处理输入框点击事件
-                    elementInput.addEventListener('click', function() {
-                        const type = searchType.value;
-                        if (type === 'element') {
-                            elementDropdown.innerHTML = ''; // 清空现有内容
-                            // 生成元素列表
-                            for (const [symbol, data] of Object.entries(elementData)) {
-                                const item = document.createElement('div');
-                                item.className = 'element-dropdown-item';
-                                item.innerHTML = `
-                                    <span>${data.name}</span>
-                                    <span>${symbol}</span>
-                                `;
-                                item.addEventListener('click', () => {
-                                    const element = periodicTable.querySelector(`.element[data-symbol="${symbol}"]`);
-                                    if (element) {
-                                        element.click(); // 触发元素点击事件
-                                    }
-                                    elementDropdown.classList.remove('show');
-                                });
-                                elementDropdown.appendChild(item);
-                            }
-                            elementDropdown.classList.add('show');
-                        } else if (type === 'formula') {
-                            numberPad.classList.add('show');
-                        }
-                    });
-
-                    // 处理数字按钮点击
-                    numberPad.addEventListener('click', function(e) {
-                        if (e.target.classList.contains('number-btn')) {
-                            const number = e.target.textContent;
-                            const cursorPos = elementInput.selectionStart;
-                            const value = elementInput.value;
-                            elementInput.value = value.slice(0, cursorPos) + number + value.slice(cursorPos);
-                            elementInput.setSelectionRange(cursorPos + 1, cursorPos + 1);
-                            elementInput.focus();
-                        }
-                    });
-
-                    // 点击其他地方关闭下拉框和数字键盘
-                    document.addEventListener('click', function(e) {
-                        if (!elementInput.contains(e.target) && !elementDropdown.contains(e.target)) {
-                            elementDropdown.classList.remove('show');
-                        }
-                        if (!elementInput.contains(e.target) && !numberPad.contains(e.target)) {
-                            numberPad.classList.remove('show');
-                        }
-                    });
                 });
             </script>
         </div>
@@ -1486,5 +1141,6 @@
             <div class="tech-lines"></div>
         </div>
     </div>
-</body>
-</html>
+
+
+</body></html>

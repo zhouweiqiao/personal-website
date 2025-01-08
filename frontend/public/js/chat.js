@@ -24,11 +24,14 @@ const avatars = {
 async function loadUserConversations() {
     try {
         const token = localStorage.getItem('token');
+        console.log('Current token:', token ? `${token.substring(0, 20)}...` : 'No token');
+        
         if (!token) {
             console.error('No token found');
             return;
         }
 
+        console.log('Fetching conversations...');
         const response = await fetch('http://localhost:3001/api/conversations', {
             method: 'GET',
             headers: {
@@ -37,19 +40,35 @@ async function loadUserConversations() {
             }
         });
 
+        console.log('Response status:', response.status);
+        console.log('Response headers:', Object.fromEntries([...response.headers.entries()]));
+        
         if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Failed to load conversations:', errorText);
             throw new Error('Failed to load conversations');
         }
 
         const conversations = await response.json();
+        console.log('Received conversations:', conversations);
+        
+        // 限制最多显示16条会话
+        const limitedConversations = conversations.slice(0, 12);
         
         // 清空现有会话列表
+        console.log('Clearing conversation list');
         conversationList.innerHTML = '';
         
         // 添加"新建会话"按钮
+        console.log('Adding new chat button');
         const newChatButton = document.createElement('div');
         newChatButton.className = 'conversation-item new-chat';
         newChatButton.innerHTML = `
+            <div class="conversation-icon">
+                <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 1v14M1 8h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
             <div class="conversation-content">
                 <div class="conversation-title">新建会话</div>
             </div>
@@ -62,7 +81,20 @@ async function loadUserConversations() {
             });
             newChatButton.classList.add('active');
         };
+        console.log('New chat button created:', newChatButton.outerHTML);
         conversationList.appendChild(newChatButton);
+        console.log('New chat button added');
+
+        // 检查是否有会话数据
+        if (!Array.isArray(limitedConversations)) {
+            console.error('Conversations is not an array:', limitedConversations);
+            return;
+        }
+
+        if (limitedConversations.length === 0) {
+            console.log('No conversations found');
+            return;
+        }
 
         // 按日期对会话进行分组
         const groupedConversations = {
@@ -77,26 +109,32 @@ async function loadUserConversations() {
         const yesterday = new Date(today);
         yesterday.setDate(yesterday.getDate() - 1);
 
-        conversations.forEach(conversation => {
-            if (!conversation.formatted_date) return;
-
+        console.log('Processing conversations for grouping...');
+        limitedConversations.forEach(conversation => {
             try {
-                // 使用 formatted_date 字段，它已经是本地时间格式
-                const datePart = conversation.formatted_date.split(' ')[0]; // 获取日期部分
-                const date = new Date(datePart);
+                // 使用 created_at 字段
+                const date = new Date(conversation.created_at);
+                console.log('Processing date:', conversation.created_at, 'for conversation:', conversation.id);
 
-                if (isNaN(date.getTime())) return;
+                if (isNaN(date.getTime())) {
+                    console.log('Invalid date for conversation:', conversation.id);
+                    return;
+                }
 
                 // 去掉时间部分进行比较
                 const compareDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+                console.log('Compare date:', compareDate, 'for conversation:', conversation.id);
                 
                 if (compareDate.getTime() === today.getTime()) {
+                    console.log('Adding to Today:', conversation.id);
                     groupedConversations['今天'].push(conversation);
                 } else if (compareDate.getTime() === yesterday.getTime()) {
+                    console.log('Adding to Yesterday:', conversation.id);
                     groupedConversations['昨天'].push(conversation);
                 } else {
                     // 对于更早的日期，按具体日期分组
                     const dateKey = `${date.getMonth() + 1}月${date.getDate()}日`;
+                    console.log('Adding to Earlier:', dateKey, conversation.id);
                     if (!groupedConversations['更早'][dateKey]) {
                         groupedConversations['更早'][dateKey] = [];
                     }
@@ -107,8 +145,11 @@ async function loadUserConversations() {
             }
         });
 
+        console.log('Grouped conversations:', groupedConversations);
+
         // 添加今天的会话
         if (groupedConversations['今天'].length > 0) {
+            console.log('Adding today\'s conversations:', groupedConversations['今天'].length);
             const todayGroup = document.createElement('div');
             todayGroup.className = 'time-group';
             todayGroup.textContent = '今天';
@@ -122,6 +163,7 @@ async function loadUserConversations() {
 
         // 添加昨天的会话
         if (groupedConversations['昨天'].length > 0) {
+            console.log('Adding yesterday\'s conversations:', groupedConversations['昨天'].length);
             const yesterdayGroup = document.createElement('div');
             yesterdayGroup.className = 'time-group';
             yesterdayGroup.textContent = '昨天';
@@ -133,24 +175,30 @@ async function loadUserConversations() {
             });
         }
 
-        // 添加更早的会话，按日期排序
+        // 添加更早的会话
         const earlierDates = Object.keys(groupedConversations['更早']).sort((a, b) => {
             const dateA = new Date(a.replace(/[月日]/g, '/'));
             const dateB = new Date(b.replace(/[月日]/g, '/'));
-            return dateB - dateA; // 降序排列
+            return dateB - dateA;
         });
 
-        earlierDates.forEach(dateKey => {
-            const dateGroup = document.createElement('div');
-            dateGroup.className = 'time-group';
-            dateGroup.textContent = dateKey;
-            conversationList.appendChild(dateGroup);
+        if (earlierDates.length > 0) {
+            console.log('Adding earlier conversations:', earlierDates);
+            const earlierGroup = document.createElement('div');
+            earlierGroup.className = 'time-group';
+            earlierGroup.textContent = '更早';
+            conversationList.appendChild(earlierGroup);
 
-            groupedConversations['更早'][dateKey].forEach(conversation => {
-                const item = createConversationItem(conversation);
-                conversationList.appendChild(item);
+            earlierDates.forEach(dateKey => {
+                console.log('Adding conversations for date:', dateKey);
+                groupedConversations['更早'][dateKey].forEach(conversation => {
+                    const item = createConversationItem(conversation);
+                    conversationList.appendChild(item);
+                });
             });
-        });
+        }
+
+        console.log('Final conversation list HTML:', conversationList.innerHTML);
 
     } catch (error) {
         console.error('Error loading conversations:', error);
@@ -165,6 +213,10 @@ function createConversationItem(conversation) {
         item.classList.add('active');
     }
 
+    // 处理标题文字，限制最大长度为16个字符
+    const title = conversation.title || '未命名会话';
+    const truncatedTitle = title.length > 16 ? title.substring(0, 16) + '...' : title;
+
     item.innerHTML = `
         <div class="conversation-icon">
             <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -172,7 +224,7 @@ function createConversationItem(conversation) {
             </svg>
         </div>
         <div class="conversation-content">
-            <div class="conversation-title">${conversation.title || '未命名会话'}</div>
+            <div class="conversation-title">${truncatedTitle}</div>
         </div>
         <button class="delete-button">×</button>
     `;
@@ -201,7 +253,8 @@ function createConversationItem(conversation) {
                 const response = await fetch(`http://localhost:3001/api/conversations/${conversation.id}`, {
                     method: 'DELETE',
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
                     }
                 });
 
@@ -334,8 +387,10 @@ async function init() {
     clearButton.onclick = clearChat;
     chatInput.onkeypress = handleEnterKey;
     
-    // 显示欢迎消息
-    appendMessage('您好！我是 Alpha AI 助手，有什么我可以帮您的吗？', false);
+    // 只在没有当前会话时显示欢迎消息
+    if (!currentConversationId) {
+        appendMessage('您好！我是 Alpha AI 助手，有什么我可以帮您的吗？', false);
+    }
 }
 
 // 随机选择一个 AI 助手头像
@@ -446,24 +501,31 @@ function clearChat() {
 // 发送消息到服务器（带重试机制）
 async function sendMessageWithRetry(content, retryCount = 3, retryDelay = 1000) {
     const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+    const token = localStorage.getItem('token');
     
     for (let i = 0; i < retryCount; i++) {
         try {
+            console.log('Sending message attempt', i + 1);
             const response = await fetch('http://localhost:3001/api/zhipu/chat', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     messages: messageHistory
                 })
             });
 
+            console.log('Message response status:', response.status);
             if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Message failed:', errorText);
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
+            console.log('Message response:', data);
             
             if (data.choices && data.choices[0] && data.choices[0].message) {
                 return data.choices[0].message.content;
@@ -482,37 +544,26 @@ async function sendMessageWithRetry(content, retryCount = 3, retryDelay = 1000) 
 
 // 检查登录状态
 async function checkLoginStatus() {
+    console.log('Checking login status...');
     const token = localStorage.getItem('token');
-    if (!token) {
-        // 如果没有 token，尝试登录
-        await login();
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const username = localStorage.getItem('username');
+    
+    console.log('Current login state:', { token: token ? `${token.substring(0, 20)}...` : null, isLoggedIn, username });
+    
+    if (!token || !isLoggedIn || !username) {
+        console.log('Not logged in, redirecting to login page...');
+        window.location.href = '/login.html';
+        return;
+    } else {
+        console.log('Already logged in as:', username);
     }
 }
 
 // 登录函数
 async function login() {
-    try {
-        const response = await fetch('http://localhost:3001/api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                username: 'zhou',
-                password: '123456'
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error('Login failed');
-        }
-
-        const data = await response.json();
-        localStorage.setItem('token', data.token);
-    } catch (error) {
-        console.error('Login error:', error);
-        appendMessage('登录失败，请刷新页面重试', false);
-    }
+    console.log('Redirecting to login page...');
+    window.location.href = '/login.html';
 }
 
 // 处理发送按钮点击
@@ -628,5 +679,12 @@ async function handleSendMessage(content) {
     }
 }
 
-// 在页面加载完成后初始化
-window.onload = init; 
+// 确保 init 函数只执行一次
+let initialized = false;
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM content loaded');
+    if (!initialized) {
+        initialized = true;
+        init();
+    }
+}); 

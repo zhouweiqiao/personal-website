@@ -144,7 +144,7 @@ body {
 /* 右侧内容区域 */
 .content-area {
     flex: 1;
-    padding: 20px;
+    
     overflow-y: auto;
     background: linear-gradient(rgba(255, 255, 255, 0.97), rgba(255, 255, 255, 0.97)),
                 url('../../assets/bg_db.jpeg') center/cover no-repeat fixed;

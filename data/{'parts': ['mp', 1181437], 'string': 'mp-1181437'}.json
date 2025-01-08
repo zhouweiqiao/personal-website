@@ -1,0 +1,135 @@
+{
+  "material_id": {
+    "parts": [
+      "mp",
+      1181437
+    ],
+    "string": "mp-1181437"
+  },
+  "formula_pretty": "FeO",
+  "elements": [
+    {
+      "@module": "pymatgen.core.periodic_table",
+      "@class": "Element",
+      "element": "Fe"
+    },
+    {
+      "@module": "pymatgen.core.periodic_table",
+      "@class": "Element",
+      "element": "O"
+    }
+  ],
+  "nelements": 2,
+  "composition": {
+    "Fe": 1.0,
+    "O": 1.0
+  },
+  "composition_reduced": {
+    "Fe": 1.0,
+    "O": 1.0
+  },
+  "chemsys": "Fe-O",
+  "volume": 98.2365765156388,
+  "density": 1.214419691197656,
+  "density_atomic": 49.1182882578194,
+  "symmetry": {
+    "crystal_system": {},
+    "symbol": "I4/mmm",
+    "number": 139,
+    "point_group": "4/mmm",
+    "symprec": 0.1,
+    "version": "2.5.0"
+  },
+  "structure": {
+    "@module": "pymatgen.core.structure",
+    "@class": "Structure",
+    "charge": 0,
+    "lattice": {
+      "matrix": [
+        [
+          -3.681395,
+          3.681395,
+          1.8121260000000001
+        ],
+        [
+          3.681395,
+          -3.681395,
+          1.8121260000000001
+        ],
+        [
+          3.681395,
+          3.681395,
+          -1.8121260000000001
+        ]
+      ],
+      "pbc": [
+        true,
+        true,
+        true
+      ],
+      "a": 5.512634481981007,
+      "b": 5.512634481981007,
+      "c": 5.512634481981007,
+      "alpha": 96.20340083535496,
+      "beta": 96.20340083535496,
+      "gamma": 141.61751219970114,
+      "volume": 98.2365765156388
+    },
+    "properties": {},
+    "sites": [
+      {
+        "species": [
+          {
+            "element": "Fe",
+            "occu": 1
+          }
+        ],
+        "abc": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "properties": {
+          "magmom": 3.789
+        },
+        "label": "Fe"
+      },
+      {
+        "species": [
+          {
+            "element": "O",
+            "occu": 1
+          }
+        ],
+        "abc": [
+          0.5,
+          0.5,
+          0.0
+        ],
+        "xyz": [
+          0.0,
+          0.0,
+          1.8121260000000001
+        ],
+        "properties": {
+          "magmom": 0.117
+        },
+        "label": "O"
+      }
+    ]
+  },
+  "formation_energy_per_atom": -0.42865644750000004,
+  "energy_above_hull": 1.052862939999999,
+  "band_gap": 1.886099999999999,
+  "is_gap_direct": false,
+  "is_metal": false,
+  "ordering": "FM",
+  "total_magnetization": 4.0012665,
+  "bulk_modulus": null,
+  "shear_modulus": null
+}
