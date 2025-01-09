@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分子数据库 - IDM Explorer Lab</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="molecule-results.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://3Dmol.csb.pitt.edu/build/3Dmol-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.157.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.157.0/examples/jsm/"
+        }
+    }
+    </script>
+    <script type="module" src="molecule-viewer.js"></script>
+</head>
+<body>
+    <div class="tech-container">
+        <!-- 顶部导航 -->
+        <nav class="top-nav">
+            <div class="nav-left">
+                <a href="../../../../index.html" class="logo-link">
+                    <img src="../../../../assets/logo.png" alt="IDM Explorer Lab" class="logo">
+                </a>
+            </div>
+            <div class="nav-center">
+                <div class="dropdown">
+                    <a href="#" class="nav-item active">材料数据库 <span class="dropdown-arrow">▾</span></a>
+                    <div class="dropdown-content">
+                        <a href="../index.html" class="dropdown-item">公共数据库</a>
+                        <a href="../IDMdb.html" class="dropdown-item active">IDM数据库</a>
+                        <a href="../privatedb.html" class="dropdown-item">私有数据集</a>
+                    </div>
+                </div>
+                <a href="../../simulation/index.html" class="nav-item">跨尺度仿真</a>
+                <a href="../../workflow/index.html" class="nav-item">高通量计算</a>
+                <a href="../../preparation/index.html" class="nav-item">表征与制备</a>
+                <div class="dropdown">
+                    <a href="../../../alpha.html" class="nav-item">AI平台 <span class="dropdown-arrow">▾</span></a>
+                    <div class="dropdown-content">
+                        <a href="../../../alpha.html" class="dropdown-item">Alpha模型</a>
+                        <a href="#" class="dropdown-item">AI Studio</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-right">
+                <a href="#" class="nav-item">我的项目</a>
+                <a href="#" class="nav-item">系统管理员 ▼</a>
+            </div>
+        </nav>
+
+        <!-- 主要内容区域 -->
+        <div class="main-content">
+            <!-- 左侧导航 -->
+            <div class="side-nav">
+                <h2 class="side-title">材料数据库</h2>
+                <div class="nav-list">
+                    <a href="../index.html" class="nav-item">
+                        <i class="fas fa-database"></i>
+                        <span>公共数据库</span>
+                    </a>
+                    <a href="../IDMdb.html" class="nav-item active">
+                        <i class="fas fa-server"></i>
+                        <span>IDM数据库</span>
+                    </a>
+                    <a href="../privatedb.html" class="nav-item">
+                        <i class="fas fa-user-lock"></i>
+                        <span>私有数据集</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 右侧内容区 -->
+            <div class="content-area crystal-db">
+                <!-- 面包屑导航 -->
+                <div class="breadcrumb">
+                    <a href="../IDMdb.html">IDM数据库</a>
+                    <span class="breadcrumb-separator">></span>
+                    <span class="current">分子数据库</span>
+                </div>
+
+                <!-- 主要内容区域 -->
+                <div class="main-content-wrapper">
+                    <!-- 顶部搜索区域 -->
+                    <div class="search-area">
+                        <h1>Explore chemistry</h1>
+                        <p class="subtitle">Quickly find chemical information from authoritative sources</p>
+                        
+                        <div class="search-box">
+                            <div class="search-type">
+                                <select>
+                                    <option>化学式</option>
+                                    <option>ID标识</option>
+                                    <option>SMILES码</option>
+                                </select>
+                            </div>
+                            <input type="text" placeholder="输入示例: C6H6, C2H4, C2H4O2" class="search-input">
+                            <button class="search-btn">搜索</button>
+                        </div>
+                    </div>
+
+                    <!-- 内容区容器 -->
+                    <div class="content-container">
+                        <!-- 左侧筛选区 -->
+                        <div class="filter-panel">
+                            <div class="filter-group">
+                                <div class="filter-header">
+                                    <span>重置</span>
+                                    <i class="fas fa-sync-alt"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <h3>常用</h3>
+                                <select>
+                                    <option>请选择</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-group">
+                                <h3>羟基数量</h3>
+                                <div class="range-slider">
+                                    <input type="range" min="0" max="100">
+                                </div>
+                            </div>
+
+                            <div class="filter-group">
+                                <h3>环氧基数量</h3>
+                                <div class="range-slider">
+                                    <input type="range" min="0" max="100">
+                                </div>
+                            </div>
+
+                            <div class="filter-group">
+                                <h3>苯环数量</h3>
+                                <div class="range-slider">
+                                    <input type="range" min="0" max="100">
+                                </div>
+                            </div>
+
+                            <div class="filter-group">
+                                <h3>酮基数量</h3>
+                                <div class="range-slider">
+                                    <input type="range" min="0" max="100">
+                                </div>
+                            </div>
+
+                            <div class="filter-group">
+                                <h3>醛基数量</h3>
+                                <div class="range-slider">
+                                    <input type="range" min="0" max="100">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 右侧结果区域 -->
+                        <div class="search-results">
+                            <div class="results-header">
+                                <div class="result-type">
+                                    <span class="active">化学式</span>
+                                    <span>ID标识</span>
+                                    <span>SMILES码</span>
+                                </div>
+                                <div class="results-count">10条结果</div>
+                                <div class="results-per-page">
+                                    <span>10</span>
+                                    <span>行/页</span>
+                                </div>
+                            </div>
+
+                            <!-- 结果列表 -->
+                            <div class="results-list">
+                                <!-- 结果项 1 -->
+                                <div class="result-item" data-molecule-id="297">
+                                    <div class="structure-view">
+                                        <div class="view-2d">
+                                            <img src="fenzidata/2d/297.png" alt="2D Structure">
+                                            <span>2D</span>
+                                        </div>
+                                        <div class="view-3d">
+                                            <span>3D</span>
+                                        </div>
+                                        <div class="molecule-info">
+                                            <div class="info-header">
+                                                <h3>化学式：CH4</h3>
+                                                <div class="download-buttons">
+                                                    <button onclick="downloadStructure('2d', 297)">下载2D结构</button>
+                                                    <button onclick="downloadStructure('3d', 297)">下载3D结构</button>
+                                                    <button onclick="downloadProperties(297)">下载属性</button>
+                                                </div>
+                                            </div>
+                                            <div class="info-grid"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 结果项 2 -->
+                                <div class="result-item" data-molecule-id="241">
+                                    <div class="structure-view">
+                                        <div class="view-2d">
+                                            <img src="fenzidata/2d/241.png" alt="2D Structure">
+                                            <span>2D</span>
+                                        </div>
+                                        <div class="view-3d">
+                                            <span>3D</span>
+                                        </div>
+                                        <div class="molecule-info">
+                                            <div class="info-header">
+                                                <h3>化学式：CH3COOH</h3>
+                                                <div class="download-buttons">
+                                                    <button onclick="downloadStructure('2d', 241)">下载2D结构</button>
+                                                    <button onclick="downloadStructure('3d', 241)">下载3D结构</button>
+                                                    <button onclick="downloadProperties(241)">下载属性</button>
+                                                </div>
+                                            </div>
+                                            <div class="info-grid"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 结果项 3 -->
+                                <div class="result-item" data-molecule-id="887">
+                                    <div class="structure-view">
+                                        <div class="view-2d">
+                                            <img src="fenzidata/2d/887.png" alt="2D Structure">
+                                            <span>2D</span>
+                                        </div>
+                                        <div class="view-3d">
+                                            <span>3D</span>
+                                        </div>
+                                        <div class="molecule-info">
+                                            <div class="info-header">
+                                                <h3>化学式：CH3OH</h3>
+                                                <div class="download-buttons">
+                                                    <button onclick="downloadStructure('2d', 887)">下载2D结构</button>
+                                                    <button onclick="downloadStructure('3d', 887)">下载3D结构</button>
+                                                    <button onclick="downloadProperties(887)">下载属性</button>
+                                                </div>
+                                            </div>
+                                            <div class="info-grid"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 结果项 4 -->
+                                <div class="result-item" data-molecule-id="702">
+                                    <div class="structure-view">
+                                        <div class="view-2d">
+                                            <img src="fenzidata/2d/702.png" alt="2D Structure">
+                                            <span>2D</span>
+                                        </div>
+                                        <div class="view-3d">
+                                            <span>3D</span>
+                                        </div>
+                                        <div class="molecule-info">
+                                            <div class="info-header">
+                                                <h3>化学式：C2H5OH</h3>
+                                                <div class="download-buttons">
+                                                    <button onclick="downloadStructure('2d', 702)">下载2D结构</button>
+                                                    <button onclick="downloadStructure('3d', 702)">下载3D结构</button>
+                                                    <button onclick="downloadProperties(702)">下载属性</button>
+                                                </div>
+                                            </div>
+                                            <div class="info-grid"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 结果项 5 -->
+                                <div class="result-item" data-molecule-id="962">
+                                    <div class="structure-view">
+                                        <div class="view-2d">
+                                            <img src="fenzidata/2d/962.png" alt="2D Structure">
+                                            <span>2D</span>
+                                        </div>
+                                        <div class="view-3d">
+                                            <span>3D</span>
+                                        </div>
+                                        <div class="molecule-info">
+                                            <div class="info-header">
+                                                <h3>化学式：C6H5OH</h3>
+                                                <div class="download-buttons">
+                                                    <button onclick="downloadStructure('2d', 962)">下载2D结构</button>
+                                                    <button onclick="downloadStructure('3d', 962)">下载3D结构</button>
+                                                    <button onclick="downloadProperties(962)">下载属性</button>
+                                                </div>
+                                            </div>
+                                            <div class="info-grid"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 结果项 6 -->
+                                <div class="result-item" data-molecule-id="6322">
+                                    <div class="structure-view">
+                                        <div class="view-2d">
+                                            <img src="fenzidata/2d/6322.png" alt="2D Structure">
+                                            <span>2D</span>
+                                        </div>
+                                        <div class="view-3d">
+                                            <span>3D</span>
+                                        </div>
+                                        <div class="molecule-info">
+                                            <div class="info-header">
+                                                <h3>化学式：C2H4O</h3>
+                                                <div class="download-buttons">
+                                                    <button onclick="downloadStructure('2d', 6322)">下载2D结构</button>
+                                                    <button onclick="downloadStructure('3d', 6322)">下载3D结构</button>
+                                                    <button onclick="downloadProperties(6322)">下载属性</button>
+                                                </div>
+                                            </div>
+                                            <div class="info-grid"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 结果项 7 -->
+                                <div class="result-item" data-molecule-id="1140">
+                                    <div class="structure-view">
+                                        <div class="view-2d">
+                                            <img src="fenzidata/2d/1140.png" alt="2D Structure">
+                                            <span>2D</span>
+                                        </div>
+                                        <div class="view-3d">
+                                            <span>3D</span>
+                                        </div>
+                                        <div class="molecule-info">
+                                            <div class="info-header">
+                                                <h3>化学式：CH3CHO</h3>
+                                                <div class="download-buttons">
+                                                    <button onclick="downloadStructure('2d', 1140)">下载2D结构</button>
+                                                    <button onclick="downloadStructure('3d', 1140)">下载3D结构</button>
+                                                    <button onclick="downloadProperties(1140)">下载属性</button>
+                                                </div>
+                                            </div>
+                                            <div class="info-grid"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 结果项 8 -->
+                                <div class="result-item" data-molecule-id="7844">
+                                    <div class="structure-view">
+                                        <div class="view-2d">
+                                            <img src="fenzidata/2d/7844.png" alt="2D Structure">
+                                            <span>2D</span>
+                                        </div>
+                                        <div class="view-3d">
+                                            <span>3D</span>
+                                        </div>
+                                        <div class="molecule-info">
+                                            <div class="info-header">
+                                                <h3>化学式：C6H5NO2</h3>
+                                                <div class="download-buttons">
+                                                    <button onclick="downloadStructure('2d', 7844)">下载2D结构</button>
+                                                    <button onclick="downloadStructure('3d', 7844)">下载3D结构</button>
+                                                    <button onclick="downloadProperties(7844)">下载属性</button>
+                                                </div>
+                                            </div>
+                                            <div class="info-grid"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 结果项 9 -->
+                                <div class="result-item" data-molecule-id="7876">
+                                    <div class="structure-view">
+                                        <div class="view-2d">
+                                            <img src="fenzidata/2d/7876.png" alt="2D Structure">
+                                            <span>2D</span>
+                                        </div>
+                                        <div class="view-3d">
+                                            <span>3D</span>
+                                        </div>
+                                        <div class="molecule-info">
+                                            <div class="info-header">
+                                                <h3>化学式：C3H6O</h3>
+                                                <div class="download-buttons">
+                                                    <button onclick="downloadStructure('2d', 7876)">下载2D结构</button>
+                                                    <button onclick="downloadStructure('3d', 7876)">下载3D结构</button>
+                                                    <button onclick="downloadProperties(7876)">下载属性</button>
+                                                </div>
+                                            </div>
+                                            <div class="info-grid"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 结果项 10 -->
+                                <div class="result-item" data-molecule-id="8871">
+                                    <div class="structure-view">
+                                        <div class="view-2d">
+                                            <img src="fenzidata/2d/8871.png" alt="2D Structure">
+                                            <span>2D</span>
+                                        </div>
+                                        <div class="view-3d">
+                                            <span>3D</span>
+                                        </div>
+                                        <div class="molecule-info">
+                                            <div class="info-header">
+                                                <h3>化学式：C4H8O2</h3>
+                                                <div class="download-buttons">
+                                                    <button onclick="downloadStructure('2d', 8871)">下载2D结构</button>
+                                                    <button onclick="downloadStructure('3d', 8871)">下载3D结构</button>
+                                                    <button onclick="downloadProperties(8871)">下载属性</button>
+                                                </div>
+                                            </div>
+                                            <div class="info-grid"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 分页 -->
+                            <div class="pagination">
+                                <button class="prev-page">上一页</button>
+                                <div class="page-numbers">
+                                    <span class="active">1</span>
+                                    <span>2</span>
+                                    <span>3</span>
+                                    <span>...</span>
+                                    <span>10</span>
+                                </div>
+                                <button class="next-page">下一页</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 背景装饰元素 -->
+        <div class="tech-background">
+            <div class="matrix-bg"></div>
+            <div class="tech-lines"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import MoleculeViewer from './molecule-viewer.js';
+
+        // 用于存储所有分子查看器实例
+        const viewers = new Map();
+        
+        // 最大活跃查看器数量
+        const MAX_ACTIVE_VIEWERS = 5;
+        
+        // 存储查看器的最后访问时间
+        const viewerLastAccess = new Map();
+
+        // 初始化函数
+        async function initializeMoleculeViews() {
+            try {
+                // 清理现有的查看器
+                cleanupAllViewers();
+
+                // 获取最后30个分子的ID（从200倒序）
+                const moleculeIds = Array.from({length: 30}, (_, i) => 200 - i);
+                const resultsContainer = document.querySelector('.results-list');
+                resultsContainer.innerHTML = ''; // 清空现有内容
+
+                for (const moleculeId of moleculeIds) {
+                    try {
+                        // 创建结果项容器
+                        const resultItem = document.createElement('div');
+                        resultItem.className = 'result-item';
+                        resultItem.dataset.moleculeId = moleculeId;
+
+                        // 创建基本结构
+                        resultItem.innerHTML = `
+                            <div class="structure-view">
+                                <div class="view-2d">
+                                    <img src="fenzidata/2d/${moleculeId}.png" alt="2D Structure">
+                                    <span>2D</span>
+                                </div>
+                                <div class="view-3d">
+                                    <span>3D</span>
+                                </div>
+                                <div class="molecule-info">
+                                    <div class="info-header">
+                                        <h3>分子序号：${moleculeId}</h3>
+                                        <div class="download-buttons">
+                                            <button onclick="downloadStructure('2d', ${moleculeId})">下载2D结构</button>
+                                            <button onclick="downloadStructure('3d', ${moleculeId})">下载3D结构</button>
+                                            <button onclick="downloadProperties(${moleculeId})">下载属性</button>
+                                        </div>
+                                    </div>
+                                    <div class="info-grid"></div>
+                                </div>
+                            </div>
+                        `;
+
+                        resultsContainer.appendChild(resultItem);
+
+                        // 加载分子数据
+                        const response = await fetch(`fenzidata/json/${moleculeId}.json`);
+                        const data = await response.json();
+
+                        // 更新分子信息
+                        updateMoleculeInfo(resultItem, data);
+
+                        // 创建观察器来监控3D视图的可见性
+                        const viewerContainer = resultItem.querySelector('.view-3d');
+                        const viewerId = `viewer-${moleculeId}`;
+                        viewerContainer.id = viewerId;
+
+                        const observer = new IntersectionObserver(
+                            (entries) => {
+                                entries.forEach(entry => {
+                                    if (entry.isIntersecting) {
+                                        initializeViewer(moleculeId, data);
+                                    } else {
+                                        disposeViewer(moleculeId);
+                                    }
+                                });
+                            },
+                            { threshold: 0.1 }
+                        );
+
+                        observer.observe(viewerContainer);
+
+                    } catch (error) {
+                        console.error(`Error loading molecule ${moleculeId}:`, error);
+                    }
+                }
+
+                // 更新结果计数
+                document.querySelector('.results-count').textContent = '30条结果';
+
+            } catch (error) {
+                console.error('Error initializing molecule views:', error);
+            }
+        }
+
+        // 初始化查看器
+        async function initializeViewer(moleculeId, data) {
+            try {
+                // 如果已经存在查看器，更新最后访问时间
+                if (viewers.has(moleculeId)) {
+                    viewerLastAccess.set(moleculeId, Date.now());
+                    return;
+                }
+
+                // 检查活跃查看器数量
+                if (viewers.size >= MAX_ACTIVE_VIEWERS) {
+                    // 找到最早访问的查看器并移除
+                    const oldestViewer = Array.from(viewerLastAccess.entries())
+                        .sort(([, a], [, b]) => a - b)[0];
+                    if (oldestViewer) {
+                        disposeViewer(oldestViewer[0]);
+                    }
+                }
+
+                // 加载3D数据
+                const response3d = await fetch(`fenzidata/3d/${moleculeId}.json`);
+                const data3d = await response3d.json();
+
+                // 创建新查看器
+                const viewerId = `viewer-${moleculeId}`;
+                const viewer = new MoleculeViewer(viewerId);
+                viewers.set(moleculeId, viewer);
+                viewerLastAccess.set(moleculeId, Date.now());
+                viewer.loadMolecule(data, data3d);
+
+            } catch (error) {
+                console.error(`Error initializing viewer for molecule ${moleculeId}:`, error);
+            }
+        }
+
+        // 销毁查看器
+        function disposeViewer(moleculeId) {
+            const viewer = viewers.get(moleculeId);
+            if (viewer) {
+                viewer.dispose();
+                viewers.delete(moleculeId);
+                viewerLastAccess.delete(moleculeId);
+            }
+        }
+
+        // 清理所有查看器
+        function cleanupAllViewers() {
+            for (const viewer of viewers.values()) {
+                viewer.dispose();
+            }
+            viewers.clear();
+            viewerLastAccess.clear();
+        }
+
+        // 更新分子信息
+        function updateMoleculeInfo(container, data) {
+            const infoGrid = container.querySelector('.info-grid');
+            infoGrid.innerHTML = '';
+
+            // 定义要显示的属性及其标签
+            const properties = {
+                'molecular_formula': '分子式',
+                'molecular_weight': '分子量',
+                'hydroxyl_count': '羟基数量',
+                'epoxy_count': '环氧基数量',
+                'benzene_count': '苯环数量',
+                'ketone_count': '酮基数量',
+                'aldehyde_count': '醛基数量',
+                'SMILES': 'SMILES码',
+                'topological_polar_surface_area': '拓扑极性表面',
+                'labute_asa': 'Labute近似分子表面积',
+                'balaban_j': 'Balaban分子连接指数',
+                'bertz_complexity': 'Bertz复杂度',
+                'wildman_crippen_mr': 'Wildman-Crippen摩尔折射率',
+                'ring_count': '环数量',
+                'aromatic_ring_count': '芳香环数量',
+                'rotatable_bond_count': '可旋转键数量',
+                'h_bond_donor_count': '氢键供体数量',
+                'h_bond_acceptor_count': '氢键受体数量',
+                'wildman_crippen_logp': '分配系数(LogP)'
+            };
+
+            for (const [key, label] of Object.entries(properties)) {
+                const div = document.createElement('div');
+                div.className = 'info-item';
+                div.innerHTML = `
+                    <span class="label">${label}：</span>
+                    <span class="value">${data[key] ?? 'N/A'}</span>
+                `;
+                infoGrid.appendChild(div);
+            }
+        }
+
+        // 当页面卸载时清理资源
+        window.addEventListener('beforeunload', cleanupAllViewers);
+
+        // 当DOM加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initializeMoleculeViews);
+
+        // 下载功能
+        window.downloadStructure = function(type, moleculeId) {
+            const url = `fenzidata/${type}/${moleculeId}.${type === '2d' ? 'png' : 'json'}`;
+            window.open(url, '_blank');
+        };
+
+        window.downloadProperties = async function(moleculeId) {
+            try {
+                const response = await fetch(`fenzidata/json/${moleculeId}.json`);
+                const data = await response.json();
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `molecule_${moleculeId}_properties.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch (error) {
+                console.error('Error downloading properties:', error);
+            }
+        };
+    </script>
+</body>
+</html>

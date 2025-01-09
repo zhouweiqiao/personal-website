@@ -1,0 +1,611 @@
+{
+  "basic_info": {
+    "PC_Compounds": [
+      {
+        "id": {
+          "id": {
+            "cid": 8129
+          }
+        },
+        "atoms": {
+          "aid": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24
+          ],
+          "element": [
+            8,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "bonds": {
+          "aid1": [
+            1,
+            1,
+            2,
+            2,
+            2,
+            2,
+            3,
+            3,
+            3,
+            4,
+            4,
+            4,
+            5,
+            5,
+            5,
+            6,
+            6,
+            6,
+            7,
+            7,
+            8,
+            8,
+            8
+          ],
+          "aid2": [
+            7,
+            24,
+            3,
+            4,
+            9,
+            10,
+            5,
+            11,
+            12,
+            6,
+            13,
+            14,
+            7,
+            15,
+            16,
+            8,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23
+          ],
+          "order": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "coords": [
+          {
+            "type": [
+              1,
+              5,
+              255
+            ],
+            "aid": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24
+            ],
+            "conformers": [
+              {
+                "x": [
+                  2.5369,
+                  6.001,
+                  5.135,
+                  6.8671,
+                  4.269,
+                  7.7331,
+                  3.403,
+                  8.5991,
+                  6.3996,
+                  5.6025,
+                  4.7365,
+                  5.5335,
+                  6.4685,
+                  7.2656,
+                  4.6675,
+                  3.8705,
+                  8.1316,
+                  7.3346,
+                  3.0044,
+                  3.8015,
+                  8.2891,
+                  9.136,
+                  8.9091,
+                  2
+                ],
+                "y": [
+                  0.25,
+                  0.25,
+                  -0.25,
+                  -0.25,
+                  0.25,
+                  0.25,
+                  -0.25,
+                  -0.25,
+                  0.7249,
+                  0.7249,
+                  -0.7249,
+                  -0.7249,
+                  -0.7249,
+                  -0.7249,
+                  0.7249,
+                  0.7249,
+                  0.7249,
+                  0.7249,
+                  -0.7249,
+                  -0.7249,
+                  -0.7869,
+                  -0.56,
+                  0.2869,
+                  -0.06
+                ]
+              }
+            ]
+          }
+        ],
+        "charge": 0,
+        "props": [
+          {
+            "urn": {
+              "label": "Compound",
+              "name": "Canonicalized",
+              "datatype": 5,
+              "release": "2021.10.14"
+            },
+            "value": {
+              "ival": 1
+            }
+          },
+          {
+            "urn": {
+              "label": "Compound Complexity",
+              "datatype": 7,
+              "implementation": "E_COMPLEXITY",
+              "version": "3.4.8.18",
+              "software": "Cactvs",
+              "source": "Xemistry GmbH",
+              "release": "2021.10.14"
+            },
+            "value": {
+              "fval": 35.4
+            }
+          },
+          {
+            "urn": {
+              "label": "Count",
+              "name": "Hydrogen Bond Acceptor",
+              "datatype": 5,
+              "implementation": "E_NHACCEPTORS",
+              "version": "3.4.8.18",
+              "software": "Cactvs",
+              "source": "Xemistry GmbH",
+              "release": "2021.10.14"
+            },
+            "value": {
+              "ival": 1
+            }
+          },
+          {
+            "urn": {
+              "label": "Count",
+              "name": "Hydrogen Bond Donor",
+              "datatype": 5,
+              "implementation": "E_NHDONORS",
+              "version": "3.4.8.18",
+              "software": "Cactvs",
+              "source": "Xemistry GmbH",
+              "release": "2021.10.14"
+            },
+            "value": {
+              "ival": 1
+            }
+          },
+          {
+            "urn": {
+              "label": "Count",
+              "name": "Rotatable Bond",
+              "datatype": 5,
+              "implementation": "E_NROTBONDS",
+              "version": "3.4.8.18",
+              "software": "Cactvs",
+              "source": "Xemistry GmbH",
+              "release": "2021.10.14"
+            },
+            "value": {
+              "ival": 5
+            }
+          },
+          {
+            "urn": {
+              "label": "Fingerprint",
+              "name": "SubStructure Keys",
+              "datatype": 16,
+              "parameters": "extended 2",
+              "implementation": "E_SCREEN",
+              "version": "3.4.8.18",
+              "software": "Cactvs",
+              "source": "Xemistry GmbH",
+              "release": "2021.10.14"
+            },
+            "value": {
+              "binary": "00000371E0602000000000000000000000000000000000000000000000000000000000000000001A00000800000800A0800202000000020000000000000000000000000000000000000000100200000000400004000000000180C0200000000000000000000000000000000000000000000000"
+            }
+          },
+          {
+            "urn": {
+              "label": "IUPAC Name",
+              "name": "Allowed",
+              "datatype": 1,
+              "version": "2.7.0",
+              "software": "Lexichem TK",
+              "source": "OpenEye Scientific Software",
+              "release": "2021.10.14"
+            },
+            "value": {
+              "sval": "heptan-1-ol"
+            }
+          },
+          {
+            "urn": {
+              "label": "IUPAC Name",
+              "name": "CAS-like Style",
+              "datatype": 1,
+              "version": "2.7.0",
+              "software": "Lexichem TK",
+              "source": "OpenEye Scientific Software",
+              "release": "2021.10.14"
+            },
+            "value": {
+              "sval": "1-heptanol"
+            }
+          },
+          {
+            "urn": {
+              "label": "IUPAC Name",
+              "name": "Markup",
+              "datatype": 1,
+              "version": "2.7.0",
+              "software": "Lexichem TK",
+              "source": "OpenEye Scientific Software",
+              "release": "2021.10.14"
+            },
+            "value": {
+              "sval": "heptan-1-ol"
+            }
+          },
+          {
+            "urn": {
+              "label": "IUPAC Name",
+              "name": "Preferred",
+              "datatype": 1,
+              "version": "2.7.0",
+              "software": "Lexichem TK",
+              "source": "OpenEye Scientific Software",
+              "release": "2021.10.14"
+            },
+            "value": {
+              "sval": "heptan-1-ol"
+            }
+          },
+          {
+            "urn": {
+              "label": "IUPAC Name",
+              "name": "Systematic",
+              "datatype": 1,
+              "version": "2.7.0",
+              "software": "Lexichem TK",
+              "source": "OpenEye Scientific Software",
+              "release": "2021.10.14"
+            },
+            "value": {
+              "sval": "heptan-1-ol"
+            }
+          },
+          {
+            "urn": {
+              "label": "IUPAC Name",
+              "name": "Traditional",
+              "datatype": 1,
+              "version": "2.7.0",
+              "software": "Lexichem TK",
+              "source": "OpenEye Scientific Software",
+              "release": "2021.10.14"
+            },
+            "value": {
+              "sval": "heptan-1-ol"
+            }
+          },
+          {
+            "urn": {
+              "label": "InChI",
+              "name": "Standard",
+              "datatype": 1,
+              "version": "1.0.6",
+              "software": "InChI",
+              "source": "iupac.org",
+              "release": "2021.10.14"
+            },
+            "value": {
+              "sval": "InChI=1S/C7H16O/c1-2-3-4-5-6-7-8/h8H,2-7H2,1H3"
+            }
+          },
+          {
+            "urn": {
+              "label": "InChIKey",
+              "name": "Standard",
+              "datatype": 1,
+              "version": "1.0.6",
+              "software": "InChI",
+              "source": "iupac.org",
+              "release": "2021.10.14"
+            },
+            "value": {
+              "sval": "BBMCTIGTTCKYKF-UHFFFAOYSA-N"
+            }
+          },
+          {
+            "urn": {
+              "label": "Log P",
+              "name": "XLogP3",
+              "datatype": 7,
+              "version": "3.0",
+              "source": "sioc-ccbg.ac.cn",
+              "release": "2021.10.14"
+            },
+            "value": {
+              "fval": 2.7
+            }
+          },
+          {
+            "urn": {
+              "label": "Mass",
+              "name": "Exact",
+              "datatype": 1,
+              "version": "2.2",
+              "software": "PubChem",
+              "source": "ncbi.nlm.nih.gov",
+              "release": "2021.10.14"
+            },
+            "value": {
+              "sval": "116.120115130"
+            }
+          },
+          {
+            "urn": {
+              "label": "Molecular Formula",
+              "datatype": 1,
+              "version": "2.2",
+              "software": "PubChem",
+              "source": "ncbi.nlm.nih.gov",
+              "release": "2021.10.14"
+            },
+            "value": {
+              "sval": "C7H16O"
+            }
+          },
+          {
+            "urn": {
+              "label": "Molecular Weight",
+              "datatype": 1,
+              "version": "2.2",
+              "software": "PubChem",
+              "source": "ncbi.nlm.nih.gov",
+              "release": "2021.10.14"
+            },
+            "value": {
+              "sval": "116.20"
+            }
+          },
+          {
+            "urn": {
+              "label": "SMILES",
+              "name": "Absolute",
+              "datatype": 1,
+              "version": "2.3.0",
+              "software": "OEChem",
+              "source": "OpenEye Scientific Software",
+              "release": "2024.12.12"
+            },
+            "value": {
+              "sval": "CCCCCCCO"
+            }
+          },
+          {
+            "urn": {
+              "label": "SMILES",
+              "name": "Canonical",
+              "datatype": 1,
+              "version": "2.3.0",
+              "software": "OEChem",
+              "source": "OpenEye Scientific Software",
+              "release": "2021.10.14"
+            },
+            "value": {
+              "sval": "CCCCCCCO"
+            }
+          },
+          {
+            "urn": {
+              "label": "SMILES",
+              "name": "Isomeric",
+              "datatype": 1,
+              "version": "2.3.0",
+              "software": "OEChem",
+              "source": "OpenEye Scientific Software",
+              "release": "2021.10.14"
+            },
+            "value": {
+              "sval": "CCCCCCCO"
+            }
+          },
+          {
+            "urn": {
+              "label": "Topological",
+              "name": "Polar Surface Area",
+              "datatype": 7,
+              "implementation": "E_TPSA",
+              "version": "3.4.8.18",
+              "software": "Cactvs",
+              "source": "Xemistry GmbH",
+              "release": "2021.10.14"
+            },
+            "value": {
+              "fval": 20.2
+            }
+          },
+          {
+            "urn": {
+              "label": "Weight",
+              "name": "MonoIsotopic",
+              "datatype": 1,
+              "version": "2.2",
+              "software": "PubChem",
+              "source": "ncbi.nlm.nih.gov",
+              "release": "2021.10.14"
+            },
+            "value": {
+              "sval": "116.120115130"
+            }
+          }
+        ],
+        "count": {
+          "heavy_atom": 8,
+          "atom_chiral": 0,
+          "atom_chiral_def": 0,
+          "atom_chiral_undef": 0,
+          "bond_chiral": 0,
+          "bond_chiral_def": 0,
+          "bond_chiral_undef": 0,
+          "isotope_atom": 0,
+          "covalent_unit": 1,
+          "tautomers": -1
+        }
+      }
+    ]
+  },
+  "properties": {
+    "PropertyTable": {
+      "Properties": [
+        {
+          "CID": 8129,
+          "MolecularFormula": "C7H16O",
+          "MolecularWeight": "116.20",
+          "CanonicalSMILES": "CCCCCCCO",
+          "XLogP": 2.7,
+          "ExactMass": "116.120115130",
+          "MonoisotopicMass": "116.120115130",
+          "TPSA": 20.2,
+          "Complexity": 35,
+          "Charge": 0,
+          "HBondDonorCount": 1,
+          "HBondAcceptorCount": 1,
+          "RotatableBondCount": 5,
+          "HeavyAtomCount": 8,
+          "AtomStereoCount": 0,
+          "BondStereoCount": 0,
+          "CovalentUnitCount": 1,
+          "Volume3D": 106.4,
+          "XStericQuadrupole3D": 8.49,
+          "YStericQuadrupole3D": 0.78,
+          "ZStericQuadrupole3D": 0.61,
+          "FeatureCount3D": 4,
+          "FeatureAcceptorCount3D": 1,
+          "FeatureDonorCount3D": 1,
+          "FeatureAnionCount3D": 0,
+          "FeatureCationCount3D": 0,
+          "FeatureRingCount3D": 0,
+          "FeatureHydrophobeCount3D": 2,
+          "ConformerModelRMSD3D": 0.6,
+          "EffectiveRotorCount3D": 5,
+          "ConformerCount3D": 10
+        }
+      ]
+    }
+  }
+}
