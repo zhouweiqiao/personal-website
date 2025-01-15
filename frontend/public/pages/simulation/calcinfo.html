@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>跨尺度仿真 - IDM Explorer Lab</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .content-area {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .task-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .task-label {
+            color: #666;
+        }
+
+        .task-id {
+            color: #0066cc;
+            font-weight: 500;
+        }
+
+        .manage-btn {
+            background: #fff;
+            border: 1px solid #0066cc;
+            color: #0066cc;
+            padding: 6px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .step-nav {
+            display: flex;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .step-number {
+            width: 24px;
+            height: 24px;
+            background: #e0e0e0;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 8px;
+        }
+
+        .step.active .step-number {
+            background: #0066cc;
+        }
+
+        .step-text {
+            color: #666;
+        }
+
+        .step.active .step-text {
+            color: #0066cc;
+            font-weight: 500;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .upload-area {
+            border: 2px dashed #e0e0e0;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            background: #fafafa;
+        }
+
+        .upload-box i {
+            font-size: 40px;
+            color: #999;
+            margin-bottom: 16px;
+        }
+
+        .upload-tip {
+            color: #999;
+            font-size: 12px;
+            margin: 8px 0;
+        }
+
+        .upload-btn {
+            background: #fff;
+            border: 1px solid #0066cc;
+            color: #0066cc;
+            padding: 6px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+
+        .param-field {
+            margin-bottom: 16px;
+        }
+
+        .param-field label {
+            display: block;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .param-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background: #fafafa;
+        }
+
+        .param-tip {
+            color: #999;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .next-step-btn {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .next-step-btn i {
+            font-size: 14px;
+        }
+
+        /* 添加左侧导航样式 */
+        .main-content {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .left-sidebar {
+            width: 240px;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .software-logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            display: block;
+        }
+
+        .nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-list li {
+            margin-bottom: 4px;
+        }
+
+        .nav-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .nav-list a:hover {
+            background-color: #f5f5f5;
+        }
+
+        .nav-list a i {
+            margin-right: 8px;
+            color: #666;
+            width: 16px;
+            text-align: center;
+        }
+
+        .nav-list a.hot {
+            color: #ff4d4f;
+        }
+
+        .nav-list a.hot i {
+            color: #ff4d4f;
+        }
+
+        /* 调整内容区域样式 */
+        .content-area {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* 修改左侧软件区域样式 */
+        .software-info {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .software-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 12px;
+            display: block;
+            object-fit: contain;
+        }
+
+        .software-name {
+            font-size: 18px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .software-version {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .nav-list {
+            border-top: 1px solid #f0f0f0;
+            padding-top: 20px;
+        }
+
+        .tech-container {
+            background: #f0f2f5;
+        }
+    </style>
+</head>
+<body>
+    <div class="tech-container">
+        <!-- 顶部导航 -->
+        <nav class="top-nav">
+            <div class="nav-left">
+                <a href="../../index.html" class="logo-link">
+                    <img src="../../assets/logo.png" alt="IDM Explorer Lab" class="logo">
+                </a>
+            </div>
+            <div class="nav-center">
+                <div class="dropdown">
+                    <a href="../database/index.html" class="nav-item">材料数据库 <span class="dropdown-arrow">▾</span></a>
+                    <div class="dropdown-content">
+                        <a href="../database/index.html" class="dropdown-item">公共数据库</a>
+                        <a href="../database/idmdb.html" class="dropdown-item">IDM数据库</a>
+                        <a href="../database/privatedb.html" class="dropdown-item">私有数据集</a>
+                    </div>
+                </div>
+                
+                <div class="dropdown">
+                    <a href="index.html" class="nav-item active" id="cross-scale-simulation">跨尺度仿真 <span class="dropdown-arrow">▾</span></a>
+                    <div class="dropdown-content" id="cross-scale-dropdown">
+                        <a href="index.html" class="dropdown-item">仿真软件仓库</a>
+                        <a href="calclist.html" class="dropdown-item">计算任务管理</a>
+                    </div>
+                </div>
+                
+                <a href="../workflow/index.html" class="nav-item">高通量计算</a>
+                <a href="../preparation/index.html" class="nav-item">表征与制备</a>
+                <div class="dropdown">
+                    <a href="../../pages/alpha.html" class="nav-item">AI平台 <span class="dropdown-arrow">▾</span></a>
+                    <div class="dropdown-content">
+                        <a href="../../pages/alpha.html" class="dropdown-item">Alpha模型</a>
+                        <a href="#" class="dropdown-item">AI Studio</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-right">
+                <a href="#" class="nav-item">我的项目</a>
+                <a href="#" class="nav-item">系统管理员 ▼</a>
+            </div>
+        </nav>
+
+        <!-- 主要内容区域 -->
+        <div class="main-content">
+            <!-- 左侧导航 -->
+            <div class="left-sidebar">
+                <div class="software-info">
+                    <img id="softwareLogo" src="../../assets/ds-paw-logo.png" alt="Software Logo" class="software-logo">
+                    <div id="softwareName" class="software-name">DS-PAW</div>
+                    <div id="softwareVersion" class="software-version">Version 2.0</div>
+                </div>
+                <ul class="nav-list">
+                    <li>
+                        <a href="#usage-examples" class="hot">
+                            <i class="fas fa-book"></i>
+                            使用案例
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tutorials">
+                            <i class="fas fa-graduation-cap"></i>
+                            应用教程
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#quick-start">
+                            <i class="fas fa-rocket"></i>
+                            快速入门
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 内容区 -->
+            <div class="content-area">
+                <!-- 任务信息栏 -->
+                <div class="task-header">
+                    <div class="task-info">
+                        <span class="task-label">任务：</span>
+                        <span class="task-id">DS-PAW_155257</span>
+                        <i class="fas fa-copy copy-icon" onclick="copyTaskId()"></i>
+                    </div>
+                    <button class="manage-btn">管理项目</button>
+                </div>
+
+                <!-- 步骤导航 -->
+                <div class="step-nav">
+                    <div class="step active">
+                        <span class="step-number">1</span>
+                        <span class="step-text">超算参数设置</span>
+                    </div>
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <span class="step-text">作业参数设置</span>
+                    </div>
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <span class="step-text">提交计算</span>
+                    </div>
+                </div>
+
+                <!-- 表单区域 -->
+                <div class="calc-form">
+                    <!-- 文件上传区域 -->
+                    <div class="form-section">
+                        <h3>上传结构和输入文件</h3>
+                        <div class="upload-area">
+                            <div class="upload-box">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>请将数据文件拖入此框</p>
+                                <p class="upload-tip">（*.in, *.asd等，单个文件不超过100M）</p>
+                                <button class="upload-btn">点击上传</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 环境参数设置 -->
+                    <div class="form-section">
+                        <h3>环境参数</h3>
+                        <div class="param-field">
+                            <label>环境变量</label>
+                            <input type="text" class="param-input" value="source /gpfs/lpfs/app/hzwtech/profile/DS-PAW.env" readonly>
+                            <p class="param-tip">系统默认认填充，一般情况下无需修改</p>
+                        </div>
+                    </div>
+
+                    <!-- 运行指令设置 -->
+                    <div class="form-section">
+                        <h3>运行指令</h3>
+                        <div class="param-field">
+                            <label>执行命令</label>
+                            <input type="text" class="param-input" value="DS-PAW -mpi mpirun -mpiargs '--map-by node:PE=1' relax.in -pob">
+                            <p class="param-tip">（填入运行软件所需的command，部分软件已经提供默认值，无需修改）</p>
+                        </div>
+                    </div>
+
+                    <!-- 下一步按钮 -->
+                    <div class="form-actions" style="text-align: center; margin-top: 40px;">
+                        <button class="next-step-btn">下一步 <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 背景装饰元素 -->
+        <div class="tech-background">
+            <div class="matrix-bg"></div>
+            <div class="tech-lines"></div>
+        </div>
+    </div>
+
+    <script>
+    // 添加软件信息设置函数
+    function setSoftwareInfo(info) {
+        const { name, version, logo } = info;
+        
+        // 设置软件信息
+        document.getElementById('softwareLogo').src = logo || '../../assets/default-software-logo.png';
+        document.getElementById('softwareName').textContent = name || 'Software Name';
+        document.getElementById('softwareVersion').textContent = `Version ${version || '1.0'}`;
+    }
+
+    // 页面加载完成后执行
+    document.addEventListener('DOMContentLoaded', function() {
+        // 示例：从URL参数获取软件信息
+        const urlParams = new URLSearchParams(window.location.search);
+        const softwareInfo = {
+            name: urlParams.get('name') || 'DS-PAW',
+            version: urlParams.get('version') || '2.0',
+            logo: urlParams.get('logo') || '../../assets/ds-paw-logo.png'
+        };
+        
+        // 设置软件信息
+        setSoftwareInfo(softwareInfo);
+
+        // 处理锚点链接点击事件
+        document.querySelectorAll('.nav-list a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        const tabs = document.querySelectorAll('.category-tab');
+        const cards = document.querySelectorAll('.software-card');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs
+                tabs.forEach(t => t.classList.remove('active'));
+                // Add active class to clicked tab
+                tab.classList.add('active');
+
+                const category = tab.dataset.category;
+                
+                // Show/hide cards based on category
+                cards.forEach(card => {
+                    if (category === 'all' || card.dataset.category === category) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    });
+
+    function submitCalculation(software) {
+        // 这里添加提交计算的逻辑
+        console.log(`提交${software}计算任务`);
+    }
+    </script>
+</body>
+</html>
