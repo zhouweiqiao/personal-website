@@ -33,6 +33,40 @@ CREATE TABLE IF NOT EXISTS conversation_messages (
     FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE
 );
 
+-- 创建私有数据集表
+CREATE TABLE IF NOT EXISTS private_datasets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    dataset_name VARCHAR(255) NOT NULL,
+    description TEXT,
+    category VARCHAR(255),
+    project VARCHAR(255),
+    entry_count INT DEFAULT 0,
+    sharing_status ENUM('private', 'public') DEFAULT 'private',
+    share_count INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- 创建数据集分类表
+CREATE TABLE IF NOT EXISTS dataset_categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    category_name VARCHAR(255) NOT NULL,
+    created_by INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (created_by) REFERENCES users(id)
+);
+
+-- 创建项目表
+CREATE TABLE IF NOT EXISTS projects (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    project_name VARCHAR(255) NOT NULL,
+    created_by INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (created_by) REFERENCES users(id)
+);
+
 -- 创建一个测试用户（密码为 test123）
 INSERT INTO users (username, password) VALUES 
 ('test', '$2a$10$rPIKXCPHFGWKTK6UQJQZXONj0f7M0c8nFbFQk1TGGz3VyDQlGgOyC')

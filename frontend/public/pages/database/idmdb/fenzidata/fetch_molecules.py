@@ -34,6 +34,57 @@ class PubChemFetcher:
             return True
         return False
 
+    def convert_3d_data(self, pubchem_data):
+        """将PubChem的3D数据转换为我们的查看器需要的格式"""
+        if 'PC_Compounds' not in pubchem_data or not pubchem_data['PC_Compounds']:
+            return None
+
+        compound = pubchem_data['PC_Compounds'][0]
+        if 'coords' not in compound or not compound['coords']:
+            return None
+
+        coords = compound['coords'][0]
+        if 'conformers' not in coords or not coords['conformers']:
+            return None
+
+        conformer = coords['conformers'][0]
+        if 'x' not in conformer or 'y' not in conformer or 'z' not in conformer:
+            return None
+
+        # 获取原子信息
+        atoms = []
+        if 'atoms' in compound:
+            atom_info = compound['atoms']
+            element_array = atom_info.get('element', [])
+            x_coords = conformer['x']
+            y_coords = conformer['y']
+            z_coords = conformer['z']
+
+            for i in range(len(element_array)):
+                atoms.append({
+                    'element': element_array[i],
+                    'x': x_coords[i],
+                    'y': y_coords[i],
+                    'z': z_coords[i]
+                })
+
+        # 获取键信息
+        bonds = []
+        if 'bonds' in compound:
+            bond_info = compound['bonds']
+            if 'aid1' in bond_info and 'aid2' in bond_info and 'order' in bond_info:
+                for i in range(len(bond_info['aid1'])):
+                    bonds.append({
+                        'atom1': bond_info['aid1'][i],
+                        'atom2': bond_info['aid2'][i],
+                        'order': bond_info['order'][i]
+                    })
+
+        return {
+            'atoms': atoms,
+            'bonds': bonds
+        }
+
     def fetch_3d_structure(self, cid):
         """获取3D结构数据"""
         # 获取3D结构记录
@@ -46,14 +97,14 @@ class PubChemFetcher:
         if 'PC_Compounds' not in data or not data['PC_Compounds']:
             return False
 
-        # 提取3D结构数据
-        compound = data['PC_Compounds'][0]
-        if 'coords' not in compound or not compound['coords']:
+        # 转换数据格式
+        converted_data = self.convert_3d_data(data)
+        if not converted_data:
             return False
 
-        # 保存3D结构数据
+        # 保存转换后的3D结构数据
         with open(self.save_dir / "3d" / f"{cid}.json", "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2)
+            json.dump(converted_data, f, indent=2)
 
         return True
 
@@ -114,10 +165,19 @@ class PubChemFetcher:
             print(f"Failed to fetch properties for CID {cid}")
             return False
 
+        # 提取分子量
+        molecular_weight = None
+        if 'PropertyTable' in properties and 'Properties' in properties['PropertyTable']:
+            for prop in properties['PropertyTable']['Properties']:
+                if 'MolecularWeight' in prop:
+                    molecular_weight = prop['MolecularWeight']
+                    break
+
         # 合并信息
         compound_data = {
-            "basic_info": info,
-            "properties": properties
+            "molecular_weight": molecular_weight,
+            "properties": properties['PropertyTable']['Properties'][0] if 'PropertyTable' in properties and 'Properties' in properties['PropertyTable'] else {},
+            "basic_info": info
         }
 
         # 保存JSON数据
@@ -153,33 +213,14 @@ def main():
     # 创建爬虫实例
     fetcher = PubChemFetcher(save_dir)
     
-    # 示例CIDs（这些是一些常见分子的PubChem CID）
-    example_cids = [
-        2244,   # 苯
-        962,    # 乙醇
-        887,    # 葡萄糖
-        702,    # 甲醇
-        1140,   # 丙酮
-        6322,   # 环己烷
-        241,    # 乙酸
-        7844,   # 丁烷
-        8857,   # 乙烯
-        297,    # 甲烷
-        # 添加更多常见有机分子
-        31260,  # 丙烯
-        8058,   # 环戊烷
-        7876,   # 乙烷
-        11610,  # 环庚烷
-        8129,   # 环辛烷
-        8871,   # 丙烷
-        7845,   # 异丁烷
-        11597,  # 戊烷
-        11610,  # 己烷
-        11146,  # 庚烷
-    ]
-    
-    # 获取这些化合物的信息
-    fetcher.fetch_multiple_compounds(example_cids)
+    # 从命令行参数获取CID
+    import sys
+    if len(sys.argv) < 2:
+        print("Please provide CIDs as arguments")
+        return
+        
+    cids = [int(cid) for cid in sys.argv[1:]]
+    fetcher.fetch_multiple_compounds(cids)
 
 if __name__ == "__main__":
     main() 

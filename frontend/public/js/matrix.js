@@ -17,7 +17,7 @@ const columns = canvas.width / fontSize;
 const drops = new Array(Math.floor(columns)).fill(1);
 
 let frameCount = 0;
-const speedDivisor = 6;
+const speedDivisor = 3;
 
 // 清除所有背景图相关代码
 function draw() {

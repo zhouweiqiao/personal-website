@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>跨尺度仿真 - IDM Explorer Lab</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="tech-container">
+        <!-- 顶部导航 -->
+        <nav class="top-nav">
+            <div class="nav-left">
+                <a href="../../index.html" class="logo-link">
+                    <img src="../../assets/logo.png" alt="IDM Explorer Lab" class="logo">
+                </a>
+            </div>
+            <div class="nav-center">
+                <div class="dropdown">
+                    <a href="../database/index.html" class="nav-item">材料数据库 <span class="dropdown-arrow">▾</span></a>
+                    <div class="dropdown-content">
+                        <a href="index.html" class="dropdown-item">公共数据库</a>
+                        <a href="idmdb.html" class="dropdown-item">IDM数据库</a>
+                        <a href="privatedb.html" class="dropdown-item">私有数据集</a>
+                    </div>
+                </div>
+                
+                <div class="dropdown">
+                    <a href="#" class="nav-item" id="cross-scale-simulation">跨尺度仿真 <span class="dropdown-arrow">▾</span></a>
+                    <div class="dropdown-content" id="cross-scale-dropdown">
+                        <a href="index.html" class="dropdown-item">仿真软件仓库</a>
+                        <a href="calclist.html" class="dropdown-item">计算任务管理</a>
+                    </div>
+                </div>
+                
+                <a href="../workflow/index.html" class="nav-item">高通量计算</a>
+                <a href="../preparation/index.html" class="nav-item">表征与制备</a>
+                <div class="dropdown">
+                    <a href="../../pages/alpha.html" class="nav-item">AI平台 <span class="dropdown-arrow">▾</span></a>
+                    <div class="dropdown-content">
+                        <a href="../../pages/alpha.html" class="dropdown-item">Alpha模型</a>
+                        <a href="#" class="dropdown-item">AI Studio</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-right">
+                <a href="#" class="nav-item">我的项目</a>
+                <a href="#" class="nav-item">系统管理员 ▼</a>
+            </div>
+        </nav>
+
+        <!-- 主要内容区域 -->
+        <div class="main-content">
+            <!-- 左侧导航 -->
+            <div class="side-nav">
+                <h2 class="side-title">材料数据库</h2>
+                <div class="nav-list">
+                    <a href="index.html" class="nav-item active">
+                        <i class="fas fa-database"></i>
+                        <span>公共数据库</span>
+                    </a>
+                    <a href="idmdb.html" class="nav-item">
+                        <i class="fas fa-server"></i>
+                        <span>IDM数据库</span>
+                    </a>
+                    <a href="privatedb.html" class="nav-item">
+                        <i class="fas fa-user-lock"></i>
+                        <span>私有数据集</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 右侧内容区 -->
+            <div class="content-area">
+                <!-- Materials Project -->
+                <div class="database-card">
+                    <a href="https://materialsproject.org" target="_blank" class="card-link">
+                        <div class="card-icon">
+                            <img src="../../assets/db-logos/materials-project.png" alt="Materials Project">
+                        </div>
+                        <div class="card-content">
+                            <h2>Materials Project</h2>
+                            <p>由美国能源部资助的材料数据库，提供超过130,000种无机化合物的计算数据，包括晶体结构、能带、相图等信息，支持材料设计与发现。提供API接口和Python工具包，方便数据获取和分析。</p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- AFLOW -->
+                <div class="database-card">
+                    <a href="http://www.aflowlib.org" target="_blank" class="card-link">
+                        <div class="card-icon">
+                            <img src="../../assets/db-logos/aflowlib.png" alt="AFLOW">
+                        </div>
+                        <div class="card-content">
+                            <h2>AFLOW (Automatic Flow)</h2>
+                            <p>高通量计算材料数据库，包含超过300万个材料结构和性质。提供材料的热力学、电子、磁性和机械性质等数据，支持材料筛选和预测。</p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- OQMD -->
+                <div class="database-card">
+                    <a href="http://oqmd.org" target="_blank" class="card-link">
+                        <div class="card-icon">
+                            <img src="../../assets/db-logos/oqmd.png" alt="OQMD">
+                        </div>
+                        <div class="card-content">
+                            <h2>OQMD (Open Quantum Materials Database)</h2>
+                            <p>开放量子材料数据库，收录了超过80万种材料的DFT计算结果，包括形成能、能带结构等物理性质，为材料设计和发现提供重要参考。</p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Crystallography Open Database -->
+                <div class="database-card">
+                    <a href="http://www.crystallography.net/cod" target="_blank" class="card-link">
+                        <div class="card-icon">
+                            <img src="../../assets/db-logos/COD.svg" alt="COD">
+                        </div>
+                        <div class="card-content">
+                            <h2>COD (Crystallography Open Database)</h2>
+                            <p>开放晶体学数据库，提供超过40万个晶体结构数据，包括有机、无机和金属有机化合物。所有数据免费开放，支持多种格式下载和在线查看。</p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- ICSD -->
+                <div class="database-card">
+                    <a href="https://icsd.products.fiz-karlsruhe.de" target="_blank" class="card-link">
+                        <div class="card-icon">
+                            <img src="../../assets/db-logos/ICSD.svg" alt="ICSD">
+                        </div>
+                        <div class="card-content">
+                            <h2>ICSD (Inorganic Crystal Structure Database)</h2>
+                            <p>无机晶体结构数据库，收录超过21万个实验测定的无机化合物晶体结构，是材料研究中最权威的晶体结构数据库之一。</p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Materialscloud -->
+                <div class="database-card">
+                    <a href="https://www.materialscloud.org" target="_blank" class="card-link">
+                        <div class="card-icon">
+                            <img src="../../assets/db-logos/materialscloud.png" alt="Materials Cloud">
+                        </div>
+                        <div class="card-content">
+                            <h2>Materials Cloud</h2>
+                            <p>开源材料科学平台，提供计算材料学工具、数据和资源。包含各类材料的计算数据，支持在线计算和数据分析，促进材料科学研究的开放共享。</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 背景装饰元素 -->
+        <div class="tech-background">
+            <div class="matrix-bg"></div>
+            <div class="tech-lines"></div>
+        </div>
+    </div>
+</body>
+</html>

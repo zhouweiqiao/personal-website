@@ -195,7 +195,9 @@ def generate_molecule_data(molecule_id):
         # 生成3D构象
         mol = Chem.AddHs(mol)
         # 使用更稳定的3D构象生成参数
-        AllChem.EmbedMolecule(mol, randomSeed=42, maxAttempts=1000)
+        result = AllChem.EmbedMolecule(mol, randomSeed=42, maxAttempts=1000)
+        if result == -1:
+            raise ValueError("无法生成3D构象")
         
         # 使用MMFF94s力场进行优化，添加更多迭代次数
         if AllChem.MMFFHasAllMoleculeParams(mol):
@@ -238,34 +240,52 @@ def generate_molecule_data(molecule_id):
         
         # 保存3D结构数据
         conf = mol.GetConformer()
-        positions = []
-        for i in range(mol.GetNumAtoms()):
-            pos = conf.GetAtomPosition(i)
-            positions.append([pos.x, pos.y, pos.z])
-        
         structure_3d = {
-            "atoms": [{"element": mol.GetAtomWithIdx(i).GetSymbol(), 
-                      "position": positions[i],
-                      "atomic_number": mol.GetAtomWithIdx(i).GetAtomicNum()} 
-                     for i in range(mol.GetNumAtoms())]
+            "atoms": []
         }
         
-        with open(f'fenzidata/3d/{molecule_id}.json', 'w') as f:
-            json.dump(structure_3d, f, indent=2)
+        for i in range(mol.GetNumAtoms()):
+            pos = conf.GetAtomPosition(i)
+            atom = mol.GetAtomWithIdx(i)
+            structure_3d["atoms"].append({
+                "element": atom.GetSymbol(),
+                "position": [pos.x, pos.y, pos.z],
+                "atomic_number": atom.GetAtomicNum()
+            })
         
-        # 保存分子属性数据
-        with open(f'fenzidata/json/{molecule_id}.json', 'w') as f:
-            json.dump(data, f, indent=2)
+        # 验证3D数据结构
+        if not structure_3d.get("atoms"):
+            raise ValueError("生成的3D结构数据无效")
             
-        print(f"Successfully generated molecule {molecule_id}")
+        # 保存数据
+        with open(f'fenzidata/3d/{molecule_id}.json', 'w', encoding='utf-8') as f:
+            json.dump(structure_3d, f, ensure_ascii=False, indent=2)
+            
+        with open(f'fenzidata/json/{molecule_id}.json', 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+            
+        return True
         
     except Exception as e:
-        print(f"Error generating molecule {molecule_id}: {str(e)}")
+        print(f"生成分子 {molecule_id} 时出错: {str(e)}")
+        return False
 
 def main():
-    # 生成200个分子数据
-    for i in range(1, 201):
-        generate_molecule_data(i)
+    """主函数"""
+    # 生成200个分子
+    success_count = 0
+    total_attempts = 0
+    max_attempts = 300  # 最大尝试次数
+    target_count = 200  # 目标分子数量
+    
+    while success_count < target_count and total_attempts < max_attempts:
+        molecule_id = total_attempts + 1
+        if generate_molecule_data(molecule_id):
+            print(f"成功生成分子 {molecule_id}")
+            success_count += 1
+        total_attempts += 1
+    
+    print(f"\n生成完成！成功生成 {success_count} 个分子，共尝试 {total_attempts} 次")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main() 

@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDM数据库 - IDM Explorer Lab</title>
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_xxxxx.css">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="tech-container">
+        <!-- 顶部导航 -->
+        <nav class="top-nav">
+            <div class="nav-left">
+                <a href="../../../index.html" class="logo-link">
+                    <img src="../../../../assets/logo.png" alt="IDM Explorer Lab" class="logo">
+                </a>
+            </div>
+            <div class="nav-center">
+                <div class="dropdown">
+                    <a href="#" class="nav-item active">材料数据库 <span class="dropdown-arrow">▾</span></a>
+                    <div class="dropdown-content">
+                        <a href="../index.html" class="dropdown-item">公共数据库</a>
+                        <a href="../idmdb.html" class="dropdown-item">IDM数据库</a>
+                        <a href="../privatedb.html" class="dropdown-item active">私有数据集</a>
+                    </div>
+                </div>
+                <a href="../simulation/index.html" class="nav-item">跨尺度仿真</a>
+                <a href="../workflow/index.html" class="nav-item">高通量计算</a>
+                <a href="../preparation/index.html" class="nav-item">表征与制备</a>
+                <div class="dropdown">
+                    <a href="../../alpha.html" class="nav-item">AI平台 <span class="dropdown-arrow">▾</span></a>
+                    <div class="dropdown-content">
+                        <a href="../../alpha.html" class="dropdown-item">Alpha模型</a>
+                        <a href="#" class="dropdown-item">AI Studio</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-right">
+                <a href="#" class="nav-item">我的项目</a>
+                <a href="#" class="nav-item">系统管理员 ▼</a>
+            </div>
+        </nav>
+
+        <script>
+            // 检查登录状态
+            function checkLoginStatus() {
+                const token = localStorage.getItem('token');
+                const isLoggedIn = localStorage.getItem('isLoggedIn');
+                const username = localStorage.getItem('username');
+                
+                if (!token || !isLoggedIn || !username) {
+                    window.location.href = '/login.html';
+                    return false;
+                }
+                return true;
+            }
+
+            // API基础URL
+            const API_BASE_URL = 'http://localhost:3001/api';
+
+            // 通用的API请求函数
+            async function fetchAPI(endpoint, options = {}) {
+                const defaultOptions = {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    mode: 'cors'
+                };
+
+                const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                    ...defaultOptions,
+                    ...options,
+                    headers: {
+                        ...defaultOptions.headers,
+                        ...options.headers
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                return response.json();
+            }
+
+            // 获取URL参数
+            function getUrlParam(param) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(param);
+            }
+
+            // 获取查询字符串
+            function getQueryString() {
+                const category = document.querySelector('#category-filter')?.value || '';
+                const project = document.querySelector('#project-filter')?.value || '';
+                return `?category=${encodeURIComponent(category)}&project=${encodeURIComponent(project)}`;
+            }
+
+            // 显示错误消息
+            function showError(message) {
+                const container = document.querySelector('.container');
+                if (!container) return;
+
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'alert alert-danger';
+                errorDiv.innerHTML = `
+                    <h4 class="alert-heading">错误</h4>
+                    <p>${message}</p>
+                `;
+                container.insertBefore(errorDiv, container.firstChild);
+
+                // 5秒后自动消失
+                setTimeout(() => errorDiv.remove(), 5000);
+            }
+
+            // 显示成功消息
+            function showSuccess(message) {
+                const container = document.querySelector('.container');
+                if (!container) return;
+
+                const successDiv = document.createElement('div');
+                successDiv.className = 'alert alert-success';
+                successDiv.innerHTML = `
+                    <h4 class="alert-heading">成功</h4>
+                    <p>${message}</p>
+                `;
+                container.insertBefore(successDiv, container.firstChild);
+
+                // 3秒后自动消失
+                setTimeout(() => successDiv.remove(), 3000);
+            }
+
+            // 更新数据集信息显示
+            function updateDatasetInfo(dataset) {
+                const nameInput = document.querySelector('.dataset-name');
+                if (nameInput) nameInput.value = dataset.dataset_name || '';
+                
+                const fieldInputs = document.querySelectorAll('.field-input[readonly]');
+                if (fieldInputs[0]) fieldInputs[0].value = dataset.project || '';
+                if (fieldInputs[1]) fieldInputs[1].value = dataset.category || '';
+                if (fieldInputs[2]) fieldInputs[2].value = dataset.sharing_status === 'private' ? '私有 (private)' : '公开 (public)';
+
+                const countElement = document.querySelector('#entry-count');
+                if (countElement) {
+                    countElement.textContent = `条目数: ${dataset.entry_count || 0}`;
+                }
+
+                // 加载数据集内容
+                loadDatasetContent(dataset.id);
+            }
+
+            // 加载数据集信息
+            async function loadDatasetInfo(datasetId) {
+                const container = document.querySelector('.container');
+                if (!container) {
+                    console.error('Container element not found');
+                    return;
+                }
+
+                try {
+                    const data = await fetchAPI(`/datasets/${datasetId}${getQueryString()}`);
+                    if (!data) {
+                        container.innerHTML = `
+                            <div class="alert alert-warning" role="alert">
+                                <h4 class="alert-heading">数据集不存在</h4>
+                                <p>您访问的数据集 (ID: ${datasetId}) 不存在或已被删除。</p>
+                                <p>请检查数据集ID是否正确，或返回首页查看可用的数据集。</p>
+                                <hr>
+                                <a href="../privatedb.html" class="btn btn-primary">返回数据集列表</a>
+                            </div>
+                        `;
+                        return;
+                    }
+                    updateDatasetInfo(data);
+                } catch (error) {
+                    console.error('加载数据集信息失败:', error);
+                    container.innerHTML = `
+                        <div class="alert alert-danger" role="alert">
+                            <h4 class="alert-heading">加载失败</h4>
+                            <p>加载数据集信息时发生错误: ${error.message}</p>
+                            <hr>
+                            <a href="../privatedb.html" class="btn btn-primary">返回数据集列表</a>
+                        </div>
+                    `;
+                }
+            }
+
+            // 加载数据集内容
+            async function loadDatasetContent(datasetId, category = '', project = '') {
+                try {
+                    console.log('Loading dataset content for ID:', datasetId);
+                    const response = await fetchAPI(`/datasets/${datasetId}/content?category=${category}&project=${project}`);
+                    
+                    if (!response || !Array.isArray(response)) {
+                        console.log('Invalid data structure received');
+                        return;
+                    }
+                    
+                    updateTableDisplay(response);
+                } catch (error) {
+                    console.error('Error loading dataset content:', error);
+                    showError('加载数据集内容失败: ' + error.message);
+                }
+            }
+
+            // 更新表格显示
+            function updateTableDisplay(data) {
+                const tableContainer = document.querySelector('.table-container');
+                if (!tableContainer) {
+                    console.error('Table container not found');
+                    return;
+                }
+
+                if (!data || data.length === 0) {
+                    tableContainer.innerHTML = '<div class="alert alert-info">暂无数据</div>';
+                    return;
+                }
+
+                // 创建表格头部
+                const headers = Object.keys(data[0]);
+                const headerHtml = `
+                    <tr>
+                        <th style="width: 40px; text-align: center;">
+                            <input type="checkbox" id="selectAll" onclick="toggleAllCheckboxes(this)">
+                        </th>
+                        ${headers.map(header => `
+                            <th style="text-align: left;">
+                                <div class="th-content" style="justify-content: flex-start;">
+                                    <span style="text-align: left;">${header}</span>
+                                    <div class="sort-buttons">
+                                        <i class="fas fa-sort" onclick="sortTable('${header}', 'asc')"></i>
+                                    </div>
+                                </div>
+                            </th>
+                        `).join('')}
+                        <th class="operations-column">操作</th>
+                    </tr>
+                `;
+
+                // 创建表格内容
+                const rowsHtml = data.map((row, index) => `
+                    <tr class="${index % 2 === 0 ? 'even-row' : 'odd-row'}">
+                        <td style="text-align: center;">
+                            <input type="checkbox" class="row-checkbox" data-row-index="${index}">
+                        </td>
+                        ${headers.map(header => `
+                            <td style="text-align: left;" contenteditable="true">${row[header] || ''}</td>
+                        `).join('')}
+                        <td class="operations-column">
+                            <div class="operation-buttons">
+                                <button class="btn-edit" onclick="editRow(${index})" title="编辑">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-delete" onclick="deleteRow(${index})" title="删除">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+
+                // 更新表格
+                const table = document.querySelector('#dataset-table');
+                if (table) {
+                    table.innerHTML = `
+                        <thead>${headerHtml}</thead>
+                        <tbody>${rowsHtml}</tbody>
+                    `;
+                }
+
+                // 更新条目数
+                const countElement = document.querySelector('#entry-count');
+                if (countElement) {
+                    countElement.textContent = `条目数: ${data.length}`;
+                }
+            }
+
+            // 排序表格
+            function sortTable(column, direction) {
+                const table = document.querySelector('#dataset-table');
+                const tbody = table.querySelector('tbody');
+                const rows = Array.from(tbody.querySelectorAll('tr'));
+                const currentIcon = event.target;
+                const allIcons = document.querySelectorAll('.sort-buttons i');
+                
+                // 重置所有图标
+                allIcons.forEach(icon => {
+                    icon.className = 'fas fa-sort';
+                    icon.style.color = '#bfbfbf';
+                });
+
+                // 更新当前图标
+                if (currentIcon.getAttribute('data-direction') === 'asc') {
+                    currentIcon.className = 'fas fa-sort-down';
+                    currentIcon.setAttribute('data-direction', 'desc');
+                    direction = 'desc';
+                } else {
+                    currentIcon.className = 'fas fa-sort-up';
+                    currentIcon.setAttribute('data-direction', 'asc');
+                    direction = 'asc';
+                }
+                currentIcon.style.color = '#1890ff';
+
+                // 排序逻辑
+                rows.sort((a, b) => {
+                    const aValue = a.querySelector(`td:nth-child(${getColumnIndex(column) + 1})`).textContent;
+                    const bValue = b.querySelector(`td:nth-child(${getColumnIndex(column) + 1})`).textContent;
+
+                    if (!isNaN(aValue) && !isNaN(bValue)) {
+                        return direction === 'asc' ? aValue - bValue : bValue - aValue;
+                    }
+                    return direction === 'asc' ? 
+                        aValue.localeCompare(bValue, 'zh-CN') : 
+                        bValue.localeCompare(aValue, 'zh-CN');
+                });
+
+                // 更新行样式
+                rows.forEach((row, index) => {
+                    row.className = index % 2 === 0 ? 'even-row' : 'odd-row';
+                });
+
+                tbody.innerHTML = '';
+                rows.forEach(row => tbody.appendChild(row));
+            }
+
+            // 获取列索引
+            function getColumnIndex(columnName) {
+                const headers = document.querySelectorAll('#dataset-table th');
+                for (let i = 0; i < headers.length; i++) {
+                    if (headers[i].textContent.trim() === columnName) {
+                        return i;
+                    }
+                }
+                return -1;
+            }
+
+            // 保存更改
+            async function saveChanges() {
+                const table = document.querySelector('#dataset-table');
+                if (!table) return;
+
+                const headers = Array.from(table.querySelectorAll('th')).map(th => 
+                    th.querySelector('.th-content span').textContent.trim()
+                );
+
+                const rows = Array.from(table.querySelectorAll('tbody tr')).map(row => {
+                    const rowData = {};
+                    row.querySelectorAll('td').forEach((cell, index) => {
+                        rowData[headers[index]] = cell.textContent.trim();
+                    });
+                    return rowData;
+                });
+
+                try {
+                    const datasetId = getUrlParam('id');
+                    await fetchAPI(`/datasets/${datasetId}/content`, {
+                        method: 'PUT',
+                        body: JSON.stringify(rows)
+                    });
+                    showSuccess('保存成功');
+                } catch (error) {
+                    console.error('保存失败:', error);
+                    showError('保存失败: ' + error.message);
+                }
+            }
+
+            // 页面加载完成后执行
+            document.addEventListener('DOMContentLoaded', () => {
+                const datasetId = getUrlParam('id');
+                if (!datasetId) {
+                    showError('未找到数据集ID，请检查URL是否正确');
+                    return;
+                }
+                loadDatasetInfo(datasetId);
+            });
+
+            // 添加行编辑和删除功能
+            function editRow(index) {
+                // 实现编辑行的逻辑
+                console.log('编辑行:', index);
+            }
+
+            function deleteRow(index) {
+                if (confirm('确定要删除这行数据吗？')) {
+                    console.log('删除行:', index);
+                    // 实现删除行的逻辑
+                }
+            }
+
+            // 全选/反选功能
+            function toggleAllCheckboxes(source) {
+                const checkboxes = document.getElementsByClassName('row-checkbox');
+                for (let checkbox of checkboxes) {
+                    checkbox.checked = source.checked;
+                }
+            }
+
+            // 获取选中的行索引
+            function getSelectedRows() {
+                const checkboxes = document.getElementsByClassName('row-checkbox');
+                const selectedIndexes = [];
+                for (let checkbox of checkboxes) {
+                    if (checkbox.checked) {
+                        selectedIndexes.push(parseInt(checkbox.getAttribute('data-row-index')));
+                    }
+                }
+                return selectedIndexes;
+            }
+
+            // 更新全选框状态
+            function updateSelectAllCheckbox() {
+                const selectAllCheckbox = document.getElementById('selectAll');
+                const checkboxes = document.getElementsByClassName('row-checkbox');
+                const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+                
+                if (checkedCount === 0) {
+                    selectAllCheckbox.checked = false;
+                    selectAllCheckbox.indeterminate = false;
+                } else if (checkedCount === checkboxes.length) {
+                    selectAllCheckbox.checked = true;
+                    selectAllCheckbox.indeterminate = false;
+                } else {
+                    selectAllCheckbox.checked = false;
+                    selectAllCheckbox.indeterminate = true;
+                }
+            }
+
+            // 为每个行复选框添加change事件监听器
+            document.addEventListener('DOMContentLoaded', function() {
+                const checkboxes = document.getElementsByClassName('row-checkbox');
+                for (let checkbox of checkboxes) {
+                    checkbox.addEventListener('change', updateSelectAllCheckbox);
+                }
+            });
+        </script>
+
+        <!-- 主要内容区域 -->
+        <div class="main-content">
+            <!-- 添加container容器 -->
+            <div class="container">
+                <!-- 面包屑导航 -->
+                <div class="breadcrumb">
+                    <a href="../index.html">材料数据库</a>
+                    <span class="breadcrumb-separator">></span>
+                    <a href="../privatedb.html">私有数据集</a>
+                    <span class="breadcrumb-separator">></span>
+                    <a href="#">编辑数据</a>
+                </div>
+
+                <!-- 顶部区域 -->
+                <div class="page-header">
+                    <div class="header-left">
+                        <div class="dataset-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="dataset-field">
+                            <span class="field-label"><span class="required">*</span>数据集名称</span>
+                            <div class="input-with-icon">
+                                <input type="text" class="dataset-name">
+                                <i class="fas fa-undo"></i>
+                            </div>
+                        </div>
+                        <div class="field-spacer"></div>
+                        <div class="dataset-field">
+                            <span class="field-label"><span class="required">*</span>所属项目</span>
+                            <div class="input-with-icon">
+                                <input type="text" class="field-input" readonly>
+                                <i class="fas fa-times"></i>
+                            </div>
+                        </div>
+                        <div class="dataset-field">
+                            <span class="field-label"><span class="required">*</span>所属分类</span>
+                            <div class="input-with-icon">
+                                <input type="text" class="field-input" readonly>
+                                <i class="fas fa-times"></i>
+                            </div>
+                        </div>
+                        <div class="dataset-field">
+                            <span class="field-label"><span class="required">*</span>共享状态</span>
+                            <div class="input-with-icon">
+                                <input type="text" class="field-input" readonly>
+                                <i class="fas fa-times"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="header-right">
+                        <button class="btn-save" onclick="saveChanges()"><i class="fas fa-save"></i> 保存数据集</button>
+                    </div>
+                </div>
+
+                <!-- 数据表格区域 -->
+                <div class="data-table">
+                    <!-- 工具栏 -->
+                    <div class="table-toolbar">
+                        <div class="toolbar-left">
+                            <span id="entry-count">条目数: 0</span>
+                        </div>
+                        <div class="toolbar-right">
+                            <button class="btn-tool" title="排序"><i class="fas fa-sort"></i></button>
+                            <button class="btn-tool" title="筛选"><i class="fas fa-filter"></i></button>
+                            <button class="btn-tool" title="列设置"><i class="fas fa-columns"></i></button>
+                            <button class="btn-tool" title="导出"><i class="fas fa-download"></i></button>
+                            <button class="btn-tool" title="打印"><i class="fas fa-print"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- 表格容器 -->
+                    <div class="table-container">
+                        <table id="dataset-table">
+                            <thead>
+                                <!-- 表头将由JavaScript动态生成 -->
+                            </thead>
+                            <tbody>
+                                <!-- 表格内容将由JavaScript动态生成 -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 分页 -->
+                    <div class="pagination">
+                        <span>共 0 条</span>
+                        <div class="page-controls">
+                            <button disabled><i class="fas fa-angle-left"></i></button>
+                            <span class="current-page">1</span>
+                            <span>/</span>
+                            <span>1</span>
+                            <button><i class="fas fa-angle-right"></i></button>
+                        </div>
+                        <select>
+                            <option>10 / page</option>
+                            <option>20 / page</option>
+                            <option>50 / page</option>
+                        </select>
+                        <span class="goto">
+                            前往
+                            <input type="text" value="1">
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 背景装饰元素 -->
+        <div class="tech-background">
+            <div class="matrix-bg"></div>
+            <div class="tech-lines"></div>
+        </div>
+    </div>
+
+    <style>
+        /* 主容器样式 */
+        .tech-container {
+            min-height: 100vh;
+            background: #f0f2f5;
+        }
+
+        /* 添加container样式 */
+        .container {
+            padding: 24px;
+            background: #fff;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+        }
+
+        .main-content {
+            padding: 24px;
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Alert样式 */
+        .alert {
+            padding: 16px 24px;
+            margin-bottom: 16px;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .alert-danger {
+            background-color: #fff2f0;
+            border: 1px solid #ffccc7;
+            color: #ff4d4f;
+        }
+
+        .alert-warning {
+            background-color: #fffbe6;
+            border: 1px solid #ffe58f;
+            color: #faad14;
+        }
+
+        .alert-success {
+            background-color: #f6ffed;
+            border: 1px solid #b7eb8f;
+            color: #52c41a;
+        }
+
+        .alert-heading {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .alert .btn {
+            align-self: flex-start;
+            margin-top: 8px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #1890ff;
+            border: none;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #40a9ff;
+        }
+
+        /* 面包屑样式 */
+        .breadcrumb {
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: #1890ff;
+        }
+
+        .breadcrumb-separator {
+            margin: 0 8px;
+            color: #666;
+        }
+
+        /* 页面头部样式 */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 16px 24px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .dataset-icon {
+            color: #1890ff;
+            font-size: 20px;
+            margin-right: 24px;
+        }
+
+        .field-spacer {
+            max-width: 400px;
+            flex: none;
+        }
+
+        .dataset-field {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 24px;
+        }
+
+        .dataset-field:last-child {
+            margin-right: 0;
+        }
+
+        .field-label {
+            font-size: 12px;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        .required {
+            color: #ff4d4f;
+            margin-right: 4px;
+        }
+
+        .input-with-icon {
+            display: flex;
+            align-items: center;
+            border: 1px solid #d9d9d9;
+            border-radius: 2px;
+            padding: 4px 8px;
+            background: white;
+            height: 32px;
+            box-sizing: border-box;
+        }
+
+        .input-with-icon input {
+            border: none;
+            outline: none;
+            padding: 0;
+            font-size: 12px;
+            color: #333;
+            width: 120px;
+            background: transparent;
+        }
+
+        .input-with-icon input[readonly] {
+            cursor: default;
+        }
+
+        .input-with-icon i {
+            color: #999;
+            cursor: pointer;
+            padding: 4px;
+            margin-left: 4px;
+        }
+
+        .input-with-icon i:hover {
+            color: #666;
+        }
+
+        .btn-save {
+            padding: 0 16px;
+            height: 32px;
+            background: #1890ff;
+            border: none;
+            border-radius: 2px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-save:hover {
+            background: #40a9ff;
+        }
+
+        /* 表格区域样式 */
+        .data-table {
+            background: white;
+            border-radius: 4px;
+            padding: 16px 24px;
+            overflow: hidden;
+        }
+
+        /* 表格容器 */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            position: relative;
+            max-height: calc(100vh - 300px);
+        }
+
+        table {
+            width: max-content;
+            min-width: 100%;
+        }
+
+        th, td {
+            min-width: auto;
+            max-width: none;
+            white-space: nowrap;
+            overflow: visible;
+            text-overflow: clip;
+            padding: 12px 24px;
+        }
+
+        /* 加载状态样式 */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1890ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+
+        .loading-text {
+            color: #666;
+            font-size: 14px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 固定列样式优化 */
+        .fixed-column {
+            position: sticky !important;
+            right: 0;
+            background: white !important;
+            z-index: 10;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        th.fixed-column {
+            background: #fafafa !important;
+            z-index: 11;
+        }
+
+        /* 确保固定列的背景色在hover时保持 */
+        tr:hover td.fixed-column {
+            background: #f5f5f5 !important;
+        }
+
+        /* 工具栏样式 */
+        .table-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .toolbar-left {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .toolbar-right {
+            display: flex;
+            gap: 4px;
+        }
+
+        .btn-tool {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border: 1px solid #d9d9d9;
+            border-radius: 2px;
+            background: white;
+            color: #666;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-tool:hover {
+            color: #40a9ff;
+            border-color: #40a9ff;
+        }
+
+        /* 表格内容对齐方式 */
+        td:nth-child(1), /* 复选框 */
+        td:nth-child(19) /* 操作按钮 */ {
+            text-align: center;
+        }
+
+        td:nth-child(5) /* in litera... */ {
+            text-align: center;
+        }
+
+        td:nth-child(6),  /* v(A) */
+        td:nth-child(7),  /* v(B) */
+        td:nth-child(8),  /* r(AXII)(?) */
+        td:nth-child(9),  /* r(AVI)(?) */
+        td:nth-child(10), /* r(BVI)(?) */
+        td:nth-child(11), /* EN(A) */
+        td:nth-child(12), /* EN(B) */
+        td:nth-child(13), /* I(A-O)(?) */
+        td:nth-child(14), /* I(B-O)(?) */
+        td:nth-child(15), /* ΔENR */
+        td:nth-child(16), /* tG */
+        td:nth-child(17), /* τ */
+        td:nth-child(18)  /* μ */ {
+            text-align: right;
+        }
+
+        /* 分页样式 */
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-top: 16px;
+            gap: 16px;
+            font-size: 14px;
+        }
+
+        .page-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .page-controls button {
+            border: 1px solid #d9d9d9;
+            background: white;
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+
+        .page-controls button:disabled {
+            color: #d9d9d9;
+            cursor: not-allowed;
+        }
+
+        .goto input {
+            width: 50px;
+            padding: 4px;
+            margin: 0 4px;
+            border: 1px solid #d9d9d9;
+            border-radius: 2px;
+        }
+
+        select {
+            padding: 4px;
+            border: 1px solid #d9d9d9;
+            border-radius: 2px;
+        }
+
+        /* 设置所有表格单元格左对齐 */
+        #dataset-table td {
+            text-align: left !important;
+            color: #666;
+        }
+
+        /* 保持第一列(复选框)和最后一列(操作)居中对齐 */
+        #dataset-table td:first-child,
+        #dataset-table td:last-child {
+            text-align: center !important;
+            z-index: 1;
+        }
+
+        /* 添加材料行业字体 */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&display=swap');
+        
+        /* 表格样式更新 */
+        #dataset-table {
+            font-family: 'Roboto Mono', 'JetBrains Mono', 'Fira Code', monospace;
+        }
+        
+        /* 固定列样式 */
+        .fixed-column {
+            position: sticky !important;
+            right: 0;
+            background: white;
+            z-index: 10;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+            text-align: center !important;
+            min-width: 100px;
+        }
+        
+        th.fixed-column {
+            background: #fafafa;
+            z-index: 11;
+        }
+        
+        /* 操作按钮样式 */
+        .btn-edit,
+        .btn-delete {
+            padding: 4px 8px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s;
+        }
+        
+        .btn-edit:hover {
+            color: #1890ff;
+        }
+        
+        .btn-delete:hover {
+            color: #ff4d4f;
+        }
+        
+        /* 编辑弹窗样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .edit-modal {
+            background: white;
+            border-radius: 4px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+        }
+        
+        .modal-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            color: #333;
+            font-size: 16px;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+        }
+        
+        .close-btn:hover {
+            color: #666;
+        }
+        
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            max-height: calc(90vh - 120px);
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 2px;
+            font-size: 14px;
+            color: #333;
+            font-family: 'Roboto Mono', monospace;
+        }
+        
+        .form-control:focus {
+            border-color: #40a9ff;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+        }
+        
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+        
+        .modal-footer button {
+            padding: 8px 16px;
+            border-radius: 2px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .btn-cancel {
+            border: 1px solid #d9d9d9;
+            background: white;
+            color: #666;
+        }
+        
+        .btn-cancel:hover {
+            color: #40a9ff;
+            border-color: #40a9ff;
+        }
+        
+        .modal-footer .btn-save {
+            background: #1890ff;
+            border: none;
+            color: white;
+        }
+        
+        .modal-footer .btn-save:hover {
+            background: #40a9ff;
+        }
+
+        /* 表格基础样式 */
+        #dataset-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            font-weight: normal;
+            color: #333;
+        }
+
+        /* 表头样式 */
+        #dataset-table th {
+            background: #fafafa;
+            border-bottom: 1px solid #f0f0f0;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: #333;
+            text-align: left;
+            position: sticky;
+            top: 0;
+            
+        }
+
+        /* 单元格样式 */
+        #dataset-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            text-align: left;
+            transition: background-color 0.3s;
+        }
+
+        /* 奇偶行样式 */
+        #dataset-table tr.odd-row {
+            background-color: #fff;
+        }
+
+        #dataset-table tr.even-row {
+            background-color: #fafafa;
+        }
+
+        /* 鼠标悬停效果 */
+        #dataset-table tr:hover td {
+            background-color: #e6f7ff !important;
+        }
+
+        /* 表头内容布局 */
+        .th-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* 排序按钮样式 */
+        .sort-buttons {
+            display: flex;
+            align-items: center;
+            margin-left: 8px;
+        }
+
+        .sort-buttons i {
+            color: #bfbfbf;
+            cursor: pointer;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .sort-buttons i:hover {
+            color: #1890ff;
+        }
+
+        /* 操作列样式 */
+        .operations-column {
+            position: sticky !important;
+            right: 0;
+            background: inherit !important;
+            z-index: 10;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+            text-align: center !important;
+            min-width: 100px;
+            padding: 0 16px !important;
+        }
+
+        th.operations-column {
+            background: #fafafa !important;
+            z-index: 11;
+        }
+
+        .operation-buttons {
+            opacity: 0;
+            transition: opacity 0.3s;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        tr:hover .operation-buttons {
+            opacity: 1;
+        }
+
+        /* 操作按钮样式 */
+        .btn-edit,
+        .btn-delete {
+            background: none;
+            border: none;
+            padding: 4px 8px;
+            cursor: pointer;
+            color: #595959;
+            transition: all 0.3s;
+        }
+
+        .btn-edit:hover {
+            color: #1890ff;
+        }
+
+        .btn-delete:hover {
+            color: #ff4d4f;
+        }
+
+        /* 确保固定列的背景色与行背景色一致 */
+        tr.odd-row td.operations-column {
+            background-color: #fff !important;
+        }
+
+        tr.even-row td.operations-column {
+            background-color: #fafafa !important;
+        }
+
+        tr:hover td.operations-column {
+            background-color: #e6f7ff !important;
+        }
+
+        /* 可编辑单元格样式 */
+        #dataset-table td[contenteditable="true"] {
+            cursor: text;
+        }
+
+        #dataset-table td[contenteditable="true"]:focus {
+            background-color: #fff !important;
+            outline: 2px solid #1890ff;
+            outline-offset: -2px;
+        }
+
+        /* 复选框样式 */
+        #dataset-table input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            border: 1px solid #d9d9d9;
+            border-radius: 2px;
+            background-color: #fff;
+            transition: all 0.3s;
+            position: relative;
+            top: 2px;
+        }
+
+        #dataset-table input[type="checkbox"]:checked {
+            background-color: #1890ff;
+            border-color: #1890ff;
+        }
+
+        #dataset-table input[type="checkbox"]:hover {
+            border-color: #1890ff;
+        }
+    </style>
+</body>
+</html>

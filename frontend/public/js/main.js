@@ -113,6 +113,7 @@ function activateTransition() {
 document.addEventListener('DOMContentLoaded', function() {
     // 如果登录模态框还没有创建，则创建它
     if (!loginModal) {
+        console.log('Creating login modal');
         createLoginModal();
     }
     
@@ -160,155 +161,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 将handleLogin函数移到全局作用域
-    async function handleLogin() {
-        const usernameInput = document.querySelector('#account-username');
-        const passwordInput = document.querySelector('#account-password');
-        
-        if (!usernameInput || !passwordInput) {
-            showToast('登录框初始化失败，请刷新页面重试');
-            return;
-        }
-
-        const username = usernameInput.value.trim();
-        const password = passwordInput.value;
-
-        // 清除之前的错误信息
-        const errorElements = document.querySelectorAll('.error-message');
-        errorElements.forEach(el => el.classList.remove('visible'));
-
-        // 验证输入
-        let hasError = false;
-        if (!username) {
-            const errorElement = usernameInput.parentElement.querySelector('.error-message');
-            errorElement.textContent = '请输入用户名';
-            errorElement.classList.add('visible');
-            hasError = true;
-        }
-        if (!password) {
-            const errorElement = passwordInput.parentElement.querySelector('.error-message');
-            errorElement.textContent = '请输入密码';
-            errorElement.classList.add('visible');
-            hasError = true;
-        }
-        if (hasError) return;
-
-        try {
-            const response = await fetch('http://localhost:3001/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password })
-            });
-
-            const data = await response.json();
-            if (data.success) {
-                handleLoginSuccess(username, data.token);
-            } else {
-                showToast(data.message || '用户名或密码错误');
-            }
-        } catch (error) {
-            console.error('Login error:', error);
-            showToast('登录失败，请稍后重试');
-        }
-    }
-
-    function createLoginModal() {
-        // 如果已经存在登录模态框，则返回
-        if (document.querySelector('.login-modal')) {
-            return document.querySelector('.login-modal');
-        }
-
-        const loginModal = document.createElement('div');
-        loginModal.className = 'login-modal hidden';
-        loginModal.innerHTML = `
-            <div class="login-container">
-                <h2>登录</h2>
-                <div class="input-group">
-                    <span class="input-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                    </span>
-                    <input type="text" id="account-username" />
-                    <div class="error-message"></div>
-                </div>
-                <div class="input-group">
-                    <span class="input-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
-                    </span>
-                    <input type="password" id="account-password" />
-                    <span class="toggle-password">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                    </span>
-                    <div class="error-message"></div>
-                </div>
-                <button id="loginButton">登录</button>
-                <div class="login-links">
-                    <a href="#" class="forgot-password">忘记密码</a>
-                    <a href="#" class="register">注册账号</a>
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(loginModal);
-
-        // 添加密码可见性切换功能
-        const togglePassword = loginModal.querySelector('.toggle-password');
-        const passwordInput = loginModal.querySelector('#account-password');
-        if (togglePassword && passwordInput) {
-            togglePassword.addEventListener('click', () => {
-                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                passwordInput.setAttribute('type', type);
-                // 更新图标
-                togglePassword.innerHTML = type === 'password' ? `
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                ` : `
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                        <line x1="1" y1="1" x2="23" y2="23"></line>
-                    </svg>
-                `;
-            });
-        }
-
-        // 添加登录按钮点击事件
-        const loginButton = loginModal.querySelector('#loginButton');
-        if (loginButton) {
-            loginButton.addEventListener('click', handleLogin);
-        }
-
-        // 添加回车键登录事件
-        if (passwordInput) {
-            passwordInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    handleLogin();
-                }
-            });
-        }
-
-        // 添加注册链接事件监听
-        const registerLink = loginModal.querySelector('.register');
-        if (registerLink) {
-            registerLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                showRegisterModal();
-            });
-        }
-
-        return loginModal;
-    }
 
     // 显示输入框错误信息
     function showInputError(field, message) {
@@ -359,22 +211,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     
 
-    // 处理退出登录
-    function handleLogout() {
-        // 清除登录态
-        localStorage.removeItem('isLoggedIn');
-        localStorage.removeItem('token');
-        localStorage.removeItem('username');
-        
-        // 移除用户控制区域
-        const userControls = document.querySelector('.user-controls');
-        if (userControls) {
-            userControls.remove();
-        }
-        
-        // 刷新页面
-        window.location.reload();
-    }
+   
 
     // 创建用户控制区域
     function createUserControls(username) {
@@ -419,6 +256,12 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('username', username);
         localStorage.setItem('token', token);
+        
+        // 添加测试日志
+        console.log('Login/Register successful!');
+        console.log('Username in localStorage:', localStorage.getItem('username'));
+        console.log('Token in localStorage:', localStorage.getItem('token'));
+        console.log('IsLoggedIn in localStorage:', localStorage.getItem('isLoggedIn'));
         
         // 隐藏登录框
         hideLoginModal();
@@ -591,7 +434,12 @@ document.addEventListener('DOMContentLoaded', function() {
     localStorage.setItem('username', username);
     localStorage.setItem('token', token);
     
-
+   // 添加测试日志
+    console.log('Login/Register successful!');
+    console.log('Username in localStorage:', localStorage.getItem('username'));
+    console.log('Token in localStorage:', localStorage.getItem('token'));
+    console.log('IsLoggedIn in localStorage:', localStorage.getItem('isLoggedIn'));
+    
     // 隐藏登录框
     hideLoginModal();
     // 创建用户控制区域
@@ -767,6 +615,7 @@ function createUserControls(username) {
 function showRegisterModal() {
     const loginModal = document.querySelector('.login-modal');
     if (loginModal) {
+        console.log(11115);
         loginModal.innerHTML = `
             <div class="login-container">
                 <h2>注册账号</h2>
@@ -851,7 +700,7 @@ function showRegisterModal() {
         if (backToLoginLink) {
             backToLoginLink.addEventListener('click', (e) => {
                 e.preventDefault();
-                createLoginModal();
+                createLoginModal(1);
             });
         }
 
@@ -907,10 +756,12 @@ async function handleRegister() {
         });
 
         const data = await response.json();
+        console.log('Register response:', data); // 添加日志
+
         if (data.success) {
             showToast('注册成功');
-            // 使用与登录成功相同的处理函数
-            handleLoginSuccess(username);
+            // 使用表单中的username和响应中的token
+            handleLoginSuccess(username, data.token);
         } else {
             showToast(data.message || '注册失败', 'error');
         }
@@ -934,9 +785,11 @@ function showInputError(inputId, message) {
 }
 
 // 修改createLoginModal函数，添加注册链接的事件监听
+/*
 function createLoginModal() {
     // ... existing code ...
-
+    console.log(1111);
+    
     // 添加注册链接事件监听
     const registerLink = loginModal.querySelector('.register');
     if (registerLink) {
@@ -947,5 +800,191 @@ function createLoginModal() {
     }
 
     return loginModal;
-} 
+} */
 
+
+    // 将handleLogin函数移到全局作用域
+    async function handleLogin() {
+        const usernameInput = document.querySelector('#account-username');
+        const passwordInput = document.querySelector('#account-password');
+        
+        if (!usernameInput || !passwordInput) {
+            showToast('登录框初始化失败，请刷新页面重试');
+            return;
+        }
+
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+
+        // 清除之前的错误信息
+        const errorElements = document.querySelectorAll('.error-message');
+        errorElements.forEach(el => el.classList.remove('visible'));
+
+        // 验证输入
+        let hasError = false;
+        if (!username) {
+            const errorElement = usernameInput.parentElement.querySelector('.error-message');
+            errorElement.textContent = '请输入用户名';
+            errorElement.classList.add('visible');
+            hasError = true;
+        }
+        if (!password) {
+            const errorElement = passwordInput.parentElement.querySelector('.error-message');
+            errorElement.textContent = '请输入密码';
+            errorElement.classList.add('visible');
+            hasError = true;
+        }
+        if (hasError) return;
+
+        try {
+            const response = await fetch('http://localhost:3001/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                handleLoginSuccess(username, data.token);
+            } else {
+                showToast(data.message || '用户名或密码错误');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            showToast('登录失败，请稍后重试');
+        }
+    }
+
+    function createLoginModal(flag) {
+        // 如果已经存在登录模态框，则返回
+        console.log(11112);
+        if (document.querySelector('.login-modal') && flag == undefined) {
+            console.log(11113);
+            return document.querySelector('.login-modal');
+        }   
+        else {
+            const existingcontrols = document.querySelector('.login-modal');
+            if (existingcontrols) {
+                existingcontrols.remove();
+            }
+            
+        }
+
+        const loginModal = document.createElement('div');
+        if (flag == undefined) {
+            loginModal.className = 'login-modal hidden';
+        }
+        else {
+            loginModal.className = 'login-modal';
+            loginModal.innerHTML = '';
+        }
+        console.log(loginModal.innerHTML);
+        
+        loginModal.innerHTML = `
+            <div class="login-container">
+                <h2>登录</h2>
+                <div class="input-group">
+                    <span class="input-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </span>
+                    <input type="text" id="account-username" />
+                    <div class="error-message"></div>
+                </div>
+                <div class="input-group">
+                    <span class="input-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </span>
+                    <input type="password" id="account-password" />
+                    <span class="toggle-password">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </span>
+                    <div class="error-message"></div>
+                </div>
+                <button id="loginButton">登录</button>
+                <div class="login-links">
+                    <a href="#" class="forgot-password">忘记密码</a>
+                    <a href="#" class="register">注册账号</a>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(loginModal);
+        console.log(loginModal.innerHTML);
+
+        // 添加密码可见性切换功能
+        const togglePassword = loginModal.querySelector('.toggle-password');
+        const passwordInput = loginModal.querySelector('#account-password');
+        if (togglePassword && passwordInput) {
+            togglePassword.addEventListener('click', () => {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                // 更新图标
+                togglePassword.innerHTML = type === 'password' ? `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                ` : `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                `;
+            });
+        }
+
+        // 添加登录按钮点击事件
+        const loginButton = loginModal.querySelector('#loginButton');
+        if (loginButton) {
+            loginButton.addEventListener('click', handleLogin);
+        }
+
+        // 添加回车键登录事件
+        if (passwordInput) {
+            passwordInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleLogin();
+                }
+            });
+        }
+
+        // 添加注册链接事件监听
+        const registerLink = loginModal.querySelector('.register');
+        if (registerLink) {
+            console.log(11114);
+            registerLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                showRegisterModal();
+            });
+        }
+
+        return loginModal;
+    }
+
+     // 处理退出登录
+     function handleLogout() {
+        // 清除登录态
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        
+        // 移除用户控制区域
+        const userControls = document.querySelector('.user-controls');
+        if (userControls) {
+            userControls.remove();
+        }
+        
+        // 刷新页面
+        window.location.reload();
+    }

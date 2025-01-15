@@ -10,6 +10,9 @@ const chatRoutes = require('./routes/chatRoutes');
 const zhipuRoutes = require('./routes/zhipu');
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const xlsx = require('xlsx');
+const path = require('path');
 
 const app = express();
 
@@ -22,7 +25,22 @@ const upload = multer({
 });
 
 // 中间件
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:8080',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: [
+        'Content-Type',
+        'Authorization',
+        'X-Requested-With',
+        'Accept',
+        'Origin',
+        'Access-Control-Allow-Headers',
+        'Access-Control-Request-Method',
+        'Access-Control-Request-Headers'
+    ],
+    exposedHeaders: ['Content-Range', 'X-Content-Range']
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -32,21 +50,58 @@ app.use(express.static('../frontend/public'));
 // 添加智谱路由
 app.use('/api/zhipu', zhipuRoutes);
 
-// MySQL 连接配置
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '79111111',
-    database: 'idm_explorer'
-});
+// 引入数据库连接
+const connection = require('./config/database');
 
-// 连接到数据库
-connection.connect(error => {
-    if (error) {
-        console.error('Error connecting to the database: ' + error.stack);
-        return;
+// 获取数据集内容
+app.get('/api/datasets/:id/content', async (req, res) => {
+    try {
+        debugger;  // 添加断点
+        const datasetId = parseInt(req.params.id);
+        const { category, project } = req.query;
+        console.log('Dataset ID:', datasetId);  // 调试日志
+
+        // 从数据库获取数据集信息
+        const [dataset] = await connection.promise().query(
+            `SELECT * FROM private_datasets WHERE id = ?`,
+            [datasetId]
+        );
+        console.log('Dataset from DB:', dataset);  // 调试日志
+
+        if (!dataset || dataset.length === 0) {
+            return res.status(404).json({ error: 'Dataset not found' });
+        }
+
+        const filePath = dataset[0].file_path;
+        console.log('Looking for file at:', filePath);
+
+        // 修改文件路径，指向前端的datasets目录
+        const actualFilePath = path.join(__dirname, '../frontend/public/pages/database/privatedata', filePath);
+        console.log('Actual file path:', actualFilePath);
+
+        if (!fs.existsSync(actualFilePath)) {
+            return res.status(404).json({ error: 'Excel file not found' });
+        }
+
+        // 读取Excel文件
+        console.log('Reading Excel file from:', actualFilePath);
+        const workbook = xlsx.readFile(actualFilePath);
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        
+        // 将工作表转换为JSON对象数组
+        const rows = xlsx.utils.sheet_to_json(worksheet);
+        console.log('Data type:', typeof rows);  // 检查数据类型
+        console.log('Is array:', Array.isArray(rows));  // 检查是否为数组
+        console.log('Row count:', rows.length);  // 检查数组长度
+        console.log('First two rows:', JSON.stringify(rows.slice(0, 2), null, 2));  // 检查前两行数据的具体内容
+        
+        // 直接返回数据数组
+        res.json(rows);
+    } catch (error) {
+        console.error('Error getting dataset content:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
-    console.log('Successfully connected to database.');
 });
 
 // JWT 密钥
@@ -282,14 +337,39 @@ app.post('/api/register', async (req, res) => {
 
                 // 插入新用户
                 const insertQuery = 'INSERT INTO users (username, name, email, password) VALUES (?, ?, ?, ?)';
-                connection.query(insertQuery, [username, name, email, hashedPassword], (error) => {
+                connection.query(insertQuery, [username, name, email, hashedPassword], (error, results) => {
                     if (error) {
                         console.error('Error creating user:', error.stack);
                         return res.status(500).json({ success: false, message: '服务器错误' });
                     }
 
-                    console.log('Registration successful');
-                    res.json({ success: true, message: '注册成功' });
+                    // 生成 JWT token
+                    const token = jwt.sign(
+                        { id: results.insertId, username: username },
+                        JWT_SECRET,
+                        { expiresIn: '24h' }
+                    );
+
+                    console.log('Registration successful. Details:', {
+                        userId: results.insertId,
+                        username: username,
+                        token: token
+                    });
+
+                    const response = { 
+                        success: true, 
+                        message: '注册成功',
+                        token: token,
+                        user: {
+                            id: results.insertId,
+                            username: username,
+                            name: name,
+                            email: email
+                        }
+                    };
+
+                    console.log('Sending response:', response);
+                    res.json(response);
                 });
             });
         });
@@ -678,6 +758,127 @@ app.post('/chat', authenticateToken, (req, res) => {
         }
     } catch (error) {
         console.error('Error in chat:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// 获取单个数据集信息
+app.get('/api/datasets/:id', async (req, res) => {
+    try {
+        const datasetId = parseInt(req.params.id);
+        const category = req.query.category || '';
+        const project = req.query.project || '';
+
+        // 从数据库获取数据集信息
+        const [dataset] = await connection.promise().query(
+            `SELECT * FROM private_datasets WHERE id = ?`,
+            [datasetId]
+        );
+
+        if (!dataset || dataset.length === 0) {
+            return res.status(404).json({ error: 'Dataset not found' });
+        }
+
+        // 返回数据集信息
+        res.json(dataset[0]);
+    } catch (error) {
+        console.error('Error fetching dataset:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// 获取数据集列表
+app.get('/api/datasets', async (req, res) => {
+    try {
+        const { user_id, category, project } = req.query;
+        
+        // 获取用户创建的数据集
+        let myDatasetsQuery = 'SELECT * FROM private_datasets WHERE created_by = ?';
+        const params = [user_id];
+
+        if (category) {
+            myDatasetsQuery += ' AND category = ?';
+            params.push(category);
+        }
+
+        if (project) {
+            myDatasetsQuery += ' AND project = ?';
+            params.push(project);
+        }
+
+        // 获取用户创建的数据集
+        const [myDatasets] = await connection.promise().query(myDatasetsQuery, params);
+
+        // 获取分享给用户的数据集
+        const [sharedWithMe] = await connection.promise().query(
+            `SELECT pd.* FROM private_datasets pd
+             INNER JOIN dataset_shares ds ON pd.id = ds.dataset_id
+             WHERE ds.shared_with = ?`,
+            [user_id]
+        );
+
+        // 获取用户分享的数据集
+        const [sharedByMe] = await connection.promise().query(
+            `SELECT * FROM private_datasets 
+             WHERE created_by = ? AND sharing_status = 'shared'`,
+            [user_id]
+        );
+
+        res.json({
+            my_datasets: myDatasets,
+            shared_datasets: sharedByMe,
+            my_shared_datasets: sharedWithMe
+        });
+    } catch (error) {
+        console.error('Error in /api/datasets:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// 获取分类列表
+app.get('/api/categories', async (req, res) => {
+    try {
+        const userId = req.query.user_id;
+        
+        if (!userId) {
+            return res.status(400).json({ error: 'Missing user_id parameter' });
+        }
+
+        // 获取用户的分类列表
+        const [categories] = await connection.promise().query(
+            `SELECT * FROM dataset_categories 
+             WHERE created_by = ? 
+             ORDER BY category_name`,
+            [userId]
+        );
+
+        res.json(categories);
+    } catch (error) {
+        console.error('Error fetching categories:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// 获取项目列表
+app.get('/api/projects', async (req, res) => {
+    try {
+        const userId = req.query.user_id;
+        
+        if (!userId) {
+            return res.status(400).json({ error: 'Missing user_id parameter' });
+        }
+
+        // 获取用户的项目列表
+        const [projects] = await connection.promise().query(
+            `SELECT * FROM projects 
+             WHERE created_by = ? 
+             ORDER BY project_name`,
+            [userId]
+        );
+
+        res.json(projects);
+    } catch (error) {
+        console.error('Error fetching projects:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

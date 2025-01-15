@@ -20,20 +20,32 @@ async function initViewers() {
         viewers.set(viewerId, viewer);
 
         // 获取分子ID并加载数据
-        const formula = item.querySelector('.info-header h3').textContent;
-        const moleculeId = getMoleculeIdFromFormula(formula);
+        const moleculeId = item.dataset.moleculeId;
         if (moleculeId) {
             try {
+                // 加载分子数据
                 const response = await fetch(`fenzidata/json/${moleculeId}.json`);
                 if (!response.ok) throw new Error(`Failed to load data for molecule ${moleculeId}`);
                 const data = await response.json();
-                viewer.loadMolecule(data);
-
-                // 加载2D结构图
-                const img2d = item.querySelector('.view-2d img');
-                if (img2d) {
-                    img2d.src = `fenzidata/2d/${moleculeId}.png`;
+                
+                // 更新化学式
+                const formulaElement = item.querySelector('.info-header h3');
+                if (formulaElement) {
+                    formulaElement.textContent = `化学式：${data.molecular_formula || 'N/A'}`;
                 }
+                
+                // 更新分子信息
+                const infoGrid = item.querySelector('.info-grid');
+                if (infoGrid) {
+                    updateMoleculeInfo(infoGrid, data);
+                }
+                
+                // 加载3D结构
+                const response3d = await fetch(`fenzidata/3d/${moleculeId}.json`);
+                if (!response3d.ok) throw new Error(`Failed to load 3D data for molecule ${moleculeId}`);
+                const data3d = await response3d.json();
+                viewer.loadMolecule(data3d);
+
             } catch (error) {
                 console.error('Error loading molecule:', error);
                 viewerContainer.textContent = '无法加载3D结构';
@@ -42,23 +54,35 @@ async function initViewers() {
     }
 }
 
-// 从化学式获取分子ID的映射
-function getMoleculeIdFromFormula(formulaText) {
-    const formulaMap = {
-        'C9H17NO4': '297',
-        'C6H6': '241',
-        'CH3OH': '887',
-        'C2H5OH': '702',
-        'C6H5OH': '962',
-        'C2H4O': '6322',
-        'CH3CHO': '1140',
-        'C6H5NO2': '7844',
-        'C3H6O': '7876',
-        'C4H8O2': '8871'
+// 更新分子信息
+function updateMoleculeInfo(infoGrid, data) {
+    infoGrid.innerHTML = '';
+
+    // 定义要显示的属性及其标签
+    const properties = {
+        'molecular_weight': '分子量',
+        'hydroxyl_count': '羟基数量',
+        'epoxy_count': '环氧基数量',
+        'benzene_count': '苯环数量',
+        'ketone_count': '酮基数量',
+        'aldehyde_count': '醛基数量',
+        'SMILES': 'SMILES码',
+        'topological_polar_surface_area': '拓扑极性表面',
+        'labute_asa': 'Labute近似分子表面积',
+        'balaban_j': 'Balaban分子连接指数',
+        'bertz_complexity': 'Bertz复杂度',
+        'wildman_crippen_mr': 'Wildman-Crippen摩尔折射率'
     };
-    
-    const formula = formulaText.replace('化学式：', '').trim();
-    return formulaMap[formula];
+
+    for (const [key, label] of Object.entries(properties)) {
+        const div = document.createElement('div');
+        div.className = 'info-item';
+        div.innerHTML = `
+            <span class="label">${label}：</span>
+            <span class="value">${data[key] ?? 'N/A'}</span>
+        `;
+        infoGrid.appendChild(div);
+    }
 }
 
 // 处理窗口大小变化
@@ -71,5 +95,5 @@ function handleResize() {
 // 添加窗口大小变化监听器
 window.addEventListener('resize', handleResize);
 
-// 当DOM加载完成后初始化查看器
-document.addEventListener('DOMContentLoaded', initViewers); 
+// 导出初始化函数
+export { initViewers }; 

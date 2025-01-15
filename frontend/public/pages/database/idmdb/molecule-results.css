@@ -12,10 +12,11 @@
 }
 
 .search-area h1 {
-    font-size: 32px;
-    margin-bottom: 10px;
-    color: #333;
-    font-weight: 500;
+    font-size: 42px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: #555;
+    
 }
 
 .search-area .subtitle {
@@ -314,3 +315,30 @@
     background: #1a73e8;
     color: white;
 } 
+
+/* 面包屑导航 */
+.breadcrumb {
+    padding: 0px 0;
+    margin-bottom: 20px;
+    color: #fff;
+    font-size: 14px;
+}
+
+.breadcrumb a {
+    color: #4a90e2;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb a:hover {
+    color: #357abd;
+}
+
+.breadcrumb-separator {
+    margin: 0 10px;
+    color: #666;
+}
+
+.breadcrumb .current {
+    color: #888;
+}

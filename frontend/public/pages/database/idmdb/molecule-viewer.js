@@ -226,14 +226,49 @@ class MoleculeViewer {
             // 重新添加光源
             this.setupLights();
 
-            if (!data3d.atoms) {
-                throw new Error('Invalid 3D data structure: missing atoms array');
+            // 处理数据格式
+            let positions = [];
+            let elements = [];
+            let bonds = [];
+
+            if (data3d.atoms) {
+                // 旧格式
+                const atoms = data3d.atoms;
+                for (const atom of atoms) {
+                    positions.push(atom.position);
+                    elements.push(atom.element);
+                }
+                // 自动计算键
+                for (let i = 0; i < atoms.length; i++) {
+                    for (let j = i + 1; j < atoms.length; j++) {
+                        const atom1 = atoms[i];
+                        const atom2 = atoms[j];
+                        const [x1, y1, z1] = atom1.position;
+                        const [x2, y2, z2] = atom2.position;
+                        
+                        // 计算原子间距离
+                        const dx = x2 - x1;
+                        const dy = y2 - y1;
+                        const dz = z2 - z1;
+                        const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                        
+                        // 如果距离小于阈值，添加化学键
+                        if (distance < 1.8) {  // 1.8 Å 作为阈值
+                            bonds.push([i, j, 1]);  // 默认单键
+                        }
+                    }
+                }
+            } else if (data3d.positions && data3d.elements && data3d.bonds) {
+                // 新格式
+                positions = data3d.positions;
+                elements = data3d.elements;
+                bonds = data3d.bonds;
+            } else {
+                throw new Error('Invalid 3D data structure: missing required data');
             }
 
-            const atoms = data3d.atoms;
-
             // 计算分子量和原子数量
-            const atomCount = atoms.length;
+            const atomCount = positions.length;
             const molecularWeight = basicData.molecular_weight || 0;
 
             // 计算整体缩放比例
@@ -258,8 +293,8 @@ class MoleculeViewer {
             let minX = Infinity, minY = Infinity, minZ = Infinity;
             let maxX = -Infinity, maxY = -Infinity, maxZ = -Infinity;
             
-            for (const atom of atoms) {
-                const [x, y, z] = atom.position;
+            for (const position of positions) {
+                const [x, y, z] = position;
                 minX = Math.min(minX, x);
                 maxX = Math.max(maxX, x);
                 minY = Math.min(minY, y);
@@ -283,21 +318,21 @@ class MoleculeViewer {
 
             // 添加原子
             const atomGeometry = new THREE.SphereGeometry(atomRadius, 32, 32);
-            for (const atom of atoms) {
+            for (let i = 0; i < positions.length; i++) {
+                const position = positions[i];
+                const element = elements[i];
                 const material = new THREE.MeshStandardMaterial({
-                    color: this.getAtomColor(atom.atomic_number),
+                    color: this.getAtomColor(element),
                     metalness: 0.2,
                     roughness: 0.3,
                     envMapIntensity: 1.2,
-                    emissive: this.getAtomColor(atom.atomic_number),
-                    emissiveIntensity: 0.2,
-                    transparent: true,
-                    opacity: 0.9
+                    emissive: this.getAtomColor(element),
+                    emissiveIntensity: 0.2
                 });
                 const atomMesh = new THREE.Mesh(atomGeometry, material);
                 atomMesh.castShadow = true;
                 atomMesh.receiveShadow = true;
-                const [x, y, z] = atom.position;
+                const [x, y, z] = position;
                 atomMesh.position.set(
                     (x - centerX) * scale,
                     (y - centerY) * scale,
@@ -308,73 +343,49 @@ class MoleculeViewer {
 
             // 添加化学键
             const bondGeometry = new THREE.CylinderGeometry(bondRadius, bondRadius, 1, 16, 1);
-            
-            // 计算原子间的距离阈值（用于确定是否形成化学键）
-            const bondThreshold = 1.8; // Å
+            for (const [i, j, order] of bonds) {
+                const pos1 = positions[i];
+                const pos2 = positions[j];
+                const [x1, y1, z1] = pos1;
+                const [x2, y2, z2] = pos2;
+                
+                const start = new THREE.Vector3(
+                    (x1 - centerX) * scale,
+                    (y1 - centerY) * scale,
+                    (z1 - centerZ) * scale
+                );
+                const end = new THREE.Vector3(
+                    (x2 - centerX) * scale,
+                    (y2 - centerY) * scale,
+                    (z2 - centerZ) * scale
+                );
 
-            // 为每对原子检查是否应该添加化学键
-            for (let i = 0; i < atoms.length; i++) {
-                for (let j = i + 1; j < atoms.length; j++) {
-                    const atom1 = atoms[i];
-                    const atom2 = atoms[j];
-                    const [x1, y1, z1] = atom1.position;
-                    const [x2, y2, z2] = atom2.position;
-                    
-                    // 计算原子间距离
-                    const dx = x2 - x1;
-                    const dy = y2 - y1;
-                    const dz = z2 - z1;
-                    const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
-                    
-                    // 如果距离小于阈值，添加化学键
-                    if (distance < bondThreshold) {
-                        const start = new THREE.Vector3(
-                            (x1 - centerX) * scale,
-                            (y1 - centerY) * scale,
-                            (z1 - centerZ) * scale
-                        );
-                        const end = new THREE.Vector3(
-                            (x2 - centerX) * scale,
-                            (y2 - centerY) * scale,
-                            (z2 - centerZ) * scale
-                        );
+                const bondLength = start.distanceTo(end);
+                const material = new THREE.MeshStandardMaterial({
+                    color: 0x808080,
+                    metalness: 0.2,
+                    roughness: 0.3
+                });
+                const bond = new THREE.Mesh(bondGeometry, material);
+                bond.castShadow = true;
+                bond.receiveShadow = true;
 
-                        const bondLength = start.distanceTo(end);
-                        const bond = new THREE.Mesh(
-                            bondGeometry,
-                            new THREE.MeshStandardMaterial({ 
-                                color: 0xFFFFFF,
-                                metalness: 0.1,
-                                roughness: 0.3,
-                                transparent: true,
-                                opacity: 0.95,
-                                envMapIntensity: 1.5,
-                                emissive: 0x404040,
-                                emissiveIntensity: 0.1
-                            })
-                        );
+                // 计算键的方向向量
+                const direction = new THREE.Vector3().subVectors(end, start).normalize();
+                
+                // 计算旋转四元数
+                const quaternion = new THREE.Quaternion();
+                quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
+                
+                // 应用旋转和缩放
+                bond.quaternion.copy(quaternion);
+                bond.scale.y = bondLength;
 
-                        bond.castShadow = true;
-                        bond.receiveShadow = true;
+                // 设置位置为起点和终点的中点
+                const midpoint = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
+                bond.position.copy(midpoint);
 
-                        // 计算键的方向向量
-                        const direction = new THREE.Vector3().subVectors(end, start).normalize();
-                        
-                        // 计算旋转四元数
-                        const quaternion = new THREE.Quaternion();
-                        quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
-                        
-                        // 应用旋转和缩放
-                        bond.quaternion.copy(quaternion);
-                        bond.scale.y = bondLength;
-                        
-                        // 设置位置为起点和终点的中点
-                        const midpoint = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
-                        bond.position.copy(midpoint);
-                        
-                        this.scene.add(bond);
-                    }
-                }
+                this.scene.add(bond);
             }
 
             // 重置相机位置
@@ -383,56 +394,38 @@ class MoleculeViewer {
             this.camera.updateProjectionMatrix();
             this.controls.update();
 
-            // 添加环境贴图以增强金属和反射效果
-            const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
-            pmremGenerator.compileEquirectangularShader();
-            
-            // 添加额外的环境光
-            const extraAmbientLight = new THREE.AmbientLight(0xffffff, 0.5);
-            this.scene.add(extraAmbientLight);
-
-            const envTexture = new THREE.CubeTextureLoader().load([
-                'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
-                'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
-                'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
-                'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
-                'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
-                'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='
-            ]);
-            this.scene.environment = envTexture;
-
         } catch (error) {
             console.error('Error loading molecule:', error);
-            this.container.textContent = '无法加载3D结构';
+            throw error;
         }
     }
 
-    getAtomColor(atomicNumber) {
+    getAtomColor(element) {
         // 使用更鲜艳的配色方案
         const colors = {
-            1: 0xFFFFFF,   // H - 白色
-            6: 0x404040,   // C - 深灰色
-            7: 0x0000FF,   // N - 亮蓝色
-            8: 0xFF0000,   // O - 鲜红色
-            9: 0x00FF00,   // F - 亮绿色
-            15: 0xFF8000,  // P - 橙色
-            16: 0xFFFF00,  // S - 亮黄色
-            17: 0x00FF00,  // Cl - 亮绿色
-            35: 0x800000,  // Br - 深红色
-            53: 0x8F00FF,  // I - 紫色
-            11: 0xFF00FF,  // Na - 亮粉色
-            12: 0x90EE90,  // Mg - 浅绿色
-            13: 0xD3D3D3,  // Al - 浅灰色
-            14: 0xDAA520,  // Si - 金黄色
-            19: 0xFF1493,  // K - 深粉色
-            20: 0x00FFFF,  // Ca - 青色
-            26: 0xFFA500,  // Fe - 橙色
-            29: 0xCD7F32,  // Cu - 铜色
-            30: 0x9370DB,  // Zn - 紫色
-            47: 0xC0C0C0,  // Ag - 银色
-            79: 0xFFD700   // Au - 金色
+            'H': 0xFFFFFF,   // 白色
+            'C': 0x404040,   // 深灰色
+            'N': 0x0000FF,   // 亮蓝色
+            'O': 0xFF0000,   // 鲜红色
+            'F': 0x00FF00,   // 亮绿色
+            'P': 0xFF8000,   // 橙色
+            'S': 0xFFFF00,   // 亮黄色
+            'Cl': 0x00FF00,  // 亮绿色
+            'Br': 0x800000,  // 深红色
+            'I': 0x8F00FF,   // 紫色
+            'Na': 0xFF00FF,  // 亮粉色
+            'Mg': 0x90EE90,  // 浅绿色
+            'Al': 0xD3D3D3,  // 浅灰色
+            'Si': 0xDAA520,  // 金黄色
+            'K': 0xFF1493,   // 深粉色
+            'Ca': 0x00FFFF,  // 青色
+            'Fe': 0xFFA500,  // 橙色
+            'Cu': 0xCD7F32,  // 铜色
+            'Zn': 0x9370DB,  // 紫色
+            'Ag': 0xC0C0C0,  // 银色
+            'Au': 0xFFD700   // 金色
         };
-        return colors[atomicNumber] || 0x808080;
+        return colors[element] || 0x808080;
     }
 
     handleResize() {
