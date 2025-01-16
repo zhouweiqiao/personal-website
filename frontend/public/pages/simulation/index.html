@@ -213,9 +213,44 @@
     });
 
     function submitCalculation(software) {
-        // 跳转到calcinfo页面，并将软件名称作为参数传递
-        window.location.href = `./calcinfo.html?software=${encodeURIComponent(software)}`;
+        if (software.toLowerCase() === 'qe') {
+            window.location.href = `calcinfo.html?software=${software}`;
+        } else {
+            // 创建 toast 提示
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = '敬请期待！';
+            document.body.appendChild(toast);
+
+            // 设置 toast 样式
+            toast.style.position = 'fixed';
+            toast.style.top = '20px';
+            toast.style.left = '50%';
+            toast.style.transform = 'translateX(-50%)';
+            toast.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+            toast.style.color = 'white';
+            toast.style.padding = '10px 20px';
+            toast.style.borderRadius = '4px';
+            toast.style.zIndex = '1000';
+            toast.style.transition = 'opacity 0.3s';
+
+            // 3秒后移除 toast
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
     }
     </script>
+
+    <style>
+        .toast {
+            opacity: 1;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
 </body>
 </html>

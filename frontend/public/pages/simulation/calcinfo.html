@@ -11,7 +11,7 @@
             background: white;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid #e0e0e0;
         }
         
         .task-header {
@@ -19,6 +19,9 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            padding: 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
         }
 
         .task-info {
@@ -47,7 +50,7 @@
 
         .step-nav {
             display: flex;
-            margin-bottom: 30px;
+            margin-bottom: 16px;
             position: relative;
         }
 
@@ -55,19 +58,22 @@
             flex: 1;
             text-align: center;
             position: relative;
-            padding-bottom: 20px;
+            padding-bottom: 8px;
         }
 
+
+
         .step-number {
-            width: 24px;
-            height: 24px;
+            width: 18px;
+            height: 18px;
             background: #e0e0e0;
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             color: white;
-            margin-right: 8px;
+            margin-right: 4px;
+            font-size: 12px;
         }
 
         .step.active .step-number {
@@ -76,6 +82,7 @@
 
         .step-text {
             color: #666;
+            font-size: 12px;
         }
 
         .step.active .step-text {
@@ -88,29 +95,65 @@
         }
 
         .form-section h3 {
-            font-size: 16px;
+            font-size: 14px;
             color: #333;
             margin-bottom: 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
         }
 
         .upload-area {
             border: 2px dashed #e0e0e0;
-            border-radius: 8px;
-            padding: 30px;
-            text-align: center;
+            border-radius: 4px;
+            padding: 20px;
             background: #fafafa;
+            cursor: pointer;
+            transition: border-color 0.3s;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+        }
+
+        .upload-area:hover {
+            border-color: #0066cc;
+        }
+
+        .upload-box {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-left: 20px;
+        }
+
+        .upload-content {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 16px;
         }
 
         .upload-box i {
-            font-size: 40px;
+            font-size: 32px;
             color: #999;
-            margin-bottom: 16px;
+            flex-direction: row;
+        }
+
+        .upload-text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .upload-text p {
+            margin: 0;
+            color: #666;
         }
 
         .upload-tip {
             color: #999;
             font-size: 12px;
-            margin: 8px 0;
         }
 
         .upload-btn {
@@ -120,7 +163,9 @@
             padding: 6px 20px;
             border-radius: 4px;
             cursor: pointer;
-            margin-top: 16px;
+            font-size: 14px;
+            white-space: nowrap;
+            margin-right: 40px;
         }
 
         .param-field {
@@ -139,7 +184,11 @@
             border: 1px solid #e0e0e0;
             border-radius: 4px;
             background: #fafafa;
+            color: #666;
+            font-size: 14px;
         }
+
+    
 
         .param-tip {
             color: #999;
@@ -151,16 +200,17 @@
             background: #0066cc;
             color: white;
             border: none;
-            padding: 10px 24px;
+            padding: 8px 24px;
             border-radius: 4px;
             cursor: pointer;
-            display: flex;
+            font-size: 14px;
+            display: inline-flex;
             align-items: center;
             gap: 8px;
         }
 
-        .next-step-btn i {
-            font-size: 14px;
+        .next-step-btn:hover {
+            background: #0052a3;
         }
 
         /* 添加左侧导航样式 */
@@ -179,9 +229,8 @@
         }
 
         .software-logo {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 20px;
+            width: 140px;
+            margin: 20PX auto 40px;
             display: block;
         }
 
@@ -200,6 +249,7 @@
             align-items: center;
             padding: 8px 12px;
             color: #333;
+            font-size: 14px;
             text-decoration: none;
             border-radius: 4px;
             transition: background-color 0.2s;
@@ -239,16 +289,10 @@
             margin-bottom: 30px;
         }
 
-        .software-logo {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 12px;
-            display: block;
-            object-fit: contain;
-        }
+      
 
         .software-name {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 500;
             color: #333;
             margin-bottom: 4px;
@@ -267,6 +311,66 @@
 
         .tech-container {
             background: #f0f2f5;
+        }
+
+        .file-table {
+            margin-top: 16px;
+            width: 100%;
+            overflow-x: auto;
+        }
+        
+        .file-table table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fafafa;
+            border-radius: 4px;
+        }
+        
+        .file-table th,
+        .file-table td {
+            padding: 8px 12px;
+            text-align: left;
+            font-size: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #555;
+        }
+        
+        .file-table th {
+            background: #f5f5f5;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .file-table td {
+            color: #333;
+        }
+        
+        .file-table .action-btn {
+            padding: 4px 8px;
+            margin: 0 4px;
+            border: none;
+            background: none;
+            color: #0066cc;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .file-table .action-btn:hover {
+            color: #0052a3;
+        }
+        
+        .file-table .delete-btn {
+            color: #ff4d4f;
+        }
+        
+        .file-table .delete-btn:hover {
+            color: #ff1f1f;
+        }
+
+        .calc-form {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px;
         }
     </style>
 </head>
@@ -318,9 +422,9 @@
             <!-- 左侧导航 -->
             <div class="left-sidebar">
                 <div class="software-info">
-                    <img id="softwareLogo" src="../../assets/ds-paw-logo.png" alt="Software Logo" class="software-logo">
-                    <div id="softwareName" class="software-name">DS-PAW</div>
-                    <div id="softwareVersion" class="software-version">Version 2.0</div>
+                    <img id="softwareLogo" src="../../assets/simulation-logos/qe.png" alt="QE Logo" class="software-logo">
+                    <div id="softwareName" class="software-name">Quantum ESPRESSO</div>
+                    <div id="softwareVersion" class="software-version">Version 7.2</div>
                 </div>
                 <ul class="nav-list">
                     <li>
@@ -350,7 +454,7 @@
                 <div class="task-header">
                     <div class="task-info">
                         <span class="task-label">任务：</span>
-                        <span class="task-id">DS-PAW_155257</span>
+                        <span class="task-id">QE_TEST_001</span>
                         <i class="fas fa-copy copy-icon" onclick="copyTaskId()"></i>
                     </div>
                     <button class="manage-btn">管理项目</button>
@@ -378,31 +482,48 @@
                     <div class="form-section">
                         <h3>上传结构和输入文件</h3>
                         <div class="upload-area">
-                            <div class="upload-box">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                                <p>请将数据文件拖入此框</p>
-                                <p class="upload-tip">（*.in, *.asd等，单个文件不超过100M）</p>
-                                <button class="upload-btn">点击上传</button>
+                            <input type="file" id="fileInput" multiple style="display: none;">
+                            <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+                                <div class="upload-content">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <div class="upload-text">
+                                        <p>请将数据文件拖入此框</p>
+                                        <p class="upload-tip">（单个文件不超过100M）</p>
+                                    </div>
+                                </div>
+                                <button class="upload-btn" onclick="event.stopPropagation(); document.getElementById('fileInput').click()">点击上传</button>
                             </div>
                         </div>
+                        <div class="file-table" style="display: none;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>文件</th>
+                                        <th>大小</th>
+                                        <th>更新时间</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="fileTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="upload-error" style="color: #ff4d4f; margin-top: 8px; font-size: 14px;">请上传输入文件</p>
                     </div>
 
                     <!-- 环境参数设置 -->
                     <div class="form-section">
-                        <h3>环境参数</h3>
+                        <h3>环境参数 <span style="color: #999; font-weight: normal; margin-left: 8px;">系统默认认填充，一般情况下无需修改</span></h3>
                         <div class="param-field">
-                            <label>环境变量</label>
-                            <input type="text" class="param-input" value="source /gpfs/lpfs/app/hzwtech/profile/DS-PAW.env" readonly>
-                            <p class="param-tip">系统默认认填充，一般情况下无需修改</p>
+                            <input type="text" class="param-input" value="module load quantum-espresso/7.2">
                         </div>
                     </div>
 
                     <!-- 运行指令设置 -->
                     <div class="form-section">
-                        <h3>运行指令</h3>
+                        <h3>运行指令 <span style="color: #999; font-weight: normal; margin-left: 8px;">系统默认认填充，一般情况下无需修改</span></h3>
                         <div class="param-field">
-                            <label>执行命令</label>
-                            <input type="text" class="param-input" value="DS-PAW -mpi mpirun -mpiargs '--map-by node:PE=1' relax.in -pob">
+                            <input type="text" class="param-input" value="mpirun -np 4 pw.x -in scf.in > scf.out">
                             <p class="param-tip">（填入运行软件所需的command，部分软件已经提供默认值，无需修改）</p>
                         </div>
                     </div>
@@ -423,18 +544,40 @@
     </div>
 
     <script>
-    // 添加软件信息设置函数
-    function setSoftwareInfo(info) {
-        const { name, version, logo } = info;
+    // 修改软件信息设置函数
+    function setSoftwareInfo() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const software = urlParams.get('software') || 'qe';
         
-        // 设置软件信息
-        document.getElementById('softwareLogo').src = logo || '../../assets/default-software-logo.png';
-        document.getElementById('softwareName').textContent = name || 'Software Name';
-        document.getElementById('softwareVersion').textContent = `Version ${version || '1.0'}`;
+        if (software.toLowerCase() === 'qe') {
+            document.getElementById('softwareLogo').src = '../../assets/simulation-logos/qe.png';
+            document.getElementById('softwareName').textContent = 'Quantum ESPRESSO';
+            document.getElementById('softwareVersion').textContent = 'Version 7.2';
+        }
+    }
+
+    // 复制任务ID
+    function copyTaskId() {
+        const taskId = document.querySelector('.task-id').textContent;
+        navigator.clipboard.writeText(taskId).then(() => {
+            // 显示复制成功的提示
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = '复制成功';
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 2000);
+        });
     }
 
     // 页面加载完成后执行
     document.addEventListener('DOMContentLoaded', function() {
+        setSoftwareInfo();
         // 示例：从URL参数获取软件信息
         const urlParams = new URLSearchParams(window.location.search);
         const softwareInfo = {
@@ -480,6 +623,127 @@
                 });
             });
         });
+
+        // 文件上传相关功能
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.querySelector('.upload-area');
+        const uploadError = document.querySelector('.upload-error');
+
+        // 处理文件选择
+        fileInput.addEventListener('change', function(e) {
+            handleFiles(e.target.files);
+        });
+
+        // 处理拖拽
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.style.borderColor = '#0066cc';
+        });
+
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.style.borderColor = '#e0e0e0';
+        });
+
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.style.borderColor = '#e0e0e0';
+            
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        // 处理文件上传
+        function handleFiles(files) {
+            if (files.length === 0) return;
+
+            // 检查文件大小
+            for (let file of files) {
+                if (file.size > 100 * 1024 * 1024) { // 100MB
+                    uploadError.textContent = '文件大小不能超过100M';
+                    uploadError.style.display = 'block';
+                    return;
+                }
+            }
+
+            // 显示文件表格
+            const fileTable = document.querySelector('.file-table');
+            fileTable.style.display = 'block';
+            
+            // 清除错误提示
+            uploadError.style.display = 'none';
+            
+            // 更新文件表格
+            const tableBody = document.getElementById('fileTableBody');
+            
+            // 将 FileList 转换为数组以便处理
+            Array.from(files).forEach(file => {
+                const row = document.createElement('tr');
+                
+                // 格式化文件大小
+                const size = formatFileSize(file.size);
+                
+                // 格式化更新时间
+                const date = new Date().toLocaleString('zh-CN', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                
+                row.innerHTML = `
+                    <td>${file.name}</td>
+                    <td>${size}</td>
+                    <td>${date}</td>
+                    <td>
+                        <button class="action-btn" onclick="previewFile(this)"><i class="fas fa-eye"></i></button>
+                        <button class="action-btn" onclick="editFile(this)"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn delete-btn" onclick="deleteFile(this)"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // 文件操作函数
+        function previewFile(btn) {
+            const fileName = btn.closest('tr').cells[0].textContent;
+            console.log('预览文件:', fileName);
+            // TODO: 实现文件预览功能
+        }
+
+        function editFile(btn) {
+            const fileName = btn.closest('tr').cells[0].textContent;
+            console.log('编辑文件:', fileName);
+            // TODO: 实现文件编辑功能
+        }
+
+        function deleteFile(btn) {
+            const row = btn.closest('tr');
+            const fileName = row.cells[0].textContent;
+            if (confirm(`确定要删除文件 ${fileName} 吗？`)) {
+                row.remove();
+                // 如果表格中没有文件了,隐藏表格
+                if (document.getElementById('fileTableBody').children.length === 0) {
+                    document.querySelector('.file-table').style.display = 'none';
+                }
+            }
+        }
     });
 
     function submitCalculation(software) {
