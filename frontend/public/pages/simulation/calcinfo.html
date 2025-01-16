@@ -50,39 +50,64 @@
 
         .step-nav {
             display: flex;
-            margin-bottom: 16px;
+            margin-top: 30px;
             position: relative;
+            padding-bottom: 8px;
         }
 
         .step {
             flex: 1;
             text-align: center;
             position: relative;
-            padding-bottom: 8px;
         }
 
+        .step::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: calc(50% + 40px);
+            right: calc(50% - 40px);
+            height: 1px;
+            background: #e0e0e0;
+            transform: translateY(-50%);
+            z-index: 0;
+        }
 
+        .step:last-child::after {
+            display: none;
+        }
+
+        .step-content {
+            display: inline-flex;
+            position: relative;
+            z-index: 1;
+            background: white;
+            padding: 0 12px;
+            margin: 0 auto;
+        }
 
         .step-number {
-            width: 18px;
-            height: 18px;
-            background: #e0e0e0;
+            width: 20px;
+            height: 20px;
+            background: #f0f0f0;
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            margin-right: 4px;
+            color: #999;
+            margin-right: 8px;
             font-size: 12px;
         }
 
         .step.active .step-number {
             background: #0066cc;
+            color: white;
         }
 
         .step-text {
-            color: #666;
-            font-size: 12px;
+            color: #999;
+            font-size: 13px;
+            line-height: 20px;
         }
 
         .step.active .step-text {
@@ -91,7 +116,8 @@
         }
 
         .form-section {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+            padding-top: 20px;
         }
 
         .form-section h3 {
@@ -371,6 +397,103 @@
             border: 1px solid #e0e0e0;
             border-radius: 4px;
             padding: 20px;
+            padding-top: 0px;
+        }
+
+        .job-info {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 4px;
+            margin-top: 16px;
+        }
+
+        .job-info p {
+            margin: 8px 0;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .status-running {
+            color: #52c41a;
+            font-weight: 500;
+        }
+
+        .prev-step-btn {
+            background: #fff;
+            color: #666;
+            border: 1px solid #d9d9d9;
+            padding: 8px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 16px;
+        }
+
+        .prev-step-btn:hover {
+            border-color: #40a9ff;
+            color: #40a9ff;
+        }
+
+        .script-info {
+            background: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 16px;
+            margin-top: 8px;
+        }
+
+        .script-content {
+            margin: 0;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #333;
+            white-space: pre-wrap;
+        }
+
+        .submit-calc-btn {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .submit-calc-btn:hover {
+            background: #0052a3;
+        }
+
+        .submit-calc-btn i {
+            font-size: 14px;
+        }
+
+        .status-pending {
+            color: #faad14;
+            font-weight: 500;
+        }
+
+        .status-running {
+            color: #52c41a;
+            font-weight: 500;
+        }
+
+        .status-completed {
+            color: #1890ff;
+            font-weight: 500;
+        }
+
+        .status-failed {
+            color: #ff4d4f;
+            font-weight: 500;
         }
     </style>
 </head>
@@ -463,74 +586,177 @@
                 <!-- 步骤导航 -->
                 <div class="step-nav">
                     <div class="step active">
-                        <span class="step-number">1</span>
-                        <span class="step-text">超算参数设置</span>
+                        <div class="step-content">
+                            <span class="step-number">1</span>
+                            <span class="step-text">超算参数设置</span>
+                        </div>
                     </div>
                     <div class="step">
-                        <span class="step-number">2</span>
-                        <span class="step-text">作业参数设置</span>
+                        <div class="step-content">
+                            <span class="step-number">2</span>
+                            <span class="step-text">作业参数设置</span>
+                        </div>
                     </div>
                     <div class="step">
-                        <span class="step-number">3</span>
-                        <span class="step-text">提交计算</span>
+                        <div class="step-content">
+                            <span class="step-number">3</span>
+                            <span class="step-text">提交计算</span>
+                        </div>
                     </div>
                 </div>
 
                 <!-- 表单区域 -->
                 <div class="calc-form">
-                    <!-- 文件上传区域 -->
-                    <div class="form-section">
-                        <h3>上传结构和输入文件</h3>
-                        <div class="upload-area">
-                            <input type="file" id="fileInput" multiple style="display: none;">
-                            <div class="upload-box" onclick="document.getElementById('fileInput').click()">
-                                <div class="upload-content">
-                                    <i class="fas fa-cloud-upload-alt"></i>
-                                    <div class="upload-text">
-                                        <p>请将数据文件拖入此框</p>
-                                        <p class="upload-tip">（单个文件不超过100M）</p>
+                    <!-- 第一步：超算参数设置 -->
+                    <div id="step1Form" style="display: block;">
+                        <!-- 文件上传区域 -->
+                        <div class="form-section">
+                            <h3>上传结构和输入文件</h3>
+                            <div class="upload-area">
+                                <input type="file" id="fileInput" multiple style="display: none;">
+                                <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+                                    <div class="upload-content">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <div class="upload-text">
+                                            <p>请将数据文件拖入此框</p>
+                                            <p class="upload-tip">（单个文件不超过100M）</p>
+                                        </div>
                                     </div>
+                                    <button class="upload-btn" onclick="event.stopPropagation(); document.getElementById('fileInput').click()">点击上传</button>
                                 </div>
-                                <button class="upload-btn" onclick="event.stopPropagation(); document.getElementById('fileInput').click()">点击上传</button>
+                            </div>
+                            <div class="file-table" style="display: none;">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>文件</th>
+                                            <th>大小</th>
+                                            <th>更新时间</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="fileTableBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="upload-error" style="color: #ff4d4f; margin-top: 8px; font-size: 14px;">请上传输入文件</p>
+                        </div>
+
+                        <!-- 环境参数设置 -->
+                        <div class="form-section">
+                            <h3>环境参数 <span style="color: #999; font-weight: normal; margin-left: 8px;">系统默认认填充，一般情况下无需修改</span></h3>
+                            <div class="param-field">
+                                <input type="text" class="param-input" value="module load quantum-espresso/7.2">
                             </div>
                         </div>
-                        <div class="file-table" style="display: none;">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>文件</th>
-                                        <th>大小</th>
-                                        <th>更新时间</th>
-                                        <th>操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="fileTableBody">
-                                </tbody>
-                            </table>
-                        </div>
-                        <p class="upload-error" style="color: #ff4d4f; margin-top: 8px; font-size: 14px;">请上传输入文件</p>
-                    </div>
 
-                    <!-- 环境参数设置 -->
-                    <div class="form-section">
-                        <h3>环境参数 <span style="color: #999; font-weight: normal; margin-left: 8px;">系统默认认填充，一般情况下无需修改</span></h3>
-                        <div class="param-field">
-                            <input type="text" class="param-input" value="module load quantum-espresso/7.2">
+                        <!-- 运行指令设置 -->
+                        <div class="form-section">
+                            <h3>运行指令 <span style="color: #999; font-weight: normal; margin-left: 8px;">系统默认认填充，一般情况下无需修改</span></h3>
+                            <div class="param-field">
+                                <input type="text" class="param-input" value="mpirun -np 4 pw.x -in scf.in > scf.out">
+                                <p class="param-tip">（填入运行软件所需的command，部分软件已经提供默认值，无需修改）</p>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- 运行指令设置 -->
-                    <div class="form-section">
-                        <h3>运行指令 <span style="color: #999; font-weight: normal; margin-left: 8px;">系统默认认填充，一般情况下无需修改</span></h3>
-                        <div class="param-field">
-                            <input type="text" class="param-input" value="mpirun -np 4 pw.x -in scf.in > scf.out">
-                            <p class="param-tip">（填入运行软件所需的command，部分软件已经提供默认值，无需修改）</p>
+                    <!-- 第二步：作业参数设置 -->
+                    <div id="step2Form" style="display: none;">
+                        <div class="form-section">
+                            <h3>超算集群</h3>
+                            <div class="param-field">
+                                <input type="text" class="param-input" value="v-manager-1" readonly>
+                                <p class="param-tip">（当前连接的计算集群）</p>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>计算节点</h3>
+                            <div class="param-field">
+                                <select class="param-input" id="nodeSelect">
+                                    <option value="v-worker-1">v-worker-1 (12核)</option>
+                                </select>
+                                <p class="param-tip">（可用节点：v-worker-1，共12核心）</p>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>使用核数</h3>
+                            <div class="param-field">
+                                <select class="param-input" id="coresSelect">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="4" selected>4</option>
+                                    <option value="8">8</option>
+                                    <option value="12">12</option>
+                                </select>
+                                <p class="param-tip">（可选择1-12核，建议选择4-8核以获得最佳性能）</p>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>预估时长</h3>
+                            <div class="param-field">
+                                <select class="param-input" id="timeSelect">
+                                    <option value="1:00:00">1小时</option>
+                                    <option value="2:00:00" selected>2小时</option>
+                                    <option value="4:00:00">4小时</option>
+                                    <option value="8:00:00">8小时</option>
+                                    <option value="24:00:00">24小时</option>
+                                </select>
+                                <p class="param-tip">（作业预计运行时间，超时会自动终止）</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 第三步：提交计算 -->
+                    <div id="step3Form" style="display: none;">
+                        <!-- 脚本信息 -->
+                        <div class="form-section">
+                            <h3>脚本信息</h3>
+                            <div class="script-info">
+                                <pre class="script-content">#!/bin/bash
+#SBATCH --job-name=QE_TEST_001
+#SBATCH --nodes=1
+#SBATCH --ntasks=4
+#SBATCH --time=2:00:00
+#SBATCH --output=qe_%j.out
+#SBATCH --error=qe_%j.err
+#SBATCH --chdir=/home/users/test/qe
+
+module load quantum-espresso/7.2
+mpirun -np 4 pw.x -in scf.in > scf.out</pre>
+                            </div>
+                        </div>
+
+                        <!-- 提交按钮 -->
+                        <div class="form-section" style="text-align: center;">
+                            <button id="submitCalcBtn" class="submit-calc-btn" onclick="submitCalculation()">
+                                <i class="fas fa-play"></i> 提交计算
+                            </button>
+                        </div>
+
+                        <!-- 作业状态信息 -->
+                        <div id="jobStatus" class="form-section" style="display: none;">
+                            <h3>作业状态</h3>
+                            <div class="job-info">
+                                <p><strong>作业ID：</strong> <span id="jobId">-</span></p>
+                                <p><strong>提交时间：</strong> <span id="submitTime">-</span></p>
+                                <p><strong>作业状态：</strong> <span id="runStatus" class="status-pending">等待中</span></p>
+                                <p><strong>节点信息：</strong> <span id="nodeInfo">v-worker-1 (4核)</span></p>
+                                <p><strong>预计用时：</strong> <span id="estimatedTime">2小时</span></p>
+                            </div>
                         </div>
                     </div>
 
                     <!-- 下一步按钮 -->
                     <div class="form-actions" style="text-align: center; margin-top: 40px;">
-                        <button class="next-step-btn">下一步 <i class="fas fa-arrow-right"></i></button>
+                        <button id="prevStepBtn" class="prev-step-btn" style="display: none;" onclick="prevStep()">
+                            <i class="fas fa-arrow-left"></i> 上一步
+                        </button>
+                        <button id="nextStepBtn" class="next-step-btn" onclick="nextStep()">
+                            下一步 <i class="fas fa-arrow-right"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -573,6 +799,52 @@
                 }, 300);
             }, 2000);
         });
+    }
+
+    let currentStep = 1;
+
+    function updateStepNav() {
+        document.querySelectorAll('.step').forEach((step, index) => {
+            if (index + 1 === currentStep) {
+                step.classList.add('active');
+            } else {
+                step.classList.remove('active');
+            }
+        });
+    }
+
+    function showForm(step) {
+        document.getElementById('step1Form').style.display = 'none';
+        document.getElementById('step2Form').style.display = 'none';
+        document.getElementById('step3Form').style.display = 'none';
+        document.getElementById(`step${step}Form`).style.display = 'block';
+
+        // 更新按钮显示
+        document.getElementById('prevStepBtn').style.display = step === 1 ? 'none' : 'inline-flex';
+        if (step === 3) {
+            document.getElementById('nextStepBtn').style.display = 'none';
+            // 设置提交时间
+            const now = new Date();
+            document.getElementById('submitTime').textContent = now.toLocaleString('zh-CN');
+        } else {
+            document.getElementById('nextStepBtn').style.display = 'inline-flex';
+        }
+    }
+
+    function nextStep() {
+        if (currentStep < 3) {
+            currentStep++;
+            updateStepNav();
+            showForm(currentStep);
+        }
+    }
+
+    function prevStep() {
+        if (currentStep > 1) {
+            currentStep--;
+            updateStepNav();
+            showForm(currentStep);
+        }
     }
 
     // 页面加载完成后执行
@@ -744,11 +1016,27 @@
                 }
             }
         }
+
+        updateStepNav();
+        showForm(1);
     });
 
-    function submitCalculation(software) {
-        // 这里添加提交计算的逻辑
-        console.log(`提交${software}计算任务`);
+    function submitCalculation() {
+        // 隐藏提交按钮
+        document.getElementById('submitCalcBtn').style.display = 'none';
+        
+        // 显示作业状态区域
+        const jobStatus = document.getElementById('jobStatus');
+        jobStatus.style.display = 'block';
+        
+        // 更新作业信息
+        const now = new Date();
+        document.getElementById('jobId').textContent = 'SLURM_' + Math.floor(Math.random() * 10000);
+        document.getElementById('submitTime').textContent = now.toLocaleString('zh-CN');
+        document.getElementById('runStatus').className = 'status-running';
+        document.getElementById('runStatus').textContent = '运行中';
+        
+        // 这里可以添加与后端通信的逻辑
     }
     </script>
 </body>
